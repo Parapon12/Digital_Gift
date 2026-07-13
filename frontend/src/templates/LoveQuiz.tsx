@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { asset } from '../lib/asset'
 import type { Gift, LoveQuizContent } from '../types'
 
 type Firework = {
@@ -169,7 +170,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
 
       {catRun && (
         <div className="lq-cat-run" aria-hidden>
-          <img src="/love/mochi-cat.png" alt="" />
+          <img src={asset('love/mochi-cat.png')} alt="" />
           <span className="lq-cat-trail">♥</span>
           <span className="lq-cat-trail delay">✦</span>
         </div>

@@ -7,9 +7,11 @@ import { AdminLoginPage } from './pages/admin/AdminLoginPage'
 import { DemoPage, GiftPage } from './pages/GiftPage'
 import { HomePage } from './pages/HomePage'
 
+const routerBasename = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') || '/'
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBasename === '/' ? undefined : routerBasename}>
       <Routes>
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminLayout />}>

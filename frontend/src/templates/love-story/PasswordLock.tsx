@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type KeyboardEvent } from 'react'
+import { asset } from '../../lib/asset'
 
 function passwordFromDate(iso?: string, fallback = '14022025') {
   if (!iso) return fallback
@@ -105,7 +106,7 @@ export function PasswordLock({
     onUnlock()
   }
 
-  const photo = couplePhotoUrl || '/love/couple-demo.png'
+  const photo = asset(couplePhotoUrl || 'love/couple-demo.png')
 
   return (
     <section className={`ml-lock ${shake ? 'shake' : ''}`}>

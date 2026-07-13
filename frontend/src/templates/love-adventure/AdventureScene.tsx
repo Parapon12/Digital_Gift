@@ -10,6 +10,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { FINALE_X, PATH_START, STORY_STOPS, WALK_SPEED } from './constants'
 import { QUALITY, adventureQuality, type AdventureQuality } from './quality'
+import { asset } from '../../lib/asset'
 
 export type AdventureWorldMode =
   | 'intro'
@@ -619,7 +620,7 @@ function CalicoCat({
   onClick?: () => void
   offer?: boolean
 }) {
-  const texture = useTexture('/love/mochi-cat.png')
+  const texture = useTexture(asset('love/mochi-cat.png'))
   const group = useRef<THREE.Group>(null)
   const { camera } = useThree()
   const pedestalTop = 0.58

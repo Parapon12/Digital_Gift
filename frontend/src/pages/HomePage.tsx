@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api/client'
+import { asset } from '../lib/asset'
 import type { TemplateInfo } from '../types'
 
 export function HomePage() {
@@ -21,9 +22,9 @@ export function HomePage() {
     <div className="c-home">
       <section className="c-hero">
         <div className="c-hero-stage" aria-hidden>
-          <img className="c-hero-banner" src="/brand/gift-hero-banner.png" alt="" />
-          <img className="c-float c-float-a" src="/brand/gift-box-a.png" alt="" />
-          <img className="c-float c-float-b" src="/brand/gift-box-b.png" alt="" />
+          <img className="c-hero-banner" src={asset('brand/gift-hero-banner.png')} alt="" />
+          <img className="c-float c-float-a" src={asset('brand/gift-box-a.png')} alt="" />
+          <img className="c-float c-float-b" src={asset('brand/gift-box-b.png')} alt="" />
         </div>
 
         <div className="c-hero-copy">

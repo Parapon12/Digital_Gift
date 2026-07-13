@@ -1,4 +1,5 @@
 import type { Gift, SiteConfig, TemplateInfo } from '../types'
+import { getLocalDemo, LOCAL_TEMPLATES } from '../data/demos'
 
 const API_BASE = import.meta.env.VITE_API_URL || ''
 
@@ -18,8 +19,24 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getSite: () => request<SiteConfig>('/api/site'),
-  getTemplates: () => request<TemplateInfo[]>('/api/templates'),
+  getSite: () =>
+    request<SiteConfig>('/api/site').catch(() => ({
+      line_url: 'https://line.me/ti/p/@giftlove',
+      frontend_url: window.location.origin,
+    })),
+
+  getTemplates: () =>
+    request<TemplateInfo[]>('/api/templates').catch(() => LOCAL_TEMPLATES),
+
   getGift: (publicId: string) => request<Gift>(`/api/gifts/${publicId}`),
-  getDemo: (slug: string) => request<Gift>(`/api/demos/${slug}`),
+
+  getDemo: async (slug: string) => {
+    try {
+      return await request<Gift>(`/api/demos/${slug}`)
+    } catch {
+      const local = getLocalDemo(slug)
+      if (local) return local
+      throw new Error('ไม่พบ demo')
+    }
+  },
 }

@@ -160,7 +160,7 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
         password: '14022025',
         passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน · ตัวอย่าง 14022025',
         anniversaryDate: '2025-02-14',
-        couplePhotoUrl: '/love/couple-demo.png',
+        couplePhotoUrl: 'love/couple-demo.png',
         anniversaryLabel: 'วันเริ่มคบกัน',
         musicUrl: '',
         targetDays: 1000,

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { asset } from '../../lib/asset'
 
 export function GiftBoxIntro({ onOpen }: { onOpen: () => void }) {
   const [phase, setPhase] = useState<'idle' | 'opening' | 'zoom'>('idle')
@@ -55,13 +56,13 @@ export function GiftBoxIntro({ onOpen }: { onOpen: () => void }) {
           <div className="ld-box-scene">
             <img
               className="ld-box-img ld-box-closed"
-              src="/brand/gift-box-a.png"
+              src={asset('brand/gift-box-a.png')}
               alt=""
               draggable={false}
             />
             <img
               className="ld-box-img ld-box-open"
-              src="/brand/gift-box-b.png"
+              src={asset('brand/gift-box-b.png')}
               alt=""
               draggable={false}
             />
