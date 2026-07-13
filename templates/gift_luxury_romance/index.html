@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiftLove — For You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+  <!-- Screen 1: Gift Box -->
+    <section id="screen-gift" class="screen active">
+        <div class="gift-scene">
+            <p class="overline" id="gift-overline">A Special Gift</p>
+            <h1 class="gift-title">มีของขวัญ<br>สำหรับ <span id="gift-recipient">คุณ</span></h1>
+            <div class="gift-box" id="gift-box" role="button" tabindex="0" aria-label="เปิดกล่องของขวัญ">
+                <div class="box-lid">
+                    <div class="box-bow"></div>
+                </div>
+                <div class="box-body">
+                    <div class="box-ribbon-v"></div>
+                    <div class="box-ribbon-h"></div>
+                </div>
+                <div class="box-sparkles">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+            <p class="gift-hint">แตะเพื่อเปิดของขวัญ</p>
+        </div>
+    </section>
+
+  <!-- Screen 2: Message -->
+    <section id="screen-message" class="screen">
+        <div class="message-scene">
+            <p class="overline" id="msg-occasion">วันครบรอบ</p>
+            <h2 class="message-headline">
+                <span id="msg-headline">ทุกวันที่มีเธอ</span><br>
+                <em id="msg-accent">คือของขวัญที่ดีที่สุด</em>
+            </h2>
+            <div class="message-card">
+                <p id="msg-body" class="message-body"></p>
+                <p class="message-sender">— <span id="msg-sender">จากใจของฉัน</span></p>
+            </div>
+            <p class="special-date" id="msg-date"></p>
+            <button class="btn-luxury" id="btn-to-gallery">ดูความทรงจำของเรา</button>
+        </div>
+    </section>
+
+  <!-- Screen 3: Gallery -->
+    <section id="screen-gallery" class="screen">
+        <div class="gallery-scene">
+            <p class="overline">Our Memories</p>
+            <h2 class="gallery-title">ความทรงจำ<br><em>ของเราทั้งสอง</em></h2>
+            <div class="gallery-grid" id="gallery-grid"></div>
+            <div class="gallery-nav">
+                <button class="btn-luxury" id="btn-prev-photo">←</button>
+                <span id="photo-counter">1 / 1</span>
+                <button class="btn-luxury" id="btn-next-photo">→</button>
+            </div>
+            <button class="btn-luxury" id="btn-to-finale" style="margin-top:32px">ต่อไป</button>
+        </div>
+    </section>
+
+  <!-- Screen 4: Finale -->
+    <section id="screen-finale" class="screen">
+        <div class="finale-scene">
+            <div class="finale-heart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+            <h2 class="finale-title">รักเธอเสมอ</h2>
+            <p class="finale-sub" id="finale-text">ขอบคุณที่เข้ามาเป็นส่วนหนึ่งในชีวิตของฉัน</p>
+            <div id="video-container" class="video-container" hidden></div>
+            <button class="btn-music" id="btn-music" hidden>
+                <span id="music-icon">♪</span> เล่นเพลง
+            </button>
+        </div>
+    </section>
+
+    <audio id="bg-music" loop></audio>
+
+    <script src="gift-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

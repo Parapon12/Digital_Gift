@@ -1,0 +1,30 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/postprocessing": "^3.0.4",
+    "postprocessing": "^6.39.2",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1",
+    "three": "^0.185.1"
+  }
+}

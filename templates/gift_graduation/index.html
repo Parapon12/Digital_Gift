@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations Graduate — GiftLove</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <section id="screen-gift" class="screen active">
+        <div class="gift-scene">
+            <p class="overline" id="gift-overline">Graduation Day</p>
+            <h1 class="gift-title">ของขวัญแห่ง<br><span id="gift-recipient">ความสำเร็จ</span></h1>
+            <div class="cap-scene" id="cap-scene" role="button" tabindex="0">
+                <div class="grad-cap" id="grad-cap">
+                    <div class="cap-top"></div>
+                    <div class="cap-base"></div>
+                    <div class="tassel"></div>
+                </div>
+                <div class="stars">
+                    <span>✦</span><span>✦</span><span>✦</span>
+                </div>
+            </div>
+            <p class="gift-hint">แตะเพื่อโยนหมวกและเปิดของขวัญ</p>
+        </div>
+    </section>
+
+    <section id="screen-message" class="screen">
+        <div class="message-scene">
+            <p class="overline" id="msg-occasion">Congratulations</p>
+            <div class="degree-badge" id="degree-badge"></div>
+            <h2 class="message-headline">
+                <span id="msg-headline">ยินดีด้วย</span><br>
+                <em id="msg-accent">กับความสำเร็จครั้งยิ่งใหญ่</em>
+            </h2>
+            <div class="message-card">
+                <p id="msg-body" class="message-body"></p>
+                <p class="message-sender">— <span id="msg-sender"></span></p>
+            </div>
+            <p class="special-date" id="msg-date"></p>
+            <button class="btn-luxury" id="btn-to-gallery">ชมความทรงจำ</button>
+        </div>
+    </section>
+
+    <section id="screen-gallery" class="screen">
+        <div class="gallery-scene">
+            <p class="overline">Graduation Memories</p>
+            <h2 class="gallery-title">ช่วงเวลา<br><em>แห่งความภาคภูมิใจ</em></h2>
+            <div class="gallery-grid" id="gallery-grid"></div>
+            <div class="gallery-nav">
+                <button class="btn-luxury" id="btn-prev-photo">←</button>
+                <span id="photo-counter">1 / 1</span>
+                <button class="btn-luxury" id="btn-next-photo">→</button>
+            </div>
+            <button class="btn-luxury" id="btn-to-finale" style="margin-top:32px">ต่อไป</button>
+        </div>
+    </section>
+
+    <section id="screen-finale" class="screen">
+        <div class="finale-scene">
+            <div class="finale-cap">🎓</div>
+            <h2 class="finale-title">The Future is Yours</h2>
+            <p class="finale-sub" id="finale-text"></p>
+            <div id="video-container" class="video-container" hidden></div>
+            <button class="btn-music" id="btn-music" hidden><span id="music-icon">♪</span> เล่นเพลง</button>
+        </div>
+    </section>
+
+    <audio id="bg-music" loop></audio>
+    <script src="gift-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

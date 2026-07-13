@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: giftlove
+      POSTGRES_PASSWORD: giftlove
+      POSTGRES_DB: giftlove
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://giftlove:giftlove@db:5432/giftlove?sslmode=disable
+      FRONTEND_URL: http://localhost:5173
+      ADMIN_EMAIL: admin@giftlove.studio
+      ADMIN_PASSWORD: giftlove-admin
+      JWT_SECRET: giftlove-dev-jwt-secret-change-me
+      LINE_URL: https://line.me/ti/p/@giftlove
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

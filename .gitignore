@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build
+dist/
+build/
+*.exe
+frontend/dist/
+
+# Env & secrets
+.env
+*.env
+!*.env.example
+
+# Uploads / local data
+uploads/
+
+# Logs & caches
+*.log
+.DS_Store
+Thumbs.db
+.vite/
+coverage/
+tmp/
+.idea/
+.vscode/
+*.swp
+
+# OS
+Desktop.ini

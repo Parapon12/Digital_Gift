@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiftLove — Personalized Digital Gifts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #1a0f02;
+            color: #fff3d6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== BACKGROUND EFFECTS ===== */
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.16;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-orb-1 {
+            width: 500px; height: 500px;
+            background: #ffc93c;
+            top: -150px; right: -100px;
+        }
+
+        .glow-orb-2 {
+            width: 400px; height: 400px;
+            background: #f58220;
+            bottom: -100px; left: -100px;
+            opacity: 0.14;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-luxury {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 56px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-luxury .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff3d6;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .nav-luxury .logo svg {
+            width: 28px; height: 28px;
+            stroke: #ffc93c;
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 243, 214, 0.6);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.4s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #f58220;
+            transition: width 0.4s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffc93c;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero-luxury {
+            text-align: center;
+            padding: 100px 24px 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-luxury .overline {
+            color: #ffc93c;
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        .hero-luxury h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: #fff3d6;
+            margin-bottom: 24px;
+            font-weight: 300;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .hero-luxury h1 span {
+            font-weight: 500;
+            background: linear-gradient(90deg, #ffc93c, #f58220);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-luxury p {
+            color: rgba(255, 243, 214, 0.55);
+            font-size: 1.05rem;
+            max-width: 520px;
+            margin: 0 auto 48px;
+            line-height: 1.9;
+            font-weight: 300;
+        }
+
+        .btn-luxury {
+            background: transparent;
+            color: #ffc93c;
+            padding: 16px 48px;
+            border-radius: 0;
+            border: 1px solid rgba(245, 130, 32, 0.4);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-luxury::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 201, 60, 0.1), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .btn-luxury:hover {
+            border-color: #f58220;
+            background: rgba(245, 130, 32, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .btn-luxury:hover::before {
+            left: 100%;
+        }
+
+        /* ===== SERVICES ===== */
+        .services-luxury {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            padding: 0 48px 80px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+
+        .service-card {
+            background: rgba(255, 201, 60, 0.03);
+            border: 1px solid rgba(245, 130, 32, 0.1);
+            padding: 48px 36px;
+            width: 280px;
+            text-align: center;
+            transition: all 0.6s ease;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            background: rgba(245, 130, 32, 0.06);
+            border-color: rgba(255, 201, 60, 0.25);
+            transform: translateY(-6px);
+        }
+
+        .service-card svg {
+            width: 36px;
+            height: 36px;
+            stroke: #ffc93c;
+            stroke-width: 1.3;
+            fill: none;
+            margin-bottom: 24px;
+        }
+
+        .service-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #fff3d6;
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .service-card p {
+            color: rgba(255, 243, 214, 0.45);
+            font-size: 0.85rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-luxury {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid rgba(245, 130, 32, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-luxury p {
+            color: rgba(255, 243, 214, 0.3);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .nav-luxury {
+                padding: 20px 24px;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .nav-links { gap: 24px; }
+            .hero-luxury { padding: 60px 20px 50px; }
+            .services-luxury { padding: 0 20px 60px; }
+            .service-card { width: 100%; max-width: 340px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <nav class="nav-luxury">
+        <a href="#" class="logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            GiftLove
+        </a>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Packages</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero-luxury">
+        <div class="overline">Personalized Digital Gifts</div>
+        <h1>Crafted with <span>Devotion</span>,<br>Delivered with Love</h1>
+        <p>Transform your most precious memories into an exquisite digital experience. Each website is meticulously designed to celebrate the moments that matter most.</p>
+        <button class="btn-luxury">Explore Collections</button>
+    </section>
+
+    <div class="services-luxury">
+        <div class="service-card">
+            <svg viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <h3>Love Letters</h3>
+            <p>Elegant digital correspondence with bespoke typography and intimate design</p>
+        </div>
+        <div class="service-card">
+            <svg viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <h3>Memory Albums</h3>
+            <p>Curated galleries that tell your story through immersive visual narratives</p>
+        </div>
+        <div class="service-card">
+            <svg viewBox="0 0 24 24">
+                <polyline points="21 8 21 21 3 21 3 8"/>
+                <rect x="1" y="3" width="22" height="5"/>
+                <line x1="10" y1="12" x2="14" y2="12"/>
+            </svg>
+            <h3>Surprise Boxes</h3>
+            <p>Interactive reveals that unfold layer by layer of heartfelt surprises</p>
+        </div>
+    </div>
+
+    <footer class="footer-luxury">
+        <p>© 2026 GiftLove Studio. All rights reserved.</p>
+    </footer>
+</body>
+</html>
