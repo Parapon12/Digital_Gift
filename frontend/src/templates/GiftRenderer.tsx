@@ -4,6 +4,7 @@ import { BirthdayGift } from './BirthdayGift'
 import { GraduationGift } from './GraduationGift'
 import { LoveQuiz } from './LoveQuiz'
 import { LoveStory } from './LoveStory'
+import { MemoryPage } from './MemoryPage'
 import { ProposalGift } from './ProposalGift'
 
 const LoveAdventure3D = lazy(() =>
@@ -27,6 +28,7 @@ const MAP: Record<TemplateKey, (gift: Gift) => ReactElement> = {
   ),
   love_story: (g) => <LoveStory gift={g} />,
   love_quiz: (g) => <LoveQuiz gift={g} />,
+  memory_page: (g) => <MemoryPage gift={g} />,
   birthday: (g) => <BirthdayGift gift={g} />,
   graduation: (g) => <GraduationGift gift={g} />,
   proposal: (g) => <ProposalGift gift={g} />,

@@ -3,7 +3,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import { adminApi } from '../../api/admin'
 import { api } from '../../api/client'
-import { defaultContent, type Gift, type TemplateInfo, type TemplateKey } from '../../types'
+import {
+  defaultContent,
+  type Gift,
+  type MemoryPageContent,
+  type TemplateInfo,
+  type TemplateKey,
+} from '../../types'
+import { MemoryPageAdminFields } from './MemoryPageAdminFields'
 
 export function AdminGiftEditorPage() {
   const { id } = useParams<{ id: string }>()
@@ -17,10 +24,15 @@ export function AdminGiftEditorPage() {
   const [sender, setSender] = useState('')
   const [published, setPublished] = useState(true)
   const [contentText, setContentText] = useState(JSON.stringify(defaultContent('love_quiz'), null, 2))
+  const [memoryContent, setMemoryContent] = useState<MemoryPageContent>(
+    defaultContent('memory_page') as MemoryPageContent,
+  )
   const [gift, setGift] = useState<Gift | null>(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
+
+  const isMemory = templateKey === 'memory_page'
 
   useEffect(() => {
     api.getTemplates().then(setTemplates).catch(() => {})
@@ -37,6 +49,12 @@ export function AdminGiftEditorPage() {
         setSender(g.sender_name)
         setPublished(g.is_published)
         setContentText(JSON.stringify(g.content || {}, null, 2))
+        if (g.template_key === 'memory_page') {
+          setMemoryContent({
+            ...(defaultContent('memory_page') as MemoryPageContent),
+            ...(g.content as MemoryPageContent),
+          })
+        }
       })
       .catch(() => navigate('/admin/login'))
   }, [id, isNew, navigate])
@@ -48,8 +66,11 @@ export function AdminGiftEditorPage() {
 
   const onTemplateChange = (key: TemplateKey) => {
     setTemplateKey(key)
-    if (isNew) {
-      setContentText(JSON.stringify(defaultContent(key), null, 2))
+    if (!isNew) return
+    const base = defaultContent(key)
+    setContentText(JSON.stringify(base, null, 2))
+    if (key === 'memory_page') {
+      setMemoryContent(base as MemoryPageContent)
     }
   }
 
@@ -58,7 +79,21 @@ export function AdminGiftEditorPage() {
     setSaving(true)
     setError('')
     try {
-      const content = JSON.parse(contentText)
+      const content = isMemory
+        ? {
+            ...memoryContent,
+            entries: (memoryContent.entries || [])
+              .filter((x) => x.imageUrl?.trim() && x.caption?.trim())
+              .map((x) => ({
+                id: x.id || crypto.randomUUID(),
+                date: x.date?.trim() || undefined,
+                caption: x.caption.trim(),
+                imageUrl: x.imageUrl.trim(),
+                secretNote: x.secretNote?.trim() || undefined,
+              })),
+          }
+        : JSON.parse(contentText)
+
       if (isNew) {
         const created = await adminApi.createGift({
           template_key: templateKey,
@@ -98,7 +133,11 @@ export function AdminGiftEditorPage() {
       <header className="admin-header">
         <div>
           <h1>{isNew ? 'สร้างของขวัญ' : 'แก้ไขของขวัญ'}</h1>
-          <p>เทมเพลตล็อกโครง — กรอกชื่อ ข้อความ และ URL รูป</p>
+          <p>
+            {isMemory
+              ? 'Memory page — แอดมินใส่รูป คำบรรยาย โน้ตลับ และเพลง แล้วส่งลิงก์ให้คนรับ'
+              : 'เทมเพลตล็อกโครง — กรอกชื่อ ข้อความ และ URL รูป'}
+          </p>
         </div>
         <Link to="/admin" className="btn-luxury">กลับรายการ</Link>
       </header>
@@ -143,15 +182,19 @@ export function AdminGiftEditorPage() {
           </div>
         </div>
 
-        <div className="form-group">
-          <label>เนื้อหาเทมเพลต (JSON — ข้อความ / URL รูป)</label>
-          <textarea
-            value={contentText}
-            onChange={(e) => setContentText(e.target.value)}
-            rows={16}
-            style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.85rem' }}
-          />
-        </div>
+        {isMemory ? (
+          <MemoryPageAdminFields value={memoryContent} onChange={setMemoryContent} />
+        ) : (
+          <div className="form-group">
+            <label>เนื้อหาเทมเพลต (JSON — ข้อความ / URL รูป)</label>
+            <textarea
+              value={contentText}
+              onChange={(e) => setContentText(e.target.value)}
+              rows={16}
+              style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.85rem' }}
+            />
+          </div>
+        )}
 
         <button type="submit" className="btn-luxury btn-luxury-filled" disabled={saving}>
           {saving ? 'กำลังบันทึก...' : 'บันทึก'}

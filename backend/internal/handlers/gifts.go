@@ -336,6 +336,21 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 			"successMessage":"จากนี้ไปเราเป็นของกันและกันแล้วนะ",
 			"photos":[]
 		}`)
+	case models.TemplateMemoryPage:
+		return json.RawMessage(`{
+			"theme":"couple",
+			"title":"สมุดความทรงจำของเรา",
+			"intro":"เลื่อนลงช้า ๆ — แต่ละหน้ามีเรื่องเล็ก ๆ ที่ฉันเก็บไว้ให้เธอ",
+			"musicUrl":"",
+			"closingTitle":"และจากนี้…",
+			"closingMessage":"ทุกหน้าที่ย้อนมาได้ คือเหตุผลที่ฉันยังอยากเดินต่อไปด้วยกัน",
+			"entries":[
+				{"id":"1","date":"วันที่รู้จักกัน","caption":"วันแรกที่โลกของฉันมีเธอเข้ามา","imageUrl":"/love/couple-demo.png","secretNote":"ตอนนั้นยังไม่รู้ว่า จะกลายเป็นคนสำคัญขนาดนี้"},
+				{"id":"2","date":"ทริปแรก","caption":"ทะเล ลม และเสียงหัวเราะที่ยังจำได้","imageUrl":"/love/quiz-meadow.png","secretNote":"อยากเก็บช่วงนั้นไว้ในกระเป๋าแล้วพกไปทุกที่"},
+				{"id":"3","date":"วันที่เหนื่อย","caption":"แค่ได้นั่งข้างกัน ก็รู้สึกว่าโลกเบาลง","imageUrl":"/brand/gift-hero-banner.png"},
+				{"id":"4","date":"วันนี้","caption":"ยังเลือกเธอ — และยังอยากเลือกต่อไป","imageUrl":"/love/couple-demo.png","secretNote":"ถ้ารีบอ่านจนจบ แปลว่าเธอสำคัญกับฉันจริง ๆ"}
+			]
+		}`)
 	case models.TemplateBirthday:
 		return json.RawMessage(`{"headline":"สุขสันต์วันเกิด","message":"ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม","photos":[]}`)
 	case models.TemplateGraduation:

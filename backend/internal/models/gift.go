@@ -13,6 +13,7 @@ const (
 	TemplateLoveAdventure3D TemplateKey = "love_adventure_3d"
 	TemplateLoveStory       TemplateKey = "love_story"
 	TemplateLoveQuiz        TemplateKey = "love_quiz"
+	TemplateMemoryPage      TemplateKey = "memory_page"
 	TemplateBirthday        TemplateKey = "birthday"
 	TemplateGraduation      TemplateKey = "graduation"
 	TemplateProposal        TemplateKey = "proposal"
@@ -31,6 +32,7 @@ var Templates = []TemplateInfo{
 	{TemplateLoveAdventure3D, "3D Love Adventure", "ผจญภัยความรัก 3D", "เดินในฉาก 3D + ความทรงจำ + แมว + ข้อความ", "complete", "love-adventure"},
 	{TemplateLoveStory, "Love Story", "เรื่องราวความรัก", "กล่องของขวัญ · รหัส · นับวัน · ความทรงจำ · ซองลับ", "complete", "love-story"},
 	{TemplateLoveQuiz, "Love Quiz", "ควิซความรัก", "ปุ่มไม่วิ่งหนี · พลุ · แมวถือดอกไม้", "complete", "love-quiz"},
+	{TemplateMemoryPage, "Memory Page", "หน้ารำลึกความทรงจำ", "scrapbook เลื่อนลงดูรูป แคปชัน และโน้ตลับ", "complete", "memory-page"},
 	{TemplateBirthday, "Birthday", "วันเกิด", "โครง 3D + ข้อความ", "skeleton", "birthday"},
 	{TemplateGraduation, "Graduation", "รับปริญญา", "โครง 3D + ข้อความ", "skeleton", "graduation"},
 	{TemplateProposal, "Proposal", "ขอแต่งงาน", "โครง 3D + ข้อความ", "skeleton", "proposal"},

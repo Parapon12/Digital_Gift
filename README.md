@@ -26,6 +26,7 @@
 | `love_adventure_3d` | 3D Love Adventure | ครบ |
 | `love_story` | Love Story | ครบ |
 | `love_quiz` | Love Quiz | ครบ |
+| `memory_page` | Memory Page (scrapbook) | ครบ |
 | `birthday` | วันเกิด | โครง 3D |
 | `graduation` | รับปริญญา | โครง 3D |
 | `proposal` | ขอแต่งงาน | โครง 3D |
