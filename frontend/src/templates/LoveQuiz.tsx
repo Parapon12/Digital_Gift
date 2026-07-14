@@ -177,21 +177,16 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
       )}
 
       <div className="lq-stage">
-        <p className="lq-kicker">
-          Love Quiz
-          <span className="lq-kicker-heart" aria-hidden>♥</span>
-        </p>
-
         {!won ? (
           <>
-            <h1 className="lq-hello">
-              สวัสดี <em>{gift.recipient_name || 'เธอ'}</em>
-              <span className="lq-hello-heart" aria-hidden>♡</span>
-            </h1>
-            <p className="lq-q">
-              {content.question || 'จะเป็นแฟนกันไหม?'}
-              <span className="lq-wave" aria-hidden />
+            <p className="lq-ornament" aria-hidden>
+              <i /><span>♡</span><i />
             </p>
+            <h1 className="lq-hello">
+              สวัสดี
+              <span className="lq-hello-name">{gift.recipient_name || 'เธอ'}</span>
+            </h1>
+            <p className="lq-q">{content.question || 'จะเป็นแฟนกันไหม?'}</p>
 
             <div className="lq-buttons" ref={arenaRef}>
               <button type="button" className="lq-yes" onClick={onYes}>

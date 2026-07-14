@@ -1876,9 +1876,10 @@ a {
 
 /* ===== Love Quiz — meadow romance ===== */
 .lq-root {
-  --lq-ink: #4a2c4a;
-  --lq-muted: #6b5470;
-  --lq-pink: #e878a8;
+  --lq-ink: #1a1018;
+  --lq-ink-soft: #2c1a28;
+  --lq-pink: #c9457a;
+  --lq-rose: #e878a8;
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
@@ -1904,8 +1905,8 @@ a {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 50% 35%, rgba(255, 245, 250, 0.28), transparent 55%),
-    linear-gradient(180deg, rgba(255, 240, 248, 0.15), rgba(120, 80, 110, 0.12) 100%);
+    radial-gradient(ellipse at 50% 42%, rgba(255, 248, 252, 0.72) 0%, rgba(255, 248, 252, 0.38) 42%, transparent 68%),
+    linear-gradient(180deg, rgba(255, 245, 250, 0.35), rgba(40, 24, 40, 0.18) 100%);
 }
 
 .lq-petals {
@@ -1947,96 +1948,69 @@ a {
   z-index: 3;
   width: min(560px, 100%);
   text-align: center;
-  padding: 8px 8px 24px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  padding: clamp(28px, 5vw, 40px) clamp(18px, 4vw, 28px) clamp(20px, 4vh, 32px);
+  background: rgba(255, 250, 252, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 18px 48px rgba(40, 20, 40, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
-.lq-kicker {
-  position: relative;
-  display: inline-block;
-  color: rgba(74, 44, 74, 0.72);
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  font-size: clamp(0.78rem, 2vw, 0.9rem);
-  font-weight: 600;
-  margin-bottom: 22px;
-  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.55);
+.lq-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: var(--lq-pink);
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
-.lq-kicker-heart {
+.lq-ornament i {
   display: block;
-  margin: 8px auto 0;
-  width: max-content;
-  color: #e878a8;
-  font-size: 0.7rem;
-  letter-spacing: 0;
-  position: relative;
-}
-
-.lq-kicker-heart::before,
-.lq-kicker-heart::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  width: 28px;
+  width: 42px;
   height: 1px;
-  background: rgba(232, 120, 168, 0.55);
+  background: linear-gradient(90deg, transparent, rgba(201, 69, 122, 0.55), transparent);
 }
-
-.lq-kicker-heart::before { right: calc(100% + 8px); }
-.lq-kicker-heart::after { left: calc(100% + 8px); }
 
 .lq-hello {
-  position: relative;
-  display: inline-block;
-  font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 8vw, 3.8rem);
-  font-weight: 600;
-  line-height: 1.15;
-  color: #4a2c4a;
-  margin-bottom: 14px;
-  text-shadow: 0 2px 18px rgba(255, 255, 255, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Charm', 'Cormorant Garamond', cursive;
+  font-size: clamp(1.15rem, 3.2vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--lq-ink-soft);
+  margin: 0 0 10px;
+  letter-spacing: 0.04em;
 }
 
-.lq-hello em {
-  font-style: normal;
-  color: #e878a8;
-}
-
-.lq-hello-heart {
-  position: absolute;
-  right: -1.1em;
-  top: -0.15em;
-  color: #e878a8;
-  font-size: 0.42em;
-  transform: rotate(12deg);
+.lq-hello-name {
+  display: block;
+  font-family: 'Charm', 'Cormorant Garamond', cursive;
+  font-size: clamp(2.6rem, 9vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--lq-ink);
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .lq-q {
-  position: relative;
-  display: inline-block;
-  font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 4.2vw, 1.9rem);
-  font-weight: 500;
-  color: var(--lq-muted) !important;
-  line-height: 1.45;
-  margin: 4px 0 36px;
-  padding-bottom: 14px;
-  text-shadow: 0 1px 12px rgba(255, 255, 255, 0.4);
-}
-
-.lq-wave {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: min(220px, 70%);
-  height: 10px;
-  transform: translateX(-50%);
-  background:
-    radial-gradient(circle at 50% 40%, #e878a8 0 3px, transparent 3.5px),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='10' viewBox='0 0 220 10' fill='none'%3E%3Cpath d='M2 6 C20 1, 40 9, 60 5 S100 1, 120 6 S160 9, 180 4 S210 2, 218 6' stroke='%23e878a8' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.55rem, 4.6vw, 2.15rem);
+  font-weight: 600;
+  color: var(--lq-ink) !important;
+  line-height: 1.4;
+  margin: 8px auto 32px;
+  max-width: 16ch;
+  text-wrap: balance;
 }
 
 .lq-buttons {
@@ -2054,15 +2028,15 @@ a {
   appearance: none;
   border: none;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-sans, 'Outfit', sans-serif);
   font-size: clamp(1.15rem, 3.2vw, 1.45rem);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: #fff;
   padding: 16px 42px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #f087b4 0%, #d88ad8 45%, #b07be8 100%);
-  box-shadow: 0 14px 34px rgba(200, 100, 160, 0.38);
+  background: linear-gradient(135deg, #e878a8 0%, #d4639a 50%, #b85fd0 100%);
+  box-shadow: 0 14px 34px rgba(180, 70, 130, 0.4);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   animation: lqYesPulse 1.8s ease-in-out infinite;
   position: relative;
@@ -2071,44 +2045,43 @@ a {
 
 .lq-yes:hover {
   transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 18px 40px rgba(200, 100, 160, 0.45);
+  box-shadow: 0 18px 40px rgba(180, 70, 130, 0.48);
 }
 
 @keyframes lqYesPulse {
-  0%, 100% { box-shadow: 0 14px 34px rgba(200, 100, 160, 0.35); }
-  50% { box-shadow: 0 14px 42px rgba(200, 100, 160, 0.52); }
+  0%, 100% { box-shadow: 0 14px 34px rgba(180, 70, 130, 0.35); }
+  50% { box-shadow: 0 14px 42px rgba(180, 70, 130, 0.55); }
 }
 
 .lq-no {
   appearance: none;
   cursor: pointer;
-  font-family: var(--font-sans);
-  font-size: clamp(1.2rem, 3.2vw, 1.45rem);
-  font-weight: 600;
+  font-family: var(--font-sans, 'Outfit', sans-serif);
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+  font-weight: 700;
   color: #fff;
   padding: 10px 26px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background: rgba(40, 24, 40, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
   position: absolute;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  transition: left 0.18s ease, top 0.18s ease, transform 0.18s ease, color 0.2s ease, text-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: left 0.18s ease, top 0.18s ease, transform 0.18s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   will-change: left, top, transform;
   touch-action: none;
   user-select: none;
-  text-shadow: 0 2px 10px rgba(74, 44, 74, 0.35);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 6px 18px rgba(74, 44, 74, 0.12);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px rgba(24, 12, 24, 0.28);
 }
 
 .lq-no:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(40, 24, 40, 0.72);
   border-color: #fff;
-  text-shadow: 0 2px 14px rgba(74, 44, 74, 0.5);
 }
 
 .lq-no-lines {
@@ -2122,40 +2095,42 @@ a {
 .lq-win-burst {
   font-size: 2.8rem;
   margin-bottom: 8px;
-  color: #e878a8;
+  color: var(--lq-pink);
   animation: lqHeart 0.9s ease-in-out infinite;
 }
 
 .lq-win h2 {
-  font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 7vw, 3.4rem);
-  font-weight: 600;
-  color: #4a2c4a;
-  margin-bottom: 12px;
-  text-shadow: 0 2px 16px rgba(255,255,255,0.45);
+  font-family: 'Charm', 'Cormorant Garamond', cursive;
+  font-size: clamp(2.6rem, 8vw, 3.6rem);
+  font-weight: 700;
+  color: var(--lq-ink);
+  margin: 0 0 14px;
+  line-height: 1.1;
 }
 
 .lq-win p {
   font-size: clamp(1.15rem, 2.8vw, 1.4rem);
   line-height: 1.7;
-  color: rgba(74, 44, 74, 0.78) !important;
-  font-weight: 400;
+  color: var(--lq-ink-soft) !important;
+  font-weight: 500;
 }
 
 .lq-win-lead {
-  font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 3.5vw, 1.75rem) !important;
-  color: #4a2c4a !important;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.4rem, 3.6vw, 1.85rem) !important;
+  font-weight: 600 !important;
+  color: var(--lq-ink) !important;
   max-width: 18ch;
   margin: 0 auto;
+  text-wrap: balance;
 }
 
 .lq-from {
   margin-top: 18px !important;
-  color: #e878a8 !important;
-  font-family: var(--font-serif);
-  font-size: 1.35rem !important;
-  font-weight: 500 !important;
+  color: var(--lq-pink) !important;
+  font-family: 'Charm', cursive;
+  font-size: 1.45rem !important;
+  font-weight: 700 !important;
 }
 
 .lq-photo {
@@ -2164,25 +2139,25 @@ a {
   border-radius: 18px;
   border: none;
   display: block;
-  box-shadow: 0 16px 36px rgba(74, 44, 74, 0.18);
+  box-shadow: 0 16px 36px rgba(40, 20, 40, 0.2);
 }
 
 .lq-again {
   margin-top: 22px;
   appearance: none;
-  border: none;
-  background: rgba(255, 255, 255, 0.55);
-  color: #4a2c4a;
+  border: 1px solid rgba(40, 24, 40, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--lq-ink);
   border-radius: 999px;
   padding: 12px 22px;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  box-shadow: 0 10px 24px rgba(74, 44, 74, 0.1);
+  box-shadow: 0 10px 24px rgba(40, 20, 40, 0.12);
 }
 
-.lq-again:hover { background: rgba(255, 255, 255, 0.75); }
+.lq-again:hover { background: #fff; }
 
 /* Cat run — transform-only for smooth GPU motion */
 .lq-cat-run {
