@@ -34,8 +34,8 @@ export function MemoryPageAdminFields({
   return (
     <div className="mp-admin">
       <p className="mp-admin-help">
-        ใส่รูปเป็น URL (เช่น <code>/love/couple-demo.png</code> หรือลิงก์รูปเต็ม)
-        · โน้ตลับจะปลดล็อกตอนคนรับเลื่อนถึงรูปนั้น
+        ใต้รูปใส่แค่ <strong>สถานที่</strong> · โน้ตลับใส่ <strong>ความรู้สึก</strong> ·
+        ท้ายหน้าเป็น <strong>จดหมายขอบคุณ</strong> ที่คนรับเปิดเอง
       </p>
 
       <div className="grid-2">
@@ -112,21 +112,21 @@ export function MemoryPageAdminFields({
                 />
               </div>
               <div className="form-group">
-                <label>คำบรรยาย</label>
+                <label>สถานที่ (ใต้รูป)</label>
                 <input
                   value={entry.caption || ''}
                   onChange={(e) => updateEntry(i, { caption: e.target.value })}
-                  placeholder="วันแรกที่…"
+                  placeholder="ชายหาด · ตอนเย็น"
                 />
               </div>
             </div>
             <div className="form-group">
-              <label>โน้ตลับ (ไม่บังคับ)</label>
+              <label>ความรู้สึก (เปิดอ่าน)</label>
               <textarea
                 value={entry.secretNote || ''}
                 onChange={(e) => updateEntry(i, { secretNote: e.target.value })}
-                rows={2}
-                placeholder="ข้อความที่คนรับจะเห็นเมื่อเลื่อนมาถึง"
+                rows={3}
+                placeholder="เล่าความในใจให้ยาวและลึกกว่าใต้รูป"
               />
             </div>
           </div>
@@ -144,20 +144,22 @@ export function MemoryPageAdminFields({
         </button>
       ) : null}
 
-      <h3 className="mp-admin-sub">บทสรุปท้ายหน้า</h3>
+      <h3 className="mp-admin-sub">จดหมายขอบคุณท้ายหน้า</h3>
       <div className="form-group">
-        <label>หัวข้อสรุป</label>
+        <label>หัวข้อจดหมาย</label>
         <input
-          value={value.closingTitle || ''}
-          onChange={(e) => set({ closingTitle: e.target.value })}
+          value={value.letterTitle || value.closingTitle || ''}
+          onChange={(e) => set({ letterTitle: e.target.value, closingTitle: e.target.value })}
+          placeholder="ขอบคุณที่เป็นเธอ"
         />
       </div>
       <div className="form-group">
-        <label>ข้อความสรุป</label>
+        <label>เนื้อหาจดหมาย (เว้นบรรทัดได้)</label>
         <textarea
-          value={value.closingMessage || ''}
-          onChange={(e) => set({ closingMessage: e.target.value })}
-          rows={3}
+          value={value.letterBody || value.closingMessage || ''}
+          onChange={(e) => set({ letterBody: e.target.value, closingMessage: e.target.value })}
+          rows={6}
+          placeholder="ข้อความขอบคุณยาว ๆ…"
         />
       </div>
     </div>

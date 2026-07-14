@@ -31,10 +31,12 @@ export const api = {
   getGift: (publicId: string) => request<Gift>(`/api/gifts/${publicId}`),
 
   getDemo: async (slug: string) => {
+    const local = getLocalDemo(slug)
+    // Memory Page demo lives fully on the frontend so content stays rich without API lag.
+    if (slug === 'memory-page' && local) return local
     try {
       return await request<Gift>(`/api/demos/${slug}`)
     } catch {
-      const local = getLocalDemo(slug)
       if (local) return local
       throw new Error('ไม่พบ demo')
     }
