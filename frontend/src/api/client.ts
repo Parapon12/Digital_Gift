@@ -32,8 +32,8 @@ export const api = {
 
   getDemo: async (slug: string) => {
     const local = getLocalDemo(slug)
-    // Memory Page demo lives fully on the frontend so content stays rich without API lag.
-    if (slug === 'memory-page' && local) return local
+    // Prefer local demos so Pages/local text stays in sync without API lag.
+    if ((slug === 'memory-page' || slug === 'love-quiz') && local) return local
     try {
       return await request<Gift>(`/api/demos/${slug}`)
     } catch {

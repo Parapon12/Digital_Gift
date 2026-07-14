@@ -7,7 +7,7 @@ import './styles/cream-site.css'
 
 document.documentElement.style.setProperty(
   '--lq-meadow-img',
-  `url("${asset('love/quiz-meadow.png')}")`,
+  `url("${asset('love/quiz-bg.png')}")`,
 )
 
 createRoot(document.getElementById('root')!).render(

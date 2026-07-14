@@ -42,11 +42,13 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
   const [noPos, setNoPos] = useState<NoPos>({ left: 0, top: 0, rot: 0 })
   const [catRun, setCatRun] = useState(false)
   const [fireworks, setFireworks] = useState<Firework[]>([])
+  const [gothicFlash, setGothicFlash] = useState<{ id: number; emoji: string } | null>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const arenaRef = useRef<HTMLDivElement>(null)
   const noRef = useRef<HTMLButtonElement>(null)
   const noPosRef = useRef(noPos)
   const fwId = useRef(0)
+  const gothicId = useRef(0)
 
   useEffect(() => {
     noPosRef.current = noPos
@@ -101,6 +103,22 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
   }, [])
 
   const runAway = () => placeNoButton(true)
+
+  const flashGothic = () => {
+    const emojis = ['💀', '☠️', '🖤', '🦇', '🕸️']
+    gothicId.current += 1
+    const id = gothicId.current
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)]
+    setGothicFlash({ id, emoji })
+    window.setTimeout(() => {
+      setGothicFlash((prev) => (prev?.id === id ? null : prev))
+    }, 900)
+  }
+
+  const onNoTap = () => {
+    flashGothic()
+    runAway()
+  }
 
   useEffect(() => {
     if (won) return
@@ -168,6 +186,12 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
         </div>
       ))}
 
+      {gothicFlash ? (
+        <div key={gothicFlash.id} className="lq-gothic" aria-hidden>
+          {gothicFlash.emoji}
+        </div>
+      ) : null}
+
       {catRun && (
         <div className="lq-cat-run" aria-hidden>
           <img src={asset('love/mochi-cat.png')} alt="" />
@@ -179,18 +203,17 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
       <div className="lq-stage">
         {!won ? (
           <>
-            <p className="lq-ornament" aria-hidden>
-              <i /><span>♡</span><i />
-            </p>
             <h1 className="lq-hello">
-              สวัสดี
               <span className="lq-hello-name">{gift.recipient_name || 'เธอ'}</span>
             </h1>
-            <p className="lq-q">{content.question || 'จะเป็นแฟนกันไหม?'}</p>
+            <p className="lq-q">
+              {content.question || 'รักฉันมั้ยที่รัก'}
+              <span className="lq-wave" aria-hidden />
+            </p>
 
             <div className="lq-buttons" ref={arenaRef}>
               <button type="button" className="lq-yes" onClick={onYes}>
-                {content.yesLabel || 'ได้เลย!'} <span aria-hidden>❤</span>
+                {content.yesLabel || 'รักที่สุด'} <span aria-hidden>❤</span>
               </button>
               <button
                 ref={noRef}
@@ -205,11 +228,11 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
                 onFocus={runAway}
                 onClick={(e) => {
                   e.preventDefault()
-                  runAway()
+                  onNoTap()
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault()
-                  runAway()
+                  onNoTap()
                 }}
               >
                 <span className="lq-no-lines" aria-hidden />
@@ -221,11 +244,10 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
         ) : (
           <div className="lq-win">
             <div className="lq-win-burst" aria-hidden>❤</div>
-            <h2>{content.successTitle || 'เย้!'}</h2>
+            <h2>{content.successTitle || 'น่ารัก'}</h2>
             <p className="lq-win-lead">
-              {content.successMessage || `จากนี้ไปเราเป็นของกันและกันแล้วนะ`}
+              {content.successMessage || 'ได้ยินแล้วใจฟูเลย 😊'}
             </p>
-            <p className="lq-from">— {gift.sender_name || 'ฉัน'}</p>
             {(content.photos || []).filter(Boolean).map((url) => (
               <img key={url} src={url} alt="" className="lq-photo" />
             ))}

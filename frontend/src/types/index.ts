@@ -204,11 +204,11 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
       }
     case 'love_quiz':
       return {
-        question: 'จะเป็นแฟนกันไหม?',
-        yesLabel: 'ได้เลย!',
+        question: 'รักฉันมั้ยที่รัก',
+        yesLabel: 'รักที่สุด',
         noLabel: 'ไม่',
-        successTitle: 'เย้!',
-        successMessage: '',
+        successTitle: 'น่ารัก',
+        successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
         photos: [],
       }
     case 'memory_page':

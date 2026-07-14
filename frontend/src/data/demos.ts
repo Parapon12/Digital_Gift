@@ -94,11 +94,11 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
     ],
   },
   'love-quiz': {
-    question: 'จะเป็นแฟนกันไหม?',
-    yesLabel: 'ได้เลย!',
+    question: 'รักฉันมั้ยที่รัก',
+    yesLabel: 'รักที่สุด',
     noLabel: 'ไม่',
-    successTitle: 'เย้!',
-    successMessage: 'จากนี้ไปเราเป็นของกันและกันแล้วนะ',
+    successTitle: 'น่ารัก',
+    successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
     photos: [],
   },
   'memory-page': {
