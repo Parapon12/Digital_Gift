@@ -249,7 +249,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
               {content.successMessage || 'ได้ยินแล้วใจฟูเลย 😊'}
             </p>
             {(content.photos || []).filter(Boolean).map((url) => (
-              <img key={url} src={url} alt="" className="lq-photo" />
+              <img key={url} src={asset(url)} alt="" className="lq-photo" />
             ))}
             <button
               type="button"

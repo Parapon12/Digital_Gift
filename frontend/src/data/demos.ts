@@ -39,8 +39,8 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = [
     key: 'birthday',
     name: 'Birthday',
     name_th: 'วันเกิด',
-    description: 'โครง 3D + ข้อความ',
-    status: 'skeleton',
+    description: 'เค้ก · ข้อความพิเศษ · ความทรงจำ · เกม · ของขวัญ',
+    status: 'complete',
     demo_slug: 'birthday',
   },
   {
@@ -195,7 +195,25 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
       },
     ],
   },
-  birthday: { headline: 'สุขสันต์วันเกิด', message: 'ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม', photos: [] },
+  birthday: {
+    headline: 'สุขสันต์ วันเกิด',
+    message: 'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ',
+    closingMessage: 'ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ',
+    heroImageUrl: 'birthday/cake-hero.png',
+    specialMessage:
+      'สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข',
+    photos: [
+      'love/couple-demo.png',
+      'love/memory-05-cafe.jpg',
+      'love/memory-06-beach.jpg',
+      'love/memory-08-sunset.jpg',
+    ],
+    gameTitle: 'เป่าเทียนวันเกิด',
+    gameMessage: 'คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ',
+    giftTitle: 'ของขวัญให้เธอ',
+    giftMessage: 'เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน',
+    giftImageUrl: 'brand/gift-box-a.png',
+  },
   graduation: { headline: 'ยินดีด้วยนะบัณฑิต', message: 'ภูมิใจในความพยายามของเธอมาก', photos: [] },
   proposal: { headline: 'แต่งงานกับฉันนะ', message: 'อยากเดินไปด้วยกันตลอดชีวิต', photos: [] },
 }

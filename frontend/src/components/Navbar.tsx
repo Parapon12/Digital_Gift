@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { getAdminToken } from '../api/admin'
 import { api } from '../api/client'
 
 export function Navbar() {
   const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@giftlove')
   const [scrolled, setScrolled] = useState(false)
+  const isAdmin = Boolean(getAdminToken())
 
   useEffect(() => {
     api.getSite().then((s) => setLineUrl(s.line_url)).catch(() => {})
@@ -18,6 +20,11 @@ export function Navbar() {
     <nav className={`c-nav ${scrolled ? 'is-scrolled' : ''}`}>
       <NavLink to="/" className="c-nav-logo">GiftLove</NavLink>
       <div className="c-nav-links">
+        {isAdmin ? (
+          <NavLink to="/admin" className="c-nav-admin">
+            ← รายการของขวัญ
+          </NavLink>
+        ) : null}
         <a href="/#demos">ตัวอย่าง</a>
         <a href="/#how">ขั้นตอน</a>
         <a href={lineUrl} target="_blank" rel="noopener noreferrer" className="c-nav-line">LINE</a>

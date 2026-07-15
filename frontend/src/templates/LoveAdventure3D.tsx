@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { asset } from '../lib/asset'
 import type { Gift, LoveAdventureContent, MemoryItem } from '../types'
 import AdventureScene, { type AdventureWorldMode } from './love-adventure/AdventureScene'
 import { AdventureErrorBoundary } from './love-adventure/AdventureErrorBoundary'
@@ -41,8 +41,18 @@ export function LoveAdventure3D({ gift }: { gift: Gift }) {
   walkIntentRef.current = walkIntent
 
   useEffect(() => {
+    const bump = () => window.dispatchEvent(new Event('resize'))
+    const t1 = window.setTimeout(bump, 50)
+    const t2 = window.setTimeout(bump, 300)
+    return () => {
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+    }
+  }, [])
+
+  useEffect(() => {
     if (!content.musicUrl) return
-    const audio = new Audio(content.musicUrl)
+    const audio = new Audio(asset(content.musicUrl))
     audio.loop = true
     audio.volume = 0.32
     audioRef.current = audio
@@ -181,9 +191,6 @@ export function LoveAdventure3D({ gift }: { gift: Gift }) {
             <span aria-hidden>♥</span>
             โหมดความรัก · ไปให้ถึงจุดที่สุดใจ
           </p>
-          <Link to="/" className="adv-home">
-            <span aria-hidden>⌂</span> กลับหน้าหลัก
-          </Link>
         </header>
       )}
 
@@ -224,7 +231,7 @@ export function LoveAdventure3D({ gift }: { gift: Gift }) {
           </h2>
           <p>{cardBody}</p>
           {mode === 'story' && current.imageUrl ? (
-            <img src={current.imageUrl} alt="" className="tpl-photo" />
+            <img src={asset(current.imageUrl)} alt="" className="tpl-photo" />
           ) : null}
 
           <div className="adv-reward">

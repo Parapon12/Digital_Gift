@@ -141,9 +141,34 @@ export interface OccasionContent {
   photos?: string[]
 }
 
+/** Birthday page — hero + 4 popup cards */
+export interface BirthdayContent {
+  /** หัวข้อเช่น สุขสันต์วันเกิด */
+  headline?: string
+  /** ข้อความใต้ชื่อผู้รับ */
+  message?: string
+  /** แถบล่างขอบคุณ */
+  closingMessage?: string
+  /** รูปฮีโร่ซ้าย */
+  heroImageUrl?: string
+  /** การ์ด: ข้อความพิเศษ */
+  specialMessage?: string
+  /** การ์ด: ความทรงจำ (เลื่อนได้) */
+  photos?: string[]
+  /** การ์ด: เกมวันเกิด */
+  gameTitle?: string
+  gameMessage?: string
+  /** การ์ด: ของขวัญ */
+  giftTitle?: string
+  giftMessage?: string
+  giftImageUrl?: string
+}
+
 export interface SiteConfig {
   line_url: string
   frontend_url: string
+  /** LAN-reachable origin for phone QR / share (may differ from frontend_url in local dev) */
+  share_url?: string
 }
 
 export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
@@ -161,7 +186,19 @@ export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
   ],
   love_quiz: ['question', 'yesLabel', 'noLabel', 'successTitle', 'successMessage', 'photos'],
   memory_page: ['theme', 'title', 'intro', 'musicUrl', 'closingTitle', 'closingMessage', 'entries'],
-  birthday: ['headline', 'message', 'photos'],
+  birthday: [
+    'headline',
+    'message',
+    'closingMessage',
+    'heroImageUrl',
+    'specialMessage',
+    'photos',
+    'gameTitle',
+    'gameMessage',
+    'giftTitle',
+    'giftMessage',
+    'giftImageUrl',
+  ],
   graduation: ['headline', 'message', 'photos'],
   proposal: ['headline', 'message', 'photos'],
 }
@@ -246,6 +283,38 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
             secretNote: 'ยังเลือกเธออยู่ในทุกเช้า และยังอยากเลือกต่อไปในทุกพรุ่งนี้',
           },
         ],
+      }
+    case 'birthday':
+      return {
+        headline: 'สุขสันต์ วันเกิด',
+        message: 'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ',
+        closingMessage: 'ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ',
+        heroImageUrl: 'birthday/cake-hero.png',
+        specialMessage:
+          'สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข',
+        photos: [
+          'love/couple-demo.png',
+          'love/memory-05-cafe.jpg',
+          'love/memory-06-beach.jpg',
+          'love/memory-08-sunset.jpg',
+        ],
+        gameTitle: 'เป่าเทียนวันเกิด',
+        gameMessage: 'คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ',
+        giftTitle: 'ของขวัญให้เธอ',
+        giftMessage: 'เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน',
+        giftImageUrl: 'brand/gift-box-a.png',
+      }
+    case 'graduation':
+      return {
+        headline: 'ยินดีด้วยนะบัณฑิต',
+        message: 'ภูมิใจในความพยายามของเธอมาก',
+        photos: [],
+      }
+    case 'proposal':
+      return {
+        headline: 'แต่งงานกับฉันนะ',
+        message: 'อยากเดินไปด้วยกันตลอดชีวิต',
+        photos: [],
       }
     default:
       return { headline: '', message: '', photos: [''] }

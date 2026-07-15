@@ -13,7 +13,7 @@ const LoveAdventure3D = lazy(() =>
 
 function AdventureFallback() {
   return (
-    <div className="adv-webgl-fallback">
+    <div className="adventure-root adv-webgl-fallback">
       <p>กำลังโหลดฉาก 3D…</p>
       <small>ใช้เวลาสักครู่บนมือถือ</small>
     </div>
@@ -39,5 +39,9 @@ export function GiftRenderer({ gift }: { gift: Gift }) {
   if (!render) {
     return <div className="gift-fallback">ไม่รองรับเทมเพลตนี้</div>
   }
-  return <div className="gift-runtime">{render(gift)}</div>
+  const wrapClass =
+    gift.template_key === 'love_adventure_3d'
+      ? 'gift-runtime gift-runtime-adventure'
+      : 'gift-runtime'
+  return <div className={wrapClass}>{render(gift)}</div>
 }

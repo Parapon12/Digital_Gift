@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { asset } from '../../lib/asset'
 
 export function GiftBoxIntro({ onOpen }: { onOpen: () => void }) {
@@ -19,9 +18,6 @@ export function GiftBoxIntro({ onOpen }: { onOpen: () => void }) {
           <span aria-hidden>♥</span>
           โหมดความรัก · ไปให้ถึงจุดที่สุดใจ
         </p>
-        <Link to="/" className="ld-gift-home">
-          <span aria-hidden>⌂</span> กลับหน้าหลัก
-        </Link>
       </header>
 
       <div className="ld-gift-fx" aria-hidden>

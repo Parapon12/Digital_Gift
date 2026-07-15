@@ -1,4 +1,5 @@
 import type { MemoryPageContent, MemoryPageEntry, MemoryTheme } from '../../types'
+import { AdminMediaField } from '../../components/AdminMediaField'
 
 function blankEntry(): MemoryPageEntry {
   return {
@@ -35,7 +36,7 @@ export function MemoryPageAdminFields({
     <div className="mp-admin">
       <p className="mp-admin-help">
         ใต้รูปใส่แค่ <strong>สถานที่</strong> · โน้ตลับใส่ <strong>ความรู้สึก</strong> ·
-        ท้ายหน้าเป็น <strong>จดหมายขอบคุณ</strong> ที่คนรับเปิดเอง
+        ท้ายหน้าเป็น <strong>จดหมายขอบคุณ</strong> — อัปโหลดรูปจากเครื่องได้
       </p>
 
       <div className="grid-2">
@@ -70,14 +71,14 @@ export function MemoryPageAdminFields({
         />
       </div>
 
-      <div className="form-group">
-        <label>URL เพลงประกอบ (mp3) — ว่างได้</label>
-        <input
-          value={value.musicUrl || ''}
-          onChange={(e) => set({ musicUrl: e.target.value })}
-          placeholder="https://…/song.mp3"
-        />
-      </div>
+      <AdminMediaField
+        label="เพลงประกอบ (mp3) — ว่างได้"
+        value={value.musicUrl || ''}
+        onChange={(url) => set({ musicUrl: url })}
+        accept="audio/*"
+        kind="audio"
+        placeholder="อัปโหลด หรือวาง URL"
+      />
 
       <h3 className="mp-admin-sub">รูปตามลำดับเวลา</h3>
       <div className="mp-admin-entries">
@@ -91,17 +92,11 @@ export function MemoryPageAdminFields({
                 </button>
               ) : null}
             </div>
-            <div className="form-group">
-              <label>URL รูป</label>
-              <input
-                value={entry.imageUrl || ''}
-                onChange={(e) => updateEntry(i, { imageUrl: e.target.value })}
-                placeholder="/love/couple-demo.png"
-              />
-            </div>
-            {entry.imageUrl ? (
-              <img className="mp-admin-thumb" src={entry.imageUrl} alt="" />
-            ) : null}
+            <AdminMediaField
+              label="รูป"
+              value={entry.imageUrl || ''}
+              onChange={(url) => updateEntry(i, { imageUrl: url })}
+            />
             <div className="grid-2">
               <div className="form-group">
                 <label>วันที่ / ช่วงเวลา</label>

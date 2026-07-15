@@ -42,6 +42,10 @@ func main() {
 
 	h := handlers.New(pool, cfg)
 
+	if err := os.MkdirAll(cfg.UploadDir, 0o755); err != nil {
+		log.Fatalf("create upload dir failed: %v", err)
+	}
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
@@ -52,6 +56,7 @@ func main() {
 	r.Get("/api/templates", h.ListTemplates)
 	r.Get("/api/gifts/{publicID}", h.GetGiftPublic)
 	r.Get("/api/demos/{slug}", h.GetDemo)
+	r.Handle("/uploads/*", http.StripPrefix("/uploads/", http.FileServer(http.Dir(cfg.UploadDir))))
 
 	r.Post("/api/admin/login", h.AdminLogin)
 
@@ -62,6 +67,7 @@ func main() {
 		ar.Get("/gifts/{id}", h.AdminGetGift)
 		ar.Put("/gifts/{id}", h.AdminUpdateGift)
 		ar.Delete("/gifts/{id}", h.AdminDeleteGift)
+		ar.Post("/upload", h.AdminUpload)
 	})
 
 	srv := &http.Server{

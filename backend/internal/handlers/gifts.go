@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"math/big"
 	"net/http"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/giftlove/backend/internal/auth"
@@ -34,6 +36,7 @@ func (h *Handler) SiteConfig(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, http.StatusOK, map[string]string{
 		"line_url":     h.Cfg.LINEURL,
 		"frontend_url": h.Cfg.FrontendURL,
+		"share_url":    h.Cfg.ShareOrigin(),
 	})
 }
 
@@ -139,25 +142,42 @@ func (h *Handler) AdminCreateGift(w http.ResponseWriter, r *http.Request) {
 		published = *req.IsPublished
 	}
 
-	publicID, err := generatePublicID()
-	if err != nil {
-		jsonError(w, http.StatusInternalServerError, "failed to generate id")
-		return
-	}
-
 	var gift models.Gift
-	err = h.DB.QueryRow(r.Context(), `
-		INSERT INTO gifts (public_id, template_key, title, recipient_name, sender_name, content, is_published)
-		VALUES ($1,$2,$3,$4,$5,$6,$7)
-		RETURNING id, public_id, template_key, title, recipient_name, sender_name, content, is_published, created_at, updated_at
-	`, publicID, req.TemplateKey, req.Title, req.RecipientName, req.SenderName, req.Content, published,
-	).Scan(&gift.ID, &gift.PublicID, &gift.TemplateKey, &gift.Title, &gift.RecipientName, &gift.SenderName,
-		&gift.Content, &gift.IsPublished, &gift.CreatedAt, &gift.UpdatedAt)
-	if err != nil {
+	var err error
+	for attempt := 0; attempt < 8; attempt++ {
+		var publicID string
+		publicID, err = generatePublicID()
+		if err != nil {
+			jsonError(w, http.StatusInternalServerError, "failed to generate id")
+			return
+		}
+
+		err = h.DB.QueryRow(r.Context(), `
+			INSERT INTO gifts (public_id, template_key, title, recipient_name, sender_name, content, is_published)
+			VALUES ($1,$2,$3,$4,$5,$6,$7)
+			RETURNING id, public_id, template_key, title, recipient_name, sender_name, content, is_published, created_at, updated_at
+		`, publicID, req.TemplateKey, req.Title, req.RecipientName, req.SenderName, req.Content, published,
+		).Scan(&gift.ID, &gift.PublicID, &gift.TemplateKey, &gift.Title, &gift.RecipientName, &gift.SenderName,
+			&gift.Content, &gift.IsPublished, &gift.CreatedAt, &gift.UpdatedAt)
+		if err == nil {
+			jsonResponse(w, http.StatusCreated, gift)
+			return
+		}
+		if isUniqueViolation(err) {
+			continue
+		}
 		jsonError(w, http.StatusInternalServerError, "failed to create gift")
 		return
 	}
-	jsonResponse(w, http.StatusCreated, gift)
+	jsonError(w, http.StatusInternalServerError, "ไม่สามารถสร้างรหัสลิงก์ที่ไม่ซ้ำได้")
+}
+
+func isUniqueViolation(err error) bool {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		return pgErr.Code == "23505"
+	}
+	return false
 }
 
 func (h *Handler) AdminUpdateGift(w http.ResponseWriter, r *http.Request) {
@@ -360,7 +380,19 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 			]
 		}`)
 	case models.TemplateBirthday:
-		return json.RawMessage(`{"headline":"สุขสันต์วันเกิด","message":"ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม","photos":[]}`)
+		return json.RawMessage(`{
+			"headline":"สุขสันต์ วันเกิด",
+			"message":"ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ",
+			"closingMessage":"ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ",
+			"heroImageUrl":"birthday/cake-hero.png",
+			"specialMessage":"สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข",
+			"photos":["love/couple-demo.png","love/memory-05-cafe.jpg","love/memory-06-beach.jpg","love/memory-08-sunset.jpg"],
+			"gameTitle":"เป่าเทียนวันเกิด",
+			"gameMessage":"คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ",
+			"giftTitle":"ของขวัญให้เธอ",
+			"giftMessage":"เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน",
+			"giftImageUrl":"brand/gift-box-a.png"
+		}`)
 	case models.TemplateGraduation:
 		return json.RawMessage(`{"headline":"ยินดีด้วยนะบัณฑิต","message":"ภูมิใจในความพยายามของเธอมาก","photos":[]}`)
 	case models.TemplateProposal:

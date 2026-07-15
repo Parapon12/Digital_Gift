@@ -79,4 +79,28 @@ export const adminApi = {
     adminRequest<Gift>(`/api/admin/gifts/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
   deleteGift: (id: string) =>
     adminRequest<{ message: string }>(`/api/admin/gifts/${id}`, { method: 'DELETE' }),
+
+  upload: async (file: File) => {
+    const token = getAdminToken()
+    const body = new FormData()
+    body.append('file', file)
+    const res = await fetch(`${API_BASE}/api/admin/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    })
+    const data = await res.json().catch(() => ({}))
+    if (res.status === 401) {
+      clearAdminToken()
+      throw new Error('unauthorized')
+    }
+    if (!res.ok) {
+      throw new Error((data as { error?: string }).error || 'อัปโหลดไม่สำเร็จ')
+    }
+    const url = (data as { url?: string }).url || ''
+    if (!url) throw new Error('อัปโหลดไม่สำเร็จ')
+    // Dev proxy uses relative /uploads; production API may be on another host.
+    if (url.startsWith('http') || !API_BASE) return url
+    return `${API_BASE.replace(/\/$/, '')}${url}`
+  },
 }
