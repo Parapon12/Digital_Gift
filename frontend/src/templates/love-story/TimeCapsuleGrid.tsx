@@ -24,6 +24,8 @@ function EnvelopeArt({ ready }: { ready: boolean }) {
   )
 }
 
+export type CapsuleOpenOrigin = { x: number; y: number }
+
 export function TimeCapsuleGrid({
   capsules,
   anniversaryDate,
@@ -31,7 +33,7 @@ export function TimeCapsuleGrid({
 }: {
   capsules: LoveCapsule[]
   anniversaryDate?: string
-  onOpen: (capsule: LoveCapsule) => void
+  onOpen: (capsule: LoveCapsule, origin: CapsuleOpenOrigin) => void
 }) {
   const timed = capsules
     .filter((c) => c.unlockRule === 'months' || c.unlockRule === 'years')
@@ -75,7 +77,14 @@ export function TimeCapsuleGrid({
               key={c.id || `${label}-${i}`}
               type="button"
               className={`tc-card ${openable ? 'is-ready' : 'is-locked'}`}
-              onClick={() => openable && onOpen(c)}
+              onClick={(e) => {
+                if (!openable) return
+                const rect = e.currentTarget.getBoundingClientRect()
+                onOpen(c, {
+                  x: rect.left + rect.width / 2 - window.innerWidth / 2,
+                  y: rect.top + rect.height / 2 - window.innerHeight / 2,
+                })
+              }}
               disabled={!openable}
             >
               <span className="tc-card-lock" aria-hidden>{openable ? '🔓' : '🔒'}</span>

@@ -4,6 +4,13 @@ import type { LoveCapsule, LoveStoryMemory } from '../../types'
 import { TimeCapsuleGrid } from './TimeCapsuleGrid'
 import { calendarElapsed, capsuleMonthIndex, formatMilestoneLabel } from '../../utils/anniversary'
 
+type CapsuleOrigin = { x: number; y: number }
+
+type OpenCapsuleState = {
+  capsule: LoveCapsule
+  origin: CapsuleOrigin
+}
+
 function youtubeEmbed(url?: string) {
   if (!url) return ''
   try {
@@ -108,13 +115,33 @@ export function LoveDashboard({
   const progress = clock ? Math.min(100, (clock.daysTotal / goal) * 100) : 0
 
   const [polaroid, setPolaroid] = useState<{ m: LoveStoryMemory; i: number } | null>(null)
-  const [openCapsule, setOpenCapsule] = useState<LoveCapsule | null>(null)
+  const [openCapsule, setOpenCapsule] = useState<OpenCapsuleState | null>(null)
 
   useEffect(() => {
     if (!openCapsule) return
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
+    const scrollY = window.scrollY
+    const { style: body } = document.body
+    const { style: html } = document.documentElement
+    const prev = {
+      bodyOverflow: body.overflow,
+      bodyPosition: body.position,
+      bodyTop: body.top,
+      bodyWidth: body.width,
+      htmlOverflow: html.overflow,
+    }
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.width = '100%'
+    return () => {
+      html.style.overflow = prev.htmlOverflow
+      body.style.overflow = prev.bodyOverflow
+      body.style.position = prev.bodyPosition
+      body.style.top = prev.bodyTop
+      body.style.width = prev.bodyWidth
+      window.scrollTo(0, scrollY)
+    }
   }, [openCapsule])
 
   if (view === 'duration') {
@@ -206,16 +233,17 @@ export function LoveDashboard({
   }
 
   if (view === 'capsules') {
+    const letter = openCapsule?.capsule
     return (
       <>
         <PageShell onBack={() => { setOpenCapsule(null); setView('home') }} wide capsule>
           <TimeCapsuleGrid
             capsules={capsules}
             anniversaryDate={anniversaryDate}
-            onOpen={setOpenCapsule}
+            onOpen={(capsule, origin) => setOpenCapsule({ capsule, origin })}
           />
         </PageShell>
-        {openCapsule && createPortal(
+        {letter && openCapsule && createPortal(
           <div
             className="tc-lightbox"
             onClick={() => setOpenCapsule(null)}
@@ -223,20 +251,24 @@ export function LoveDashboard({
           >
             <article
               className="tc-lightbox-card"
+              style={{
+                ['--tc-dx' as string]: `${openCapsule.origin.x}px`,
+                ['--tc-dy' as string]: `${openCapsule.origin.y}px`,
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <p className="ls-eyebrow">
-                {formatMilestoneLabel(capsuleMonthIndex(openCapsule.unlockRule, openCapsule.unlockValue)) || openCapsule.title}
+                {formatMilestoneLabel(capsuleMonthIndex(letter.unlockRule, letter.unlockValue)) || letter.title}
               </p>
-              <p className="ld-letter-body">{openCapsule.text}</p>
-              {openCapsule.imageUrl ? <img src={openCapsule.imageUrl} alt="" /> : null}
-              {youtubeEmbed(openCapsule.videoUrl) ? (
+              <p className="ld-letter-body">{letter.text}</p>
+              {letter.imageUrl ? <img src={letter.imageUrl} alt="" /> : null}
+              {youtubeEmbed(letter.videoUrl) ? (
                 <div className="ld-video">
-                  <iframe src={youtubeEmbed(openCapsule.videoUrl)} title={openCapsule.title} allowFullScreen />
+                  <iframe src={youtubeEmbed(letter.videoUrl)} title={letter.title} allowFullScreen />
                 </div>
               ) : null}
-              {openCapsule.audioUrl ? (
-                <audio controls src={openCapsule.audioUrl} style={{ width: '100%', marginTop: 12 }} />
+              {letter.audioUrl ? (
+                <audio controls src={letter.audioUrl} style={{ width: '100%', marginTop: 12 }} />
               ) : null}
               <button type="button" className="ml-btn" onClick={() => setOpenCapsule(null)}>ปิดซอง</button>
             </article>
