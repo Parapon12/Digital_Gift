@@ -34,6 +34,26 @@ jobs:
           npm ci
           npm run build
           cp dist/index.html dist/404.html
+          # Phones often keep an old index.html that points at previous hashed bundles.
+          # Alias those names to the stable entry so the shared Pages URL keeps working.
+          cd dist/assets
+          test -f app.js
+          test -f app.css
+          for f in \
+            index-RBMbf1f-.js \
+            index-C0w3aByV.js \
+            index-2wwFn9kb.js \
+            index-D6WYlZVT.js \
+            index-TUbyaeRq.css \
+            index-57faYRyg.css \
+            index-Dbu1_ZTk.css
+          do
+            case "$f" in
+              *.css) cp -f app.css "$f" ;;
+              *) cp -f app.js "$f" ;;
+            esac
+          done
+          ls -la
 
       - uses: actions/upload-pages-artifact@v3
         with:
