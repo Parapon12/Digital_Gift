@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import type { Gift, LoveCapsule, LoveStoryContent, LoveStoryMemory } from '../types'
+import type { Gift, LoveStoryContent, LoveStoryMemory } from '../types'
+import { DEFAULT_MONTHLY_CAPSULES } from '../utils/loveStoryCapsules'
 import { GiftBoxIntro } from './love-story/GiftBoxIntro'
 import { PasswordLock } from './love-story/PasswordLock'
 import { LoveDashboard } from './love-story/LoveDashboard'
@@ -10,13 +11,6 @@ const DEFAULT_MEMORIES: LoveStoryMemory[] = [
   { title: 'ทะเลครั้งแรก', text: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊', caption: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊' },
   { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', caption: 'ร้านชาบูครั้งแรก 🍲' },
   { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
-]
-
-const DEFAULT_CAPSULES: LoveCapsule[] = [
-  { title: 'เปิดได้เมื่อครบ 6 เดือน', unlockRule: 'months', unlockValue: 6, text: 'ผ่านมาครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน' },
-  { title: 'เปิดได้เมื่อครบ 1 ปี', unlockRule: 'years', unlockValue: 1, text: 'หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน' },
-  { title: 'เปิดได้เมื่อทะเลาะกัน', unlockRule: 'manual', unlocked: true, text: 'แม้ทะเลาะก็ยังเลือกกันอยู่ รักนะ' },
-  { title: 'เปิดได้เมื่อคิดถึงกันมาก ๆ', unlockRule: 'always', text: 'คิดถึงแล้วเปิดซองนี้ได้นะ — ฉันก็คิดถึงเหมือนกัน' },
 ]
 
 export function LoveStory({ gift }: { gift: Gift }) {
@@ -35,7 +29,7 @@ export function LoveStory({ gift }: { gift: Gift }) {
     return DEFAULT_MEMORIES
   }, [content.memories, content.chapters])
 
-  const capsules = content.capsules?.length ? content.capsules : DEFAULT_CAPSULES
+  const capsules = content.capsules?.length ? content.capsules : DEFAULT_MONTHLY_CAPSULES
 
   return (
     <div className={`ls-root ld-root ls-theme stage-${stage}`}>

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { LoveCapsule, LoveStoryMemory } from '../../types'
+import { TimeCapsuleGrid } from './TimeCapsuleGrid'
+import { calendarElapsed, capsuleMonthIndex, formatMilestoneLabel } from '../../utils/anniversary'
 
 function youtubeEmbed(url?: string) {
   if (!url) return ''
@@ -38,26 +40,23 @@ function useLoveClock(startIso?: string) {
     if (!startIso) return null
     const start = new Date(`${startIso}T00:00:00`).getTime()
     if (Number.isNaN(start)) return null
+    const elapsed = calendarElapsed(startIso, new Date(now))
+    if (!elapsed) return null
     const diff = Math.max(0, now - start)
     const sec = Math.floor(diff / 1000)
-    const daysTotal = Math.floor(sec / 86400)
-    const years = Math.floor(daysTotal / 365)
-    const months = Math.floor((daysTotal % 365) / 30)
-    const days = daysTotal - years * 365 - months * 30
     const hours = Math.floor((sec % 86400) / 3600)
     const minutes = Math.floor((sec % 3600) / 60)
     const seconds = sec % 60
-    return { years, months, days, hours, minutes, seconds, daysTotal }
+    return {
+      years: elapsed.years,
+      months: elapsed.months,
+      days: elapsed.days,
+      hours,
+      minutes,
+      seconds,
+      daysTotal: elapsed.daysTotal,
+    }
   }, [startIso, now])
-}
-
-function isCapsuleOpen(c: LoveCapsule, startIso?: string, daysTotal = 0) {
-  if (c.unlockRule === 'always') return true
-  if (c.unlockRule === 'manual') return !!c.unlocked
-  if (!startIso) return false
-  if (c.unlockRule === 'months') return daysTotal >= (c.unlockValue || 0) * 30
-  if (c.unlockRule === 'years') return daysTotal >= (c.unlockValue || 0) * 365
-  return false
 }
 
 function MemoryThumb({ m, i }: { m: LoveStoryMemory; i: number }) {
@@ -69,13 +68,15 @@ function PageShell({
   children,
   onBack,
   wide,
+  capsule,
 }: {
   children: ReactNode
   onBack: () => void
   wide?: boolean
+  capsule?: boolean
 }) {
   return (
-    <section className={`ls-page enter ${wide ? 'is-wide' : ''}`}>
+    <section className={`ls-page enter ${wide ? 'is-wide' : ''} ${capsule ? 'tc-shell' : ''}`}>
       <header className="ls-page-top">
         <button type="button" className="ls-back" onClick={onBack}>← กลับ Dashboard</button>
         <span className="ls-youme">♥ You & Me</span>
@@ -198,41 +199,18 @@ export function LoveDashboard({
 
   if (view === 'capsules') {
     return (
-      <PageShell onBack={() => { setOpenCapsule(null); setView('home') }}>
-        <p className="ls-eyebrow">
-          Time Capsule
-          <span aria-hidden>♥</span>
-        </p>
-        <h1 className="ls-title">กล่องข้อความลับ</h1>
-        <p className="ls-sub">ซองที่ถึงเวลาแล้วเท่านั้นที่เปิดได้</p>
-        <div className="ld-envelopes">
-          {capsules.map((c, i) => {
-            const openable = isCapsuleOpen(c, anniversaryDate, clock?.daysTotal ?? 0)
-            return (
-              <button
-                key={`${c.title}-${i}`}
-                type="button"
-                className={`ld-envelope ${openable ? 'openable' : 'locked'}`}
-                style={{ animationDelay: `${i * 0.06}s` }}
-                onClick={() => openable && setOpenCapsule(c)}
-                disabled={!openable}
-              >
-                <span className="ld-env-visual" aria-hidden>
-                  <span className="ld-env-flap" />
-                  <span className="ld-env-seal">{openable ? '♥' : '🔒'}</span>
-                </span>
-                <span className="ld-env-copy">
-                  <strong>{c.unlockLabel || c.title}</strong>
-                  <small>{openable ? 'พร้อมเปิดแล้ว' : 'ยังไม่ถึงเวลา'}</small>
-                </span>
-              </button>
-            )
-          })}
-        </div>
+      <PageShell onBack={() => { setOpenCapsule(null); setView('home') }} wide capsule>
+        <TimeCapsuleGrid
+          capsules={capsules}
+          anniversaryDate={anniversaryDate}
+          onOpen={setOpenCapsule}
+        />
         {openCapsule && (
           <div className="ld-lightbox" onClick={() => setOpenCapsule(null)} role="presentation">
             <article className="ld-lightbox-card letter enter" onClick={(e) => e.stopPropagation()}>
-              <p className="ls-eyebrow">{openCapsule.title}</p>
+              <p className="ls-eyebrow">
+                {formatMilestoneLabel(capsuleMonthIndex(openCapsule.unlockRule, openCapsule.unlockValue)) || openCapsule.title}
+              </p>
               <p className="ld-letter-body">{openCapsule.text}</p>
               {openCapsule.imageUrl ? <img src={openCapsule.imageUrl} alt="" /> : null}
               {youtubeEmbed(openCapsule.videoUrl) ? (

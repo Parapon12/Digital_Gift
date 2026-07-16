@@ -1,5 +1,6 @@
 import type { Gift, TemplateInfo } from '../types'
 import { defaultContent } from '../types'
+import { buildMonthlyCapsules } from '../utils/loveStoryCapsules'
 
 /** Template catalog used when API is offline (e.g. GitHub Pages demos). */
 export const LOCAL_TEMPLATES: TemplateInfo[] = [
@@ -76,7 +77,7 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
     title: 'ความทรงจำของเรา',
     password: '14022025',
     passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน',
-    anniversaryDate: '2025-02-14',
+    anniversaryDate: '2026-06-16',
     couplePhotoUrl: 'love/couple-demo.png',
     anniversaryLabel: 'วันเริ่มคบกัน',
     musicUrl: '',
@@ -86,12 +87,7 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
       { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', caption: 'ร้านชาบูครั้งแรก 🍲' },
       { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
     ],
-    capsules: [
-      { title: 'เปิดได้เมื่อครบ 6 เดือน', unlockRule: 'months', unlockValue: 6, text: 'ผ่านมาครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน' },
-      { title: 'เปิดได้เมื่อครบ 1 ปี', unlockRule: 'years', unlockValue: 1, text: 'หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน' },
-      { title: 'เปิดได้เมื่อทะเลาะกัน', unlockRule: 'manual', unlocked: true, text: 'แม้ทะเลาะก็ยังเลือกกันอยู่ รักนะ' },
-      { title: 'เปิดได้เมื่อคิดถึงกันมาก ๆ', unlockRule: 'always', text: 'คิดถึงแล้วเปิดซองนี้ได้นะ — ฉันก็คิดถึงเหมือนกัน' },
-    ],
+    capsules: buildMonthlyCapsules(),
   },
   'love-quiz': {
     question: 'รักฉันมั้ยที่รัก',

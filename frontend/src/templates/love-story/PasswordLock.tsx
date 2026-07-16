@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent, type KeyboardEvent } from 'react'
 import { asset } from '../../lib/asset'
 
-function passwordFromDate(iso?: string, fallback = '14022025') {
+function passwordFromDate(iso?: string, fallback = '16062026') {
   if (!iso) return fallback
   const d = new Date(`${iso}T00:00:00`)
   if (Number.isNaN(d.getTime())) return fallback

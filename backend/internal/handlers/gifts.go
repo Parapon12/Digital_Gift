@@ -328,9 +328,9 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 	case models.TemplateLoveStory:
 		return json.RawMessage(`{
 			"title":"ความทรงจำของเรา",
-			"password":"14022025",
+			"password":"16062026",
 			"passwordHint":"วัน เดือน ปี ที่เราเริ่มคบกัน",
-			"anniversaryDate":"2025-02-14",
+			"anniversaryDate":"2026-06-16",
 			"couplePhotoUrl":"/love/couple-demo.png",
 			"anniversaryLabel":"วันเริ่มคบกัน",
 			"musicUrl":"",
@@ -341,10 +341,18 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 				{"title":"วันเกิดปีแรก","text":"วันเกิดปีแรกที่ฉลองด้วยกัน 🎂","caption":"วันเกิดปีแรกที่ฉลองด้วยกัน 🎂"}
 			],
 			"capsules":[
-				{"title":"เปิดได้เมื่อครบ 6 เดือน","unlockRule":"months","unlockValue":6,"text":"ผ่านมาครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน"},
-				{"title":"เปิดได้เมื่อครบ 1 ปี","unlockRule":"years","unlockValue":1,"text":"หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน"},
-				{"title":"เปิดได้เมื่อทะเลาะกัน","unlockRule":"manual","unlocked":true,"text":"แม้ทะเลาะก็ยังเลือกกันอยู่ รักนะ"},
-				{"title":"เปิดได้เมื่อคิดถึงกันมาก ๆ","unlockRule":"always","text":"คิดถึงแล้วเปิดซองนี้ได้นะ — ฉันก็คิดถึงเหมือนกัน"}
+				{"id":"month-1","title":"ข้อความเดือนที่ 1","unlockRule":"months","unlockValue":1,"text":"เดือนแรกของเรา… ขอบคุณที่เข้ามาเป็นความสุขในทุกวัน"},
+				{"id":"month-2","title":"ข้อความเดือนที่ 2","unlockRule":"months","unlockValue":2,"text":"สองเดือนแล้วนะ ยังชอบเธอเหมือนเดิมทุกวัน"},
+				{"id":"month-3","title":"ข้อความเดือนที่ 3","unlockRule":"months","unlockValue":3,"text":"สามเดือนผ่านไป ยิ่งรู้สึกว่าเธอคือคนที่อยากเลือก"},
+				{"id":"month-4","title":"ข้อความเดือนที่ 4","unlockRule":"months","unlockValue":4,"text":"สี่เดือนแล้ว ขอบคุณที่อดทนกับฉันเสมอ"},
+				{"id":"month-5","title":"ข้อความเดือนที่ 5","unlockRule":"months","unlockValue":5,"text":"ห้าเดือนแล้ว ยังอยากเดินต่อไปด้วยกัน"},
+				{"id":"month-6","title":"ข้อความเดือนที่ 6","unlockRule":"months","unlockValue":6,"text":"ครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน"},
+				{"id":"month-7","title":"ข้อความเดือนที่ 7","unlockRule":"months","unlockValue":7,"text":"เจ็ดเดือนแล้ว ทุกวันที่มีเธอคือวันที่ดี"},
+				{"id":"month-8","title":"ข้อความเดือนที่ 8","unlockRule":"months","unlockValue":8,"text":"แปดเดือนแล้ว รักเธอมากกว่าเดิมทุกวัน"},
+				{"id":"month-9","title":"ข้อความเดือนที่ 9","unlockRule":"months","unlockValue":9,"text":"เก้าเดือนแล้ว ยังคิดถึงเธอเหมือนเดิม"},
+				{"id":"month-10","title":"ข้อความเดือนที่ 10","unlockRule":"months","unlockValue":10,"text":"สิบเดือนแล้ว ขอบคุณที่ยังเลือกกัน"},
+				{"id":"month-11","title":"ข้อความเดือนที่ 11","unlockRule":"months","unlockValue":11,"text":"สิบเอ็ดเดือนแล้ว ใกล้ครบปีแล้วนะ"},
+				{"id":"month-12","title":"ข้อความเดือนที่ 12","unlockRule":"months","unlockValue":12,"text":"หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน"}
 			]
 		}`)
 	case models.TemplateLoveQuiz:

@@ -33,7 +33,7 @@ export const api = {
   getDemo: async (slug: string) => {
     const local = getLocalDemo(slug)
     // Prefer local demos so Pages/local text stays in sync without API lag.
-    if ((slug === 'memory-page' || slug === 'love-quiz' || slug === 'birthday') && local) return local
+    if ((slug === 'memory-page' || slug === 'love-quiz' || slug === 'birthday' || slug === 'love-story') && local) return local
     try {
       return await request<Gift>(`/api/demos/${slug}`)
     } catch {

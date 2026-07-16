@@ -1,3 +1,5 @@
+import { buildMonthlyCapsules } from '../utils/loveStoryCapsules'
+
 export type TemplateKey =
   | 'love_adventure_3d'
   | 'love_story'
@@ -220,9 +222,9 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
     case 'love_story':
       return {
         title: 'ความทรงจำของเรา',
-        password: '14022025',
-        passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน · ตัวอย่าง 14022025',
-        anniversaryDate: '2025-02-14',
+        password: '16062026',
+        passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน · ตัวอย่าง 16062026',
+        anniversaryDate: '2026-06-16',
         couplePhotoUrl: 'love/couple-demo.png',
         anniversaryLabel: 'วันเริ่มคบกัน',
         musicUrl: '',
@@ -232,12 +234,7 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
           { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', imageUrl: '', caption: 'ร้านชาบูครั้งแรก 🍲' },
           { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', imageUrl: '', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
         ],
-        capsules: [
-          { title: 'เปิดได้เมื่อครบ 6 เดือน', unlockRule: 'months', unlockValue: 6, text: 'ผ่านมาครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน' },
-          { title: 'เปิดได้เมื่อครบ 1 ปี', unlockRule: 'years', unlockValue: 1, text: 'หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน' },
-          { title: 'เปิดได้เมื่อทะเลาะกัน', unlockRule: 'manual', unlocked: true, text: 'แม้ทะเลาะก็ยังเลือกกันอยู่ รักนะ' },
-          { title: 'เปิดได้เมื่อคิดถึงกันมาก ๆ', unlockRule: 'always', text: 'คิดถึงแล้วเปิดซองนี้ได้นะ — ฉันก็คิดถึงกันเหมือนกัน' },
-        ],
+        capsules: buildMonthlyCapsules(),
       }
     case 'love_quiz':
       return {

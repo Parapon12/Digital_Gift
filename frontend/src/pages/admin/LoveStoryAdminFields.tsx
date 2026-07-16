@@ -1,17 +1,18 @@
 import { AdminMediaField } from '../../components/AdminMediaField'
-import type { CapsuleUnlock, LoveCapsule, LoveStoryContent, LoveStoryMemory } from '../../types'
+import type { LoveCapsule, LoveStoryContent, LoveStoryMemory } from '../../types'
+import { formatMilestoneLabel, capsuleMonthIndex } from '../../utils/anniversary'
+import { buildMonthlyCapsules } from '../../utils/loveStoryCapsules'
 
 function blankMemory(): LoveStoryMemory {
   return { title: '', text: '', imageUrl: '', caption: '' }
 }
 
-function blankCapsule(): LoveCapsule {
+function blankCapsule(month = 1): LoveCapsule {
   return {
     id: crypto.randomUUID(),
-    title: '',
-    unlockRule: 'always',
-    unlockValue: 1,
-    unlocked: false,
+    title: `ข้อความเดือนที่ ${month}`,
+    unlockRule: 'months',
+    unlockValue: month,
     text: '',
   }
 }
@@ -25,7 +26,7 @@ export function LoveStoryAdminFields({
 }) {
   const set = (patch: Partial<LoveStoryContent>) => onChange({ ...value, ...patch })
   const memories = value.memories?.length ? value.memories : [blankMemory()]
-  const capsules = value.capsules?.length ? value.capsules : [blankCapsule()]
+  const capsules = value.capsules?.length ? value.capsules : buildMonthlyCapsules()
 
   const updateMemory = (index: number, patch: Partial<LoveStoryMemory>) => {
     set({
@@ -162,11 +163,17 @@ export function LoveStoryAdminFields({
         </button>
       ) : null}
 
-      <h3 className="mp-admin-sub">ซองลับ / ไทม์แคปซูล</h3>
-      {capsules.map((c, i) => (
+      <h3 className="mp-admin-sub">กล่องข้อความลับ (รายเดือน)</h3>
+      <p className="mp-admin-help">
+        แต่ละซองเปิดได้เมื่อครบรอบตามวันที่ตั้งไว้ — ไม่มีวันครบรอบจะเปิดไม่ได้
+      </p>
+      {capsules.map((c, i) => {
+        const month = capsuleMonthIndex(c.unlockRule, c.unlockValue) || c.unlockValue || i + 1
+        const milestone = formatMilestoneLabel(month)
+        return (
         <div key={c.id || i} className="mp-admin-entry">
           <div className="mp-admin-entry-head">
-            <strong>ซองที่ {i + 1}</strong>
+            <strong>ซอง {milestone}</strong>
             {capsules.length > 1 ? (
               <button
                 type="button"
@@ -177,46 +184,28 @@ export function LoveStoryAdminFields({
               </button>
             ) : null}
           </div>
+          <div className="grid-2">
+            <div className="form-group">
+              <label>เดือนที่ (จากวันครบรอบ)</label>
+              <input
+                type="number"
+                min={1}
+                value={c.unlockValue ?? month}
+                onChange={(e) => updateCapsule(i, {
+                  unlockValue: Number(e.target.value) || 1,
+                  unlockRule: 'months',
+                  title: c.title || `ข้อความเดือนที่ ${Number(e.target.value) || 1}`,
+                })}
+              />
+            </div>
+            <div className="form-group">
+              <label>ป้ายที่แสดง</label>
+              <input value={milestone} readOnly />
+            </div>
+          </div>
           <div className="form-group">
             <label>หัวข้อซอง</label>
             <input value={c.title} onChange={(e) => updateCapsule(i, { title: e.target.value })} />
-          </div>
-          <div className="grid-2">
-            <div className="form-group">
-              <label>เงื่อนไขเปิด</label>
-              <select
-                value={c.unlockRule}
-                onChange={(e) => updateCapsule(i, { unlockRule: e.target.value as CapsuleUnlock })}
-              >
-                <option value="always">เปิดได้เสมอ</option>
-                <option value="months">ครบเดือน</option>
-                <option value="years">ครบปี</option>
-                <option value="manual">แอดมินปลดเอง</option>
-              </select>
-            </div>
-            {(c.unlockRule === 'months' || c.unlockRule === 'years') ? (
-              <div className="form-group">
-                <label>จำนวน</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={c.unlockValue ?? 1}
-                  onChange={(e) => updateCapsule(i, { unlockValue: Number(e.target.value) || 1 })}
-                />
-              </div>
-            ) : c.unlockRule === 'manual' ? (
-              <div className="form-group">
-                <label>สถานะ</label>
-                <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input
-                    type="checkbox"
-                    checked={!!c.unlocked}
-                    onChange={(e) => updateCapsule(i, { unlocked: e.target.checked })}
-                  />
-                  ปลดล็อกแล้ว
-                </label>
-              </div>
-            ) : <div />}
           </div>
           <div className="form-group">
             <label>ข้อความในซอง</label>
@@ -227,13 +216,13 @@ export function LoveStoryAdminFields({
             />
           </div>
         </div>
-      ))}
-      {capsules.length < 12 ? (
+      )})}
+      {capsules.length < 24 ? (
         <button
           type="button"
           className="btn-luxury"
           style={{ marginBottom: 12 }}
-          onClick={() => set({ capsules: [...capsules, blankCapsule()] })}
+          onClick={() => set({ capsules: [...capsules, blankCapsule(capsules.length + 1)] })}
         >
           + เพิ่มซอง
         </button>
