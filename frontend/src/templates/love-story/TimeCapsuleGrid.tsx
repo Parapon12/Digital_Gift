@@ -75,7 +75,6 @@ export function TimeCapsuleGrid({
               key={c.id || `${label}-${i}`}
               type="button"
               className={`tc-card ${openable ? 'is-ready' : 'is-locked'}`}
-              style={{ animationDelay: `${i * 0.05}s` }}
               onClick={() => openable && onOpen(c)}
               disabled={!openable}
             >

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import type { LoveCapsule, LoveStoryMemory } from '../../types'
 import { TimeCapsuleGrid } from './TimeCapsuleGrid'
 import { calendarElapsed, capsuleMonthIndex, formatMilestoneLabel } from '../../utils/anniversary'
@@ -109,6 +110,13 @@ export function LoveDashboard({
   const [polaroid, setPolaroid] = useState<{ m: LoveStoryMemory; i: number } | null>(null)
   const [openCapsule, setOpenCapsule] = useState<LoveCapsule | null>(null)
 
+  useEffect(() => {
+    if (!openCapsule) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [openCapsule])
+
   if (view === 'duration') {
     const values = {
       years: clock?.years ?? 0,
@@ -199,15 +207,24 @@ export function LoveDashboard({
 
   if (view === 'capsules') {
     return (
-      <PageShell onBack={() => { setOpenCapsule(null); setView('home') }} wide capsule>
-        <TimeCapsuleGrid
-          capsules={capsules}
-          anniversaryDate={anniversaryDate}
-          onOpen={setOpenCapsule}
-        />
-        {openCapsule && (
-          <div className="ld-lightbox" onClick={() => setOpenCapsule(null)} role="presentation">
-            <article className="ld-lightbox-card letter enter" onClick={(e) => e.stopPropagation()}>
+      <>
+        <PageShell onBack={() => { setOpenCapsule(null); setView('home') }} wide capsule>
+          <TimeCapsuleGrid
+            capsules={capsules}
+            anniversaryDate={anniversaryDate}
+            onOpen={setOpenCapsule}
+          />
+        </PageShell>
+        {openCapsule && createPortal(
+          <div
+            className="tc-lightbox"
+            onClick={() => setOpenCapsule(null)}
+            role="presentation"
+          >
+            <article
+              className="tc-lightbox-card"
+              onClick={(e) => e.stopPropagation()}
+            >
               <p className="ls-eyebrow">
                 {formatMilestoneLabel(capsuleMonthIndex(openCapsule.unlockRule, openCapsule.unlockValue)) || openCapsule.title}
               </p>
@@ -223,9 +240,10 @@ export function LoveDashboard({
               ) : null}
               <button type="button" className="ml-btn" onClick={() => setOpenCapsule(null)}>ปิดซอง</button>
             </article>
-          </div>
+          </div>,
+          document.body,
         )}
-      </PageShell>
+      </>
     )
   }
 

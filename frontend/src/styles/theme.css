@@ -4673,6 +4673,17 @@ a {
   place-items: start center;
   align-content: start;
   padding: clamp(28px, 5vh, 56px) clamp(12px, 2.5vw, 24px) clamp(40px, 6vh, 64px);
+  touch-action: pan-y;
+}
+
+/* Smooth scroll on dashboard / time-capsule: pause heavy looping FX */
+.ls-root.stage-dash .ls-theme-glow {
+  animation: none;
+  opacity: 0.9;
+  transform: none;
+}
+.ls-root.stage-dash .ls-floaters {
+  display: none;
 }
 
 .ls-root.stage-gift {
@@ -4694,7 +4705,12 @@ a {
 }
 .ls-page.is-wide { width: min(860px, 100%); }
 .ls-page.is-wide.tc-shell { width: min(1120px, 100%); }
-.ls-page.enter { animation: fadeUp 0.5s ease both; }
+.ls-page.enter { animation: lsEnter 0.45s ease forwards; }
+
+@keyframes lsEnter {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
 
 .ls-page-top {
   display: flex;
@@ -6444,8 +6460,9 @@ a {
   padding: 0 8px 88px;
   text-align: center;
   z-index: 1;
+  content-visibility: auto;
+  contain: layout style;
 }
-.tc-page.enter { animation: fadeUp 0.5s ease both; }
 
 .tc-head { margin-bottom: 28px; }
 .tc-kicker {
@@ -6510,17 +6527,24 @@ a {
   gap: 10px;
   font-family: inherit;
   cursor: pointer;
-  box-shadow: 0 14px 34px rgba(180, 100, 150, 0.1);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-  animation: fadeUp 0.45s ease both;
+  box-shadow: 0 10px 24px rgba(180, 100, 150, 0.09);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: tcCardIn 0.35s ease forwards;
+  content-visibility: auto;
+  contain: layout paint;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .tc-card.is-ready {
   border-color: rgba(255, 133, 162, 0.55);
   box-shadow:
-    0 0 0 1px rgba(255, 133, 162, 0.2),
-    0 16px 36px rgba(232, 120, 168, 0.18);
+    0 0 0 1px rgba(255, 133, 162, 0.18),
+    0 12px 28px rgba(232, 120, 168, 0.14);
 }
-.tc-card.is-ready:hover { transform: translateY(-4px); }
+.tc-card.is-ready:hover { transform: translateY(-3px); }
+@media (hover: none) {
+  .tc-card.is-ready:hover { transform: none; }
+}
 .tc-card.is-locked {
   opacity: 0.92;
   cursor: not-allowed;
@@ -6573,7 +6597,18 @@ a {
   box-shadow: 0 4px 10px rgba(220, 80, 130, 0.35);
 }
 .tc-env-art.is-ready .tc-env-body {
-  animation: tcEnvFloat 2.4s ease-in-out infinite;
+  /* keep still while scrolling — motion only on first paint via card enter */
+  animation: none;
+}
+@keyframes tcCardIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 @keyframes tcEnvFloat {
   0%, 100% { transform: translateY(0); }
@@ -6583,7 +6618,8 @@ a {
   position: absolute;
   color: rgba(255, 120, 170, 0.75);
   font-size: 0.72rem;
-  animation: tcSpark 2.2s ease-in-out infinite;
+  animation: none;
+  opacity: 0.7;
 }
 .tc-spark-a { left: 4px; top: 8px; }
 .tc-spark-b { right: 2px; top: 18px; animation-delay: 0.4s; }
@@ -6651,7 +6687,6 @@ a {
   height: 88px;
   background: radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(255,240,248,0.7) 55%, transparent 72%);
   border-radius: 50%;
-  filter: blur(1px);
 }
 .tc-cloud-l { left: -40px; transform: scale(1.1); }
 .tc-cloud-r { right: -40px; transform: scale(1.15); }
@@ -6664,4 +6699,73 @@ a {
   .tc-grid { grid-template-columns: 1fr; gap: 14px; }
   .tc-card { min-height: 228px; padding: 20px 14px 14px; }
   .tc-title { font-size: clamp(1.55rem, 7vw, 2rem); }
+}
+
+/* Time capsule open letter — viewport-centered (portal to body) */
+.tc-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px max(16px, env(safe-area-inset-bottom, 0px));
+  background: rgba(61, 53, 80, 0.48);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  overscroll-behavior: contain;
+}
+.tc-lightbox-card {
+  width: min(420px, calc(100vw - 32px));
+  max-height: min(78dvh, 560px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(255, 252, 255, 0.98);
+  border-radius: 24px;
+  padding: clamp(22px, 5vw, 30px);
+  text-align: left;
+  box-shadow:
+    0 28px 64px rgba(140, 60, 110, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.65);
+  animation: tcZoomIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.tc-lightbox-card .ls-eyebrow {
+  margin-bottom: 12px;
+}
+.tc-lightbox-card .ld-letter-body {
+  color: rgba(61, 53, 80, 0.82);
+  line-height: 1.75;
+  margin: 0 0 20px;
+  white-space: pre-wrap;
+}
+.tc-lightbox-card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  max-height: 220px;
+  object-fit: cover;
+}
+.tc-lightbox-card .ml-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+@keyframes tcZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 520px) {
+  .tc-lightbox {
+    padding: max(12px, env(safe-area-inset-top, 0px)) 14px max(14px, env(safe-area-inset-bottom, 0px));
+  }
+  .tc-lightbox-card {
+    width: min(100%, calc(100vw - 28px));
+    max-height: min(72dvh, 520px);
+    padding: 20px 18px;
+    border-radius: 22px;
+  }
 }
