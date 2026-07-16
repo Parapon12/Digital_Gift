@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { getAdminToken } from '../api/admin'
 import { api } from '../api/client'
 
+const homeHash = (hash: string) => `${import.meta.env.BASE_URL || '/'}#${hash.replace(/^#/, '')}`
+
 export function Navbar() {
   const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@giftlove')
   const [scrolled, setScrolled] = useState(false)
@@ -25,8 +27,8 @@ export function Navbar() {
             ← รายการของขวัญ
           </NavLink>
         ) : null}
-        <a href="/#demos">ตัวอย่าง</a>
-        <a href="/#how">ขั้นตอน</a>
+        <a href={homeHash('demos')}>ตัวอย่าง</a>
+        <a href={homeHash('how')}>ขั้นตอน</a>
         <a href={lineUrl} target="_blank" rel="noopener noreferrer" className="c-nav-line">LINE</a>
       </div>
     </nav>
