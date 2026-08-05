@@ -30,6 +30,7 @@ export function CupidWithBow({ bowRef, onPointerDown, onPointerMove, onPointerUp
         ref={bowRef}
         className="lx-bow-hit"
         aria-label="ทนู — กดค้าง ดึง แล้วปล่อย"
+        style={{ touchAction: 'none' }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

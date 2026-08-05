@@ -110,7 +110,8 @@ export function HeartTargetTree({ leaves, targetLeafId, fallen, shake }: Props) 
       {leaves.map((leaf) => (
         <motion.span
           key={leaf.id}
-          className={`lx-leaf ${fallen && leaf.id === targetLeafId ? 'is-falling' : ''}`}
+          data-leaf-id={leaf.id}
+          className={`lx-leaf ${fallen && leaf.id === targetLeafId ? 'is-hit' : ''}`}
           style={{
             left: `${leaf.left}%`,
             top: `${leaf.top}%`,
@@ -119,12 +120,12 @@ export function HeartTargetTree({ leaves, targetLeafId, fallen, shake }: Props) 
           }}
           animate={
             fallen && leaf.id === targetLeafId
-              ? { y: [0, 130, 220], x: [0, -24, -42], rotate: [0, 28, 64], opacity: [1, 1, 0.92] }
-              : { y: [0, -6, 0] }
+              ? { opacity: 0, scale: leaf.size * 0.7 }
+              : { y: [0, -6, 0], opacity: 1 }
           }
           transition={
             fallen && leaf.id === targetLeafId
-              ? { duration: 1.25, ease: [0.22, 1, 0.36, 1] }
+              ? { duration: 0.35, ease: 'easeOut' }
               : { duration: 3.2 + leaf.delay, repeat: Infinity, ease: 'easeInOut' }
           }
         >

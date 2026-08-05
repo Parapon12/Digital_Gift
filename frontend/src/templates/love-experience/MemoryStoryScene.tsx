@@ -297,14 +297,48 @@ export function MemoryStoryScene({ gift }: { gift: Gift }) {
         <motion.div
           key={`cd-${countIdx}`}
           className="lx-seq lx-countdown"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: [0.5, 1.15, 1], filter: ['blur(8px)', 'blur(0px)', 'blur(0px)'] }}
-          exit={{ opacity: 0, scale: 1.35, filter: 'blur(10px)' }}
-          transition={{ duration: 0.85, ease: STORY_EASE }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: STORY_EASE }}
         >
-          <span className="lx-count-ring" aria-hidden />
-          <span className="lx-count-num">{COUNTDOWN[countIdx]}</span>
-          <span className="lx-count-glow" aria-hidden />
+          <div className="lx-count-backdrop" aria-hidden>
+            <span className="lx-count-blob lx-count-blob-a" />
+            <span className="lx-count-blob lx-count-blob-b" />
+            <span className="lx-count-blob lx-count-blob-c" />
+            {Array.from({ length: 10 }).map((_, i) => (
+              <span key={i} className="lx-count-spark" style={{ ['--i' as string]: i }} />
+            ))}
+            {Array.from({ length: 7 }).map((_, i) => (
+              <span key={i} className="lx-count-heart" style={{ ['--i' as string]: i }}>
+                ♥
+              </span>
+            ))}
+          </div>
+
+          <motion.div
+            className="lx-count-stage"
+            initial={{ opacity: 0, scale: 0.72, y: 24 }}
+            animate={{ opacity: 1, scale: [0.72, 1.08, 1], y: 0 }}
+            transition={{ duration: 0.82, ease: STORY_EASE }}
+          >
+            <p className="lx-count-eyebrow">พร้อมแล้วหรือยัง ♡</p>
+            <div className="lx-count-core">
+              <span className="lx-count-ring lx-count-ring-outer" aria-hidden />
+              <span className="lx-count-ring lx-count-ring-inner" aria-hidden />
+              <span className="lx-count-glow" aria-hidden />
+              <motion.span
+                key={COUNTDOWN[countIdx]}
+                className="lx-count-num"
+                initial={{ opacity: 0, scale: 0.4, rotate: -8 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ duration: 0.55, ease: STORY_EASE }}
+              >
+                {COUNTDOWN[countIdx]}
+              </motion.span>
+            </div>
+            <p className="lx-count-caption">เรื่องราวของเรากำลังจะเริ่ม...</p>
+          </motion.div>
         </motion.div>
       ) : null}
 

@@ -130,12 +130,15 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
     if (!noHasFled) {
       const arena = arenaRef.current
       const btn = noRef.current
-      const yes = arena?.querySelector('.lq-yes') as HTMLElement | null
-      if (arena && btn && yes) {
+      if (arena && btn) {
+        const rect = btn.getBoundingClientRect()
+        const arenaRect = arena.getBoundingClientRect()
         setNoHasFled(true)
-        const left = yes.offsetLeft + yes.offsetWidth + 10
-        const top = yes.offsetTop + (yes.offsetHeight - btn.offsetHeight) / 2
-        setNoPos({ left, top, rot: 0 })
+        setNoPos({
+          left: rect.left - arenaRect.left,
+          top: rect.top - arenaRect.top,
+          rot: 0,
+        })
         window.requestAnimationFrame(() => placeNoButton(true))
         return
       }
