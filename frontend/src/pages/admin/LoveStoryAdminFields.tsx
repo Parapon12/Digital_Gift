@@ -72,7 +72,7 @@ export function LoveStoryAdminFields({
           <input
             value={value.password || ''}
             onChange={(e) => set({ password: e.target.value })}
-            placeholder="14022025"
+            placeholder="16062025"
           />
         </div>
         <div className="form-group">

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { asset } from '../lib/asset'
 import type { Gift, LoveQuizContent } from '../types'
+import { demoPath } from './love-experience/nav'
+import { OfferHeartArm } from './love-quiz/OfferHeartArm'
 
 type Firework = {
   id: number
@@ -36,19 +39,23 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n))
 }
 
+const ANGRY_EMOJIS = ['😠', '😡', '🤬', '💢', '👿', '😤']
+
 export function LoveQuiz({ gift }: { gift: Gift }) {
   const content = gift.content as LoveQuizContent
+  const navigate = useNavigate()
   const [won, setWon] = useState(false)
   const [noPos, setNoPos] = useState<NoPos>({ left: 0, top: 0, rot: 0 })
   const [catRun, setCatRun] = useState(false)
   const [fireworks, setFireworks] = useState<Firework[]>([])
-  const [gothicFlash, setGothicFlash] = useState<{ id: number; emoji: string } | null>(null)
+  const [angryFlash, setAngryFlash] = useState<{ id: number; emoji: string } | null>(null)
+  const [noHasFled, setNoHasFled] = useState(false)
   const stageRef = useRef<HTMLDivElement>(null)
   const arenaRef = useRef<HTMLDivElement>(null)
   const noRef = useRef<HTMLButtonElement>(null)
   const noPosRef = useRef(noPos)
   const fwId = useRef(0)
-  const gothicId = useRef(0)
+  const angryId = useRef(0)
 
   useEffect(() => {
     noPosRef.current = noPos
@@ -74,9 +81,13 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
 
     if (!flee) {
       const isInitial = cur.left === 0 && cur.top === 0 && cur.rot === 0
-      if (isInitial) {
-        left = clamp((aw - bw) / 2, pad, maxLeft)
-        top = clamp(ah * 0.62 - bh / 2, pad, maxTop)
+      const yesBtn = arena.querySelector('.lq-yes') as HTMLElement | null
+      if (isInitial && yesBtn) {
+        left = clamp(yesBtn.offsetLeft + yesBtn.offsetWidth + 10, pad, maxLeft)
+        top = clamp(yesBtn.offsetTop + (yesBtn.offsetHeight - bh) / 2, pad, maxTop)
+      } else if (isInitial) {
+        left = clamp((aw - bw) / 2 + 88, pad, maxLeft)
+        top = clamp((ah - bh) / 2, pad, maxTop)
       } else {
         left = clamp(cur.left, pad, maxLeft)
         top = clamp(cur.top, pad, maxTop)
@@ -104,24 +115,36 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
 
   const runAway = () => placeNoButton(true)
 
-  const flashGothic = () => {
-    const emojis = ['💀', '☠️', '🖤', '🦇', '🕸️']
-    gothicId.current += 1
-    const id = gothicId.current
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)]
-    setGothicFlash({ id, emoji })
+  const flashAngry = () => {
+    angryId.current += 1
+    const id = angryId.current
+    const emoji = ANGRY_EMOJIS[Math.floor(Math.random() * ANGRY_EMOJIS.length)]
+    setAngryFlash({ id, emoji })
     window.setTimeout(() => {
-      setGothicFlash((prev) => (prev?.id === id ? null : prev))
+      setAngryFlash((prev) => (prev?.id === id ? null : prev))
     }, 900)
   }
 
-  const onNoTap = () => {
-    flashGothic()
+  const onNoInteract = () => {
+    flashAngry()
+    if (!noHasFled) {
+      const arena = arenaRef.current
+      const btn = noRef.current
+      const yes = arena?.querySelector('.lq-yes') as HTMLElement | null
+      if (arena && btn && yes) {
+        setNoHasFled(true)
+        const left = yes.offsetLeft + yes.offsetWidth + 10
+        const top = yes.offsetTop + (yes.offsetHeight - btn.offsetHeight) / 2
+        setNoPos({ left, top, rot: 0 })
+        window.requestAnimationFrame(() => placeNoButton(true))
+        return
+      }
+    }
     runAway()
   }
 
   useEffect(() => {
-    if (won) return
+    if (won || !noHasFled) return
     const id = window.requestAnimationFrame(() => placeNoButton(false))
     const onResize = () => placeNoButton(false)
     window.addEventListener('resize', onResize)
@@ -129,7 +152,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
       window.cancelAnimationFrame(id)
       window.removeEventListener('resize', onResize)
     }
-  }, [won, placeNoButton])
+  }, [won, noHasFled, placeNoButton])
 
   const spawnFireworks = () => {
     const waves: Firework[] = []
@@ -186,9 +209,9 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
         </div>
       ))}
 
-      {gothicFlash ? (
-        <div key={gothicFlash.id} className="lq-gothic" aria-hidden>
-          {gothicFlash.emoji}
+      {angryFlash ? (
+        <div key={angryFlash.id} className="lq-angry-flash" aria-hidden>
+          {angryFlash.emoji}
         </div>
       ) : null}
 
@@ -203,36 +226,46 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
       <div className="lq-stage">
         {!won ? (
           <>
-            <h1 className="lq-hello">
-              <span className="lq-hello-name">{gift.recipient_name || 'เธอ'}</span>
-            </h1>
-            <p className="lq-q">
-              {content.question || 'รักฉันมั้ยที่รัก'}
-              <span className="lq-wave" aria-hidden />
-            </p>
+            <div className="lq-head">
+              <h1 className="lq-hello">
+                <span className="lq-hello-name">{gift.recipient_name || 'เธอ'}</span>
+              </h1>
+              <p className="lq-q">
+                {content.question || 'รักฉันมั้ยที่รัก'}
+                <span className="lq-wave" aria-hidden />
+              </p>
+            </div>
 
-            <div className="lq-buttons" ref={arenaRef}>
+            <div className="lq-cat-lane">
+              <OfferHeartArm />
+            </div>
+
+            <div className="lq-button-dock" ref={arenaRef}>
               <button type="button" className="lq-yes" onClick={onYes}>
                 {content.yesLabel || 'รักที่สุด'} <span aria-hidden>❤</span>
               </button>
               <button
                 ref={noRef}
                 type="button"
-                className="lq-no"
-                style={{
-                  left: noPos.left,
-                  top: noPos.top,
-                  transform: `rotate(${noPos.rot}deg)`,
-                }}
-                onMouseEnter={runAway}
-                onFocus={runAway}
+                className={`lq-no ${noHasFled ? 'is-fleeing' : ''}`}
+                style={
+                  noHasFled
+                    ? {
+                        left: noPos.left,
+                        top: noPos.top,
+                        transform: `rotate(${noPos.rot}deg)`,
+                      }
+                    : undefined
+                }
+                onMouseEnter={onNoInteract}
+                onFocus={onNoInteract}
                 onClick={(e) => {
                   e.preventDefault()
-                  onNoTap()
+                  onNoInteract()
                 }}
                 onTouchStart={(e) => {
                   e.preventDefault()
-                  onNoTap()
+                  onNoInteract()
                 }}
               >
                 <span className="lq-no-lines" aria-hidden />
@@ -244,24 +277,43 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
         ) : (
           <div className="lq-win">
             <div className="lq-win-burst" aria-hidden>❤</div>
-            <h2>{content.successTitle || 'น่ารัก'}</h2>
-            <p className="lq-win-lead">
-              {content.successMessage || 'ได้ยินแล้วใจฟูเลย 😊'}
-            </p>
+            <div className="lq-win-head">
+              <h2>{content.successTitle || 'น่ารัก'}</h2>
+              <p className="lq-win-lead">
+                {content.successMessage || 'ได้ยินแล้วใจฟูเลย 😊'}
+              </p>
+            </div>
             {(content.photos || []).filter(Boolean).map((url) => (
-              <img key={url} src={asset(url)} alt="" className="lq-photo" />
+              <div key={url} className="lq-photo-wrap">
+                <span className="lq-photo-fw lq-photo-fw-left" aria-hidden>
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <i key={i} style={{ ['--i' as string]: i, ['--delay' as string]: `${i * 0.17}s` }} />
+                  ))}
+                </span>
+                <span className="lq-photo-fw lq-photo-fw-right" aria-hidden>
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <i key={i} style={{ ['--i' as string]: i, ['--delay' as string]: `${i * 0.17 + 0.45}s` }} />
+                  ))}
+                </span>
+                <img src={asset(url)} alt="" className="lq-photo" />
+              </div>
             ))}
-            <button
-              type="button"
-              className="lq-again"
-              onClick={() => {
-                setCatRun(true)
-                spawnFireworks()
-                if (stageRef.current) burstConfetti(stageRef.current)
-              }}
-            >
-              ให้แมววิ่งอีกครั้ง
-            </button>
+            <div className="lq-win-actions">
+              <button type="button" className="lq-continue" onClick={() => navigate(demoPath('love-letter'))}>
+                ต่อไป ❤️
+              </button>
+              <button
+                type="button"
+                className="lq-again"
+                onClick={() => {
+                  setCatRun(true)
+                  spawnFireworks()
+                  if (stageRef.current) burstConfetti(stageRef.current)
+                }}
+              >
+                ให้แมววิ่งอีกครั้ง
+              </button>
+            </div>
           </div>
         )}
       </div>

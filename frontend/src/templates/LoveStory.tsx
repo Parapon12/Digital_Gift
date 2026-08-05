@@ -1,17 +1,13 @@
 import { useMemo, useState } from 'react'
-import type { Gift, LoveStoryContent, LoveStoryMemory } from '../types'
-import { DEFAULT_MONTHLY_CAPSULES } from '../utils/loveStoryCapsules'
+import type { Gift, LoveStoryContent } from '../types'
+import { DEFAULT_MONTHLY_CAPSULES, DEMO_LOVE_MEMORIES } from '../utils/loveStoryCapsules'
 import { GiftBoxIntro } from './love-story/GiftBoxIntro'
 import { PasswordLock } from './love-story/PasswordLock'
 import { LoveDashboard } from './love-story/LoveDashboard'
 
 type Stage = 'gift' | 'lock' | 'dash'
 
-const DEFAULT_MEMORIES: LoveStoryMemory[] = [
-  { title: 'ทะเลครั้งแรก', text: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊', caption: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊' },
-  { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', caption: 'ร้านชาบูครั้งแรก 🍲' },
-  { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
-]
+const DEFAULT_MEMORIES = DEMO_LOVE_MEMORIES
 
 export function LoveStory({ gift }: { gift: Gift }) {
   const content = gift.content as LoveStoryContent

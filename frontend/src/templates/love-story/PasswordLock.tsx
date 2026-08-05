@@ -37,6 +37,8 @@ export function PasswordLock({
     [password, anniversaryDate],
   )
 
+  const exampleCode = useMemo(() => passwordFromDate(anniversaryDate), [anniversaryDate])
+
   const [digits, setDigits] = useState<string[]>(() => Array(DIGIT_COUNT).fill(''))
   const [error, setError] = useState('')
   const [shake, setShake] = useState(false)
@@ -143,7 +145,9 @@ export function PasswordLock({
           <div className="ml-hint">
             คำใบ้ : {passwordHint || 'วัน เดือน ปี ที่เราเริ่มคบกัน'}
           </div>
-          <p className="ml-example">ตัวอย่าง : 14022025</p>
+          {anniversaryDate ? (
+            <p className="ml-example">ตัวอย่างรูปแบบ : {exampleCode}</p>
+          ) : null}
 
           <div className="ml-pins" onPaste={onDigitPaste}>
             {digits.map((d, i) => (

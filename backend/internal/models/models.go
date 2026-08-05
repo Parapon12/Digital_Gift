@@ -131,9 +131,7 @@ type GiftTypeInfo struct {
 
 var GiftTypes = []GiftTypeInfo{
 	{CategoryAnniversary, "Anniversary", "วันครบรอบ", "Celebrate your love story", "ฉลองเรื่องราวความรักของคุณ", "heart"},
-	{CategoryBirthday, "Birthday", "วันเกิด", "Make their birthday unforgettable", "ทำให้วันเกิดพิเศษยิ่งขึ้น", "cake"},
 	{CategorySurprise, "Surprise", "เซอร์ไพรส์", "Create a magical surprise moment", "สร้างช่วงเวลาเซอร์ไพรส์อันมหัศจรรย์", "gift"},
-	{CategoryGraduation, "Graduation", "รับปริญญา", "Honor their achievement", "ยกย่องความสำเร็จของพวกเขา", "graduation"},
 	{CategoryCongratulations, "Congratulations", "แสดงความยินดี", "Share your joy and blessings", "แบ่งปันความยินดีและพร", "star"},
 }
 

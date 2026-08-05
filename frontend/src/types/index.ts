@@ -1,9 +1,12 @@
-import { buildMonthlyCapsules } from '../utils/loveStoryCapsules'
+import { buildMonthlyCapsules, DEMO_LOVE_MEMORIES } from '../utils/loveStoryCapsules'
 
 export type TemplateKey =
   | 'love_adventure_3d'
   | 'love_story'
   | 'love_quiz'
+  | 'love_letter'
+  | 'love_arrow'
+  | 'memory_story'
   | 'memory_page'
   | 'birthday'
   | 'graduation'
@@ -109,7 +112,7 @@ export interface LoveAchievement {
 
 export interface LoveStoryContent {
   title?: string
-  /** รหัส เช่น 14022025 */
+  /** รหัส เช่น 16062025 (ววดดปปปป) */
   password?: string
   passwordHint?: string
   anniversaryDate?: string
@@ -135,6 +138,21 @@ export interface LoveQuizContent {
   successTitle?: string
   successMessage?: string
   photos?: string[]
+}
+
+export interface LoveLetterContent {
+  nextSlug?: string
+}
+
+export interface LoveArrowContent {
+  loveMessage?: string
+  nextSlug?: string
+}
+
+export interface MemoryStoryContent {
+  memoryPhotos?: string[]
+  galleryPhotos?: string[]
+  endingWord?: string
 }
 
 export interface OccasionContent {
@@ -187,6 +205,9 @@ export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
     'capsules',
   ],
   love_quiz: ['question', 'yesLabel', 'noLabel', 'successTitle', 'successMessage', 'photos'],
+  love_letter: ['nextSlug'],
+  love_arrow: ['loveMessage', 'nextSlug'],
+  memory_story: ['memoryPhotos', 'galleryPhotos', 'endingWord'],
   memory_page: ['theme', 'title', 'intro', 'musicUrl', 'closingTitle', 'closingMessage', 'entries'],
   birthday: [
     'headline',
@@ -222,18 +243,14 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
     case 'love_story':
       return {
         title: 'ความทรงจำของเรา',
-        password: '16062026',
-        passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน · ตัวอย่าง 16062026',
-        anniversaryDate: '2026-06-16',
+        password: '16062025',
+        passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน',
+        anniversaryDate: '2025-06-16',
         couplePhotoUrl: 'love/couple-demo.png',
         anniversaryLabel: 'วันเริ่มคบกัน',
         musicUrl: '',
         targetDays: 1000,
-        memories: [
-          { title: 'ทะเลครั้งแรก', text: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊', imageUrl: '', caption: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊' },
-          { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', imageUrl: '', caption: 'ร้านชาบูครั้งแรก 🍲' },
-          { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', imageUrl: '', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
-        ],
+        memories: DEMO_LOVE_MEMORIES,
         capsules: buildMonthlyCapsules(),
       }
     case 'love_quiz':
@@ -243,7 +260,31 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
         noLabel: 'ไม่',
         successTitle: 'น่ารัก',
         successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
-        photos: [],
+        photos: ['love/couple-demo.png'],
+      }
+    case 'love_letter':
+      return { nextSlug: 'love-arrow' }
+    case 'love_arrow':
+      return {
+        loveMessage: '',
+        nextSlug: 'memory-story',
+      }
+    case 'memory_story':
+      return {
+        memoryPhotos: [
+          'love/memory-04-park.jpg',
+          'love/memory-05-cafe.jpg',
+          'love/memory-06-beach.jpg',
+          'love/memory-08-sunset.jpg',
+        ],
+        galleryPhotos: [
+          'love/memory-09-forest.jpg',
+          'love/memory-10-home.jpg',
+          'love/couple-demo.png',
+          'love/memory-07-city.jpg',
+          'love/quiz-meadow.png',
+        ],
+        endingWord: 'I love you',
       }
     case 'memory_page':
       return {

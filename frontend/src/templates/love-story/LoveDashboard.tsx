@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { asset } from '../../lib/asset'
 import type { LoveCapsule, LoveStoryMemory } from '../../types'
 import { TimeCapsuleGrid } from './TimeCapsuleGrid'
 import { calendarElapsed, capsuleMonthIndex, formatMilestoneLabel } from '../../utils/anniversary'
@@ -68,7 +69,7 @@ function useLoveClock(startIso?: string) {
 }
 
 function MemoryThumb({ m, i }: { m: LoveStoryMemory; i: number }) {
-  if (m.imageUrl) return <img src={m.imageUrl} alt="" />
+  if (m.imageUrl) return <img src={asset(m.imageUrl)} alt="" />
   return <div className={`ld-polaroid-ph mood-${MOODS[i % MOODS.length]}`} aria-hidden />
 }
 
@@ -129,17 +130,17 @@ export function LoveDashboard({
       bodyWidth: body.width,
       htmlOverflow: html.overflow,
     }
-    html.style.overflow = 'hidden'
-    body.style.overflow = 'hidden'
-    body.style.position = 'fixed'
-    body.style.top = `-${scrollY}px`
-    body.style.width = '100%'
+    html.overflow = 'hidden'
+    body.overflow = 'hidden'
+    body.position = 'fixed'
+    body.top = `-${scrollY}px`
+    body.width = '100%'
     return () => {
-      html.style.overflow = prev.htmlOverflow
-      body.style.overflow = prev.bodyOverflow
-      body.style.position = prev.bodyPosition
-      body.style.top = prev.bodyTop
-      body.style.width = prev.bodyWidth
+      html.overflow = prev.htmlOverflow
+      body.overflow = prev.bodyOverflow
+      body.position = prev.bodyPosition
+      body.top = prev.bodyTop
+      body.width = prev.bodyWidth
       window.scrollTo(0, scrollY)
     }
   }, [openCapsule])
@@ -261,7 +262,7 @@ export function LoveDashboard({
                 {formatMilestoneLabel(capsuleMonthIndex(letter.unlockRule, letter.unlockValue)) || letter.title}
               </p>
               <p className="ld-letter-body">{letter.text}</p>
-              {letter.imageUrl ? <img src={letter.imageUrl} alt="" /> : null}
+              {letter.imageUrl ? <img src={asset(letter.imageUrl)} alt="" /> : null}
               {youtubeEmbed(letter.videoUrl) ? (
                 <div className="ld-video">
                   <iframe src={youtubeEmbed(letter.videoUrl)} title={letter.title} allowFullScreen />

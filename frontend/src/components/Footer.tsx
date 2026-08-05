@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 
-const homeHash = (hash: string) => `${import.meta.env.BASE_URL || '/'}#${hash.replace(/^#/, '')}`
-
 export function Footer() {
   const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@giftlove')
 
@@ -18,8 +16,8 @@ export function Footer() {
           <p className="c-footer-desc">ของขวัญดิจิทัลเฉพาะบุคคล ส่งผ่านลิงก์เดียว</p>
         </div>
         <div className="c-footer-links">
-          <a href={homeHash('demos')}>ตัวอย่าง</a>
-          <a href={homeHash('how')}>ขั้นตอน</a>
+          <a href="/#demos">ตัวอย่าง</a>
+          <a href="/#how">ขั้นตอน</a>
           <a href={lineUrl} target="_blank" rel="noopener noreferrer">LINE</a>
         </div>
       </div>

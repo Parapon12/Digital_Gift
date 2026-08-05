@@ -1,5 +1,5 @@
 import type { Gift, SiteConfig, TemplateInfo } from '../types'
-import { getLocalDemo, LOCAL_TEMPLATES } from '../data/demos'
+import { getLocalDemo, LOCAL_TEMPLATES, visibleTemplates } from '../data/demos'
 
 const API_BASE = import.meta.env.VITE_API_URL || ''
 
@@ -26,14 +26,25 @@ export const api = {
     })),
 
   getTemplates: () =>
-    request<TemplateInfo[]>('/api/templates').catch(() => LOCAL_TEMPLATES),
+    request<TemplateInfo[]>('/api/templates')
+      .then(visibleTemplates)
+      .catch(() => LOCAL_TEMPLATES),
 
   getGift: (publicId: string) => request<Gift>(`/api/gifts/${publicId}`),
 
   getDemo: async (slug: string) => {
     const local = getLocalDemo(slug)
     // Prefer local demos so Pages/local text stays in sync without API lag.
-    if ((slug === 'memory-page' || slug === 'love-quiz' || slug === 'birthday' || slug === 'love-story') && local) return local
+    if (
+      (slug === 'memory-page' ||
+        slug === 'love-quiz' ||
+        slug === 'love-letter' ||
+        slug === 'love-arrow' ||
+        slug === 'memory-story' ||
+        slug === 'love-story') &&
+      local
+    )
+      return local
     try {
       return await request<Gift>(`/api/demos/${slug}`)
     } catch {

@@ -2,9 +2,12 @@ import { Suspense, lazy, type ReactElement } from 'react'
 import type { Gift, TemplateKey } from '../types'
 import { BirthdayGift } from './BirthdayGift'
 import { GraduationGift } from './GraduationGift'
+import { LoveArrow } from './LoveArrow'
+import { LoveLetter } from './LoveLetter'
 import { LoveQuiz } from './LoveQuiz'
 import { LoveStory } from './LoveStory'
 import { MemoryPage } from './MemoryPage'
+import { MemoryStory } from './MemoryStory'
 import { ProposalGift } from './ProposalGift'
 
 const LoveAdventure3D = lazy(() =>
@@ -28,6 +31,9 @@ const MAP: Record<TemplateKey, (gift: Gift) => ReactElement> = {
   ),
   love_story: (g) => <LoveStory gift={g} />,
   love_quiz: (g) => <LoveQuiz gift={g} />,
+  love_letter: (g) => <LoveLetter gift={g} />,
+  love_arrow: (g) => <LoveArrow gift={g} />,
+  memory_story: (g) => <MemoryStory gift={g} />,
   memory_page: (g) => <MemoryPage gift={g} />,
   birthday: (g) => <BirthdayGift gift={g} />,
   graduation: (g) => <GraduationGift gift={g} />,

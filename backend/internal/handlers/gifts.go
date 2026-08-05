@@ -328,31 +328,34 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 	case models.TemplateLoveStory:
 		return json.RawMessage(`{
 			"title":"ความทรงจำของเรา",
-			"password":"16062026",
+			"password":"16062025",
 			"passwordHint":"วัน เดือน ปี ที่เราเริ่มคบกัน",
-			"anniversaryDate":"2026-06-16",
+			"anniversaryDate":"2025-06-16",
 			"couplePhotoUrl":"/love/couple-demo.png",
 			"anniversaryLabel":"วันเริ่มคบกัน",
 			"musicUrl":"",
 			"targetDays":1000,
 			"memories":[
-				{"title":"ทะเลครั้งแรก","text":"วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊","caption":"วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊"},
-				{"title":"ชาบูครั้งแรก","text":"ร้านชาบูครั้งแรก 🍲","caption":"ร้านชาบูครั้งแรก 🍲"},
-				{"title":"วันเกิดปีแรก","text":"วันเกิดปีแรกที่ฉลองด้วยกัน 🎂","caption":"วันเกิดปีแรกที่ฉลองด้วยกัน 🎂"}
+				{"title":"ทะเลครั้งแรก","text":"วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊","caption":"ชายหาด · น้ำใสฟ้าเปิด","imageUrl":"love/memory-06-beach.jpg"},
+				{"title":"ชาบูครั้งแรก","text":"ร้านชาบูครั้งแรก 🍲","caption":"คาเฟ่เงียบ · แก้วร้อน ๆ","imageUrl":"love/memory-05-cafe.jpg"},
+				{"title":"วันเกิดปีแรก","text":"วันเกิดปีแรกที่ฉลองด้วยกัน 🎂","caption":"บ้าน · มุมอุ่น ๆ","imageUrl":"love/memory-10-home.jpg"},
+				{"title":"เดินในสวน","text":"เช้าวันว่างที่เดินมือกันในสวน 🌳","caption":"ป่าเล็ก ๆ · ทางเดินใต้ต้นไม้","imageUrl":"love/memory-04-park.jpg"},
+				{"title":"ค่ำเมืองใหญ่","text":"เดินคู่กันในเมืองที่วุ่นวาย 🌃","caption":"ถนนกลางคืน · ไฟเมือง","imageUrl":"love/memory-07-city.jpg"},
+				{"title":"เย็นสีส้ม","text":"ฟ้าเปลี่ยนสีช้า ๆ เหมือนช่วงที่เราเริ่มคุยกันมากขึ้น 🌅","caption":"ขอบฟ้า · แสงก่อนค่ำ","imageUrl":"love/memory-08-sunset.jpg"}
 			],
 			"capsules":[
-				{"id":"month-1","title":"ข้อความเดือนที่ 1","unlockRule":"months","unlockValue":1,"text":"เดือนแรกของเรา… ขอบคุณที่เข้ามาเป็นความสุขในทุกวัน"},
-				{"id":"month-2","title":"ข้อความเดือนที่ 2","unlockRule":"months","unlockValue":2,"text":"สองเดือนแล้วนะ ยังชอบเธอเหมือนเดิมทุกวัน"},
-				{"id":"month-3","title":"ข้อความเดือนที่ 3","unlockRule":"months","unlockValue":3,"text":"สามเดือนผ่านไป ยิ่งรู้สึกว่าเธอคือคนที่อยากเลือก"},
-				{"id":"month-4","title":"ข้อความเดือนที่ 4","unlockRule":"months","unlockValue":4,"text":"สี่เดือนแล้ว ขอบคุณที่อดทนกับฉันเสมอ"},
-				{"id":"month-5","title":"ข้อความเดือนที่ 5","unlockRule":"months","unlockValue":5,"text":"ห้าเดือนแล้ว ยังอยากเดินต่อไปด้วยกัน"},
-				{"id":"month-6","title":"ข้อความเดือนที่ 6","unlockRule":"months","unlockValue":6,"text":"ครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน"},
-				{"id":"month-7","title":"ข้อความเดือนที่ 7","unlockRule":"months","unlockValue":7,"text":"เจ็ดเดือนแล้ว ทุกวันที่มีเธอคือวันที่ดี"},
-				{"id":"month-8","title":"ข้อความเดือนที่ 8","unlockRule":"months","unlockValue":8,"text":"แปดเดือนแล้ว รักเธอมากกว่าเดิมทุกวัน"},
-				{"id":"month-9","title":"ข้อความเดือนที่ 9","unlockRule":"months","unlockValue":9,"text":"เก้าเดือนแล้ว ยังคิดถึงเธอเหมือนเดิม"},
-				{"id":"month-10","title":"ข้อความเดือนที่ 10","unlockRule":"months","unlockValue":10,"text":"สิบเดือนแล้ว ขอบคุณที่ยังเลือกกัน"},
-				{"id":"month-11","title":"ข้อความเดือนที่ 11","unlockRule":"months","unlockValue":11,"text":"สิบเอ็ดเดือนแล้ว ใกล้ครบปีแล้วนะ"},
-				{"id":"month-12","title":"ข้อความเดือนที่ 12","unlockRule":"months","unlockValue":12,"text":"หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน"}
+				{"id":"month-1","title":"ข้อความเดือนที่ 1","unlockRule":"months","unlockValue":1,"text":"เดือนแรกของเรา… ขอบคุณที่เข้ามาเป็นความสุขในทุกวัน","imageUrl":"love/couple-demo.png"},
+				{"id":"month-2","title":"ข้อความเดือนที่ 2","unlockRule":"months","unlockValue":2,"text":"สองเดือนแล้วนะ ยังชอบเธอเหมือนเดิมทุกวัน","imageUrl":"love/memory-06-beach.jpg"},
+				{"id":"month-3","title":"ข้อความเดือนที่ 3","unlockRule":"months","unlockValue":3,"text":"สามเดือนผ่านไป ยิ่งรู้สึกว่าเธอคือคนที่อยากเลือก","imageUrl":"love/memory-05-cafe.jpg"},
+				{"id":"month-4","title":"ข้อความเดือนที่ 4","unlockRule":"months","unlockValue":4,"text":"สี่เดือนแล้ว ขอบคุณที่อดทนกับฉันเสมอ","imageUrl":"love/memory-10-home.jpg"},
+				{"id":"month-5","title":"ข้อความเดือนที่ 5","unlockRule":"months","unlockValue":5,"text":"ห้าเดือนแล้ว ยังอยากเดินต่อไปด้วยกัน","imageUrl":"love/memory-04-park.jpg"},
+				{"id":"month-6","title":"ข้อความเดือนที่ 6","unlockRule":"months","unlockValue":6,"text":"ครึ่งปีแล้วนะ ขอบคุณที่อยู่ด้วยกัน","imageUrl":"love/memory-08-sunset.jpg"},
+				{"id":"month-7","title":"ข้อความเดือนที่ 7","unlockRule":"months","unlockValue":7,"text":"เจ็ดเดือนแล้ว ทุกวันที่มีเธอคือวันที่ดี","imageUrl":"love/memory-07-city.jpg"},
+				{"id":"month-8","title":"ข้อความเดือนที่ 8","unlockRule":"months","unlockValue":8,"text":"แปดเดือนแล้ว รักเธอมากกว่าเดิมทุกวัน","imageUrl":"love/memory-09-forest.jpg"},
+				{"id":"month-9","title":"ข้อความเดือนที่ 9","unlockRule":"months","unlockValue":9,"text":"เก้าเดือนแล้ว ยังคิดถึงเธอเหมือนเดิม","imageUrl":"love/couple-demo.png"},
+				{"id":"month-10","title":"ข้อความเดือนที่ 10","unlockRule":"months","unlockValue":10,"text":"สิบเดือนแล้ว ขอบคุณที่ยังเลือกกัน","imageUrl":"love/memory-06-beach.jpg"},
+				{"id":"month-11","title":"ข้อความเดือนที่ 11","unlockRule":"months","unlockValue":11,"text":"สิบเอ็ดเดือนแล้ว ใกล้ครบปีแล้วนะ","imageUrl":"love/memory-08-sunset.jpg"},
+				{"id":"month-12","title":"ข้อความเดือนที่ 12","unlockRule":"months","unlockValue":12,"text":"หนึ่งปีของเรา… ยังอยากเดินต่อไปด้วยกัน","imageUrl":"love/memory-09-forest.jpg"}
 			]
 		}`)
 	case models.TemplateLoveQuiz:

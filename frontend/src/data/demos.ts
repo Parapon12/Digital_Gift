@@ -1,9 +1,16 @@
-import type { Gift, TemplateInfo } from '../types'
+import type { Gift, TemplateInfo, TemplateKey } from '../types'
 import { defaultContent } from '../types'
-import { buildMonthlyCapsules } from '../utils/loveStoryCapsules'
+import { buildMonthlyCapsules, DEMO_LOVE_MEMORIES } from '../utils/loveStoryCapsules'
+
+/** Hidden from homepage / admin picker — legacy gifts still render via direct link. */
+export const HIDDEN_TEMPLATE_KEYS = new Set<TemplateKey>(['birthday', 'graduation'])
+
+export function visibleTemplates(templates: TemplateInfo[]): TemplateInfo[] {
+  return templates.filter((t) => !HIDDEN_TEMPLATE_KEYS.has(t.key))
+}
 
 /** Template catalog used when API is offline (e.g. GitHub Pages demos). */
-export const LOCAL_TEMPLATES: TemplateInfo[] = [
+export const LOCAL_TEMPLATES: TemplateInfo[] = visibleTemplates([
   {
     key: 'love_adventure_3d',
     name: '3D Love Adventure',
@@ -24,9 +31,33 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = [
     key: 'love_quiz',
     name: 'Love Quiz',
     name_th: 'ควิซความรัก',
-    description: 'ปุ่มไม่วิ่งหนี · พลุ · แมวถือดอกไม้',
+    description: 'ปุ่มไม่วิ่งหนี · พลุ · แมว · ต่อเนื่อง Experience Flow',
     status: 'complete',
     demo_slug: 'love-quiz',
+  },
+  {
+    key: 'love_letter',
+    name: 'Love Letter',
+    name_th: 'จดหมายรัก',
+    description: 'ซองจดหมาย · เปิดแล้วไปต่อ',
+    status: 'skeleton',
+    demo_slug: 'love-letter',
+  },
+  {
+    key: 'love_arrow',
+    name: 'Cupid Arrow',
+    name_th: 'คupid ยิงลูกศร',
+    description: 'มินิเกมธนู · ใบไม้หัวใจ',
+    status: 'skeleton',
+    demo_slug: 'love-arrow',
+  },
+  {
+    key: 'memory_story',
+    name: 'Memory Story',
+    name_th: 'เรื่องราวความทรงจำ',
+    description: 'Animation Timeline · Countdown · Gallery · หัวใจคำว่ารัก',
+    status: 'skeleton',
+    demo_slug: 'memory-story',
   },
   {
     key: 'memory_page',
@@ -37,22 +68,6 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = [
     demo_slug: 'memory-page',
   },
   {
-    key: 'birthday',
-    name: 'Birthday',
-    name_th: 'วันเกิด',
-    description: 'เค้ก · ข้อความพิเศษ · ความทรงจำ · เกม · ของขวัญ',
-    status: 'complete',
-    demo_slug: 'birthday',
-  },
-  {
-    key: 'graduation',
-    name: 'Graduation',
-    name_th: 'รับปริญญา',
-    description: 'โครง 3D + ข้อความ',
-    status: 'skeleton',
-    demo_slug: 'graduation',
-  },
-  {
     key: 'proposal',
     name: 'Proposal',
     name_th: 'ขอแต่งงาน',
@@ -60,7 +75,7 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = [
     status: 'skeleton',
     demo_slug: 'proposal',
   },
-]
+])
 
 const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
   'love-adventure': {
@@ -75,18 +90,14 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
   },
   'love-story': {
     title: 'ความทรงจำของเรา',
-    password: '14022025',
+    password: '16062025',
     passwordHint: 'วัน เดือน ปี ที่เราเริ่มคบกัน',
-    anniversaryDate: '2026-06-16',
+    anniversaryDate: '2025-06-16',
     couplePhotoUrl: 'love/couple-demo.png',
     anniversaryLabel: 'วันเริ่มคบกัน',
     musicUrl: '',
     targetDays: 1000,
-    memories: [
-      { title: 'ทะเลครั้งแรก', text: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊', caption: 'วันแรกที่ไปเที่ยวทะเลด้วยกัน 🌊' },
-      { title: 'ชาบูครั้งแรก', text: 'ร้านชาบูครั้งแรก 🍲', caption: 'ร้านชาบูครั้งแรก 🍲' },
-      { title: 'วันเกิดปีแรก', text: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂', caption: 'วันเกิดปีแรกที่ฉลองด้วยกัน 🎂' },
-    ],
+    memories: DEMO_LOVE_MEMORIES,
     capsules: buildMonthlyCapsules(),
   },
   'love-quiz': {
@@ -95,7 +106,28 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
     noLabel: 'ไม่',
     successTitle: 'น่ารัก',
     successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
-    photos: [],
+    photos: ['love/couple-demo.png'],
+  },
+  'love-letter': { nextSlug: 'love-arrow' },
+  'love-arrow': {
+    loveMessage: 'รักเธอมากที่สุดในโลก — ทุกวัน ทุกนาที ทุกลมหายใจ',
+    nextSlug: 'memory-story',
+  },
+  'memory-story': {
+    memoryPhotos: [
+      'love/memory-04-park.jpg',
+      'love/memory-05-cafe.jpg',
+      'love/memory-06-beach.jpg',
+      'love/memory-08-sunset.jpg',
+    ],
+    galleryPhotos: [
+      'love/memory-09-forest.jpg',
+      'love/memory-10-home.jpg',
+      'love/couple-demo.png',
+      'love/memory-07-city.jpg',
+      'love/quiz-meadow.png',
+    ],
+    endingWord: 'I love you',
   },
   'memory-page': {
     theme: 'couple',
@@ -191,26 +223,6 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
       },
     ],
   },
-  birthday: {
-    headline: 'สุขสันต์ วันเกิด',
-    message: 'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ',
-    closingMessage: 'ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ',
-    heroImageUrl: 'birthday/cake-hero.png',
-    specialMessage:
-      'สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข',
-    photos: [
-      'love/couple-demo.png',
-      'love/memory-05-cafe.jpg',
-      'love/memory-06-beach.jpg',
-      'love/memory-08-sunset.jpg',
-    ],
-    gameTitle: 'เป่าเทียนวันเกิด',
-    gameMessage: 'คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ',
-    giftTitle: 'ของขวัญให้เธอ',
-    giftMessage: 'เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน',
-    giftImageUrl: 'brand/gift-box-a.png',
-  },
-  graduation: { headline: 'ยินดีด้วยนะบัณฑิต', message: 'ภูมิใจในความพยายามของเธอมาก', photos: [] },
   proposal: { headline: 'แต่งงานกับฉันนะ', message: 'อยากเดินไปด้วยกันตลอดชีวิต', photos: [] },
 }
 

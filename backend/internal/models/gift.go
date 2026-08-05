@@ -33,8 +33,6 @@ var Templates = []TemplateInfo{
 	{TemplateLoveStory, "Love Story", "เรื่องราวความรัก", "กล่องของขวัญ · รหัส · นับวัน · ความทรงจำ · ซองลับ", "complete", "love-story"},
 	{TemplateLoveQuiz, "Love Quiz", "ควิซความรัก", "ปุ่มไม่วิ่งหนี · พลุ · แมวถือดอกไม้", "complete", "love-quiz"},
 	{TemplateMemoryPage, "Memory Page", "หน้ารำลึกความทรงจำ", "scrapbook เลื่อนลงดูรูป แคปชัน และโน้ตลับ", "complete", "memory-page"},
-	{TemplateBirthday, "Birthday", "วันเกิด", "เค้ก · ข้อความพิเศษ · ความทรงจำ · เกม · ของขวัญ", "complete", "birthday"},
-	{TemplateGraduation, "Graduation", "รับปริญญา", "โครง 3D + ข้อความ", "skeleton", "graduation"},
 	{TemplateProposal, "Proposal", "ขอแต่งงาน", "โครง 3D + ข้อความ", "skeleton", "proposal"},
 }
 
@@ -44,7 +42,13 @@ func ValidTemplateKey(key string) bool {
 			return true
 		}
 	}
-	return false
+	// Legacy — hidden from catalog but still render existing gifts
+	switch TemplateKey(key) {
+	case TemplateBirthday, TemplateGraduation:
+		return true
+	default:
+		return false
+	}
 }
 
 type Gift struct {
