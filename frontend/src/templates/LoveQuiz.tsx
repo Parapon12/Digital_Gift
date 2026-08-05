@@ -244,37 +244,39 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
             </div>
 
             <div className="lq-button-dock" ref={arenaRef}>
-              <button type="button" className="lq-yes" onClick={onYes}>
-                {content.yesLabel || 'รักที่สุด'} <span aria-hidden>❤</span>
-              </button>
-              <button
-                ref={noRef}
-                type="button"
-                className={`lq-no ${noHasFled ? 'is-fleeing' : ''}`}
-                style={
-                  noHasFled
-                    ? {
-                        left: noPos.left,
-                        top: noPos.top,
-                        transform: `rotate(${noPos.rot}deg)`,
-                      }
-                    : undefined
-                }
-                onMouseEnter={onNoInteract}
-                onFocus={onNoInteract}
-                onClick={(e) => {
-                  e.preventDefault()
-                  onNoInteract()
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault()
-                  onNoInteract()
-                }}
-              >
-                <span className="lq-no-lines" aria-hidden />
-                {content.noLabel || 'ไม่'}
-                <span className="lq-no-lines" aria-hidden />
-              </button>
+              <div className="lq-button-row">
+                <button type="button" className="lq-yes" onClick={onYes}>
+                  {content.yesLabel || 'รักที่สุด'} <span aria-hidden>❤</span>
+                </button>
+                <button
+                  ref={noRef}
+                  type="button"
+                  className={`lq-no ${noHasFled ? 'is-fleeing' : ''}`}
+                  style={
+                    noHasFled
+                      ? {
+                          left: noPos.left,
+                          top: noPos.top,
+                          transform: `rotate(${noPos.rot}deg)`,
+                        }
+                      : undefined
+                  }
+                  onMouseEnter={onNoInteract}
+                  onFocus={onNoInteract}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    onNoInteract()
+                  }}
+                  onTouchStart={(e) => {
+                    e.preventDefault()
+                    onNoInteract()
+                  }}
+                >
+                  <span className="lq-no-lines" aria-hidden />
+                  {content.noLabel || 'ไม่'}
+                  <span className="lq-no-lines" aria-hidden />
+                </button>
+              </div>
             </div>
           </>
         ) : (
