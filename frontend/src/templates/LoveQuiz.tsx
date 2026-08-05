@@ -70,10 +70,35 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
     const ah = arena.clientHeight
     const bw = btn.offsetWidth || 72
     const bh = btn.offsetHeight || 40
-    const pad = 8
+    const pad = 10
 
     const maxLeft = Math.max(pad, aw - bw - pad)
     const maxTop = Math.max(pad, ah - bh - pad)
+
+    const yesBtn = arena.querySelector('.lq-yes') as HTMLElement | null
+    const arenaBox = arena.getBoundingClientRect()
+    const yesPad = 14
+    const yesRect = yesBtn
+      ? (() => {
+          const r = yesBtn.getBoundingClientRect()
+          return {
+            left: r.left - arenaBox.left - yesPad,
+            top: r.top - arenaBox.top - yesPad,
+            right: r.right - arenaBox.left + yesPad,
+            bottom: r.bottom - arenaBox.top + yesPad,
+          }
+        })()
+      : null
+
+    const hitsYes = (left: number, top: number) => {
+      if (!yesRect) return false
+      return !(
+        left + bw < yesRect.left ||
+        left > yesRect.right ||
+        top + bh < yesRect.top ||
+        top > yesRect.bottom
+      )
+    }
 
     const cur = noPosRef.current
     let left = pad
@@ -81,27 +106,31 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
 
     if (!flee) {
       const isInitial = cur.left === 0 && cur.top === 0 && cur.rot === 0
-      const yesBtn = arena.querySelector('.lq-yes') as HTMLElement | null
       if (isInitial && yesBtn) {
-        left = clamp(yesBtn.offsetLeft + yesBtn.offsetWidth + 10, pad, maxLeft)
-        top = clamp(yesBtn.offsetTop + (yesBtn.offsetHeight - bh) / 2, pad, maxTop)
+        const yr = yesBtn.getBoundingClientRect()
+        left = clamp(yr.right - arenaBox.left + 14, pad, maxLeft)
+        top = clamp(yr.top - arenaBox.top + (yr.height - bh) / 2, pad, maxTop)
       } else if (isInitial) {
-        left = clamp((aw - bw) / 2 + 88, pad, maxLeft)
-        top = clamp((ah - bh) / 2, pad, maxTop)
+        left = clamp((aw - bw) / 2, pad, maxLeft)
+        top = clamp((ah - bh) / 2 + 56, pad, maxTop)
       } else {
         left = clamp(cur.left, pad, maxLeft)
         top = clamp(cur.top, pad, maxTop)
       }
     } else {
       let best = { left: cur.left, top: cur.top, dist: -1 }
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 22; i++) {
         const nx = pad + Math.random() * Math.max(0, maxLeft - pad)
         const ny = pad + Math.random() * Math.max(0, maxTop - pad)
+        if (hitsYes(nx, ny)) continue
         const dist = Math.hypot(nx - cur.left, ny - cur.top)
         if (dist > best.dist) best = { left: nx, top: ny, dist }
       }
       left = clamp(best.left, pad, maxLeft)
       top = clamp(best.top, pad, maxTop)
+      if (hitsYes(left, top)) {
+        top = clamp(yesRect ? yesRect.bottom + 8 : top + 48, pad, maxTop)
+      }
     }
 
     const dx = left - cur.left
@@ -226,7 +255,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
         </div>
       )}
 
-      <div className="lq-stage">
+      <div className="lq-stage" ref={arenaRef}>
         {!won ? (
           <>
             <div className="lq-head">
@@ -243,7 +272,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
               <OfferHeartArm />
             </div>
 
-            <div className="lq-button-dock" ref={arenaRef}>
+            <div className="lq-button-dock">
               <div className="lq-button-row">
                 <button type="button" className="lq-yes" onClick={onYes}>
                   {content.yesLabel || 'รักที่สุด'} <span aria-hidden>❤</span>
