@@ -584,6 +584,16 @@
 }
 
 @media (max-width: 640px) {
-  .c-nav-links { gap: 14px; }
+  .c-nav {
+    padding: 12px 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .c-nav-links {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
   .c-footer-inner { flex-direction: column; align-items: center; text-align: center; }
+  .c-hero { min-height: clamp(380px, 68svh, 520px); }
 }

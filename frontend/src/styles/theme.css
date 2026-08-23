@@ -28,6 +28,11 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background:
@@ -36,7 +41,9 @@ body {
     var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -51,7 +58,9 @@ body {
    Memory Page + Love Story scroll with the document — keep them out of overflow:hidden. */
 #root:has(.lq-root) {
   min-height: 100dvh;
+  min-height: 100svh;
   height: 100dvh;
+  height: 100svh;
   overflow: hidden;
 }
 
@@ -1693,13 +1702,36 @@ a {
 
 .gift-page {
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg-primary);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.gift-runtime {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.gift-page button,
+.gift-page a,
+.gift-page [role='button'] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gift-page input,
+.gift-page textarea,
+.gift-page select {
+  font-size: 16px;
 }
 
 .demo-banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   padding: 10px 20px;
   background: rgba(255, 201, 60, 0.08);
   border-bottom: 1px solid var(--border);
@@ -1708,6 +1740,19 @@ a {
   position: sticky;
   top: 0;
   z-index: 20;
+}
+
+@media (max-width: 640px) {
+  .demo-banner {
+    padding:
+      max(8px, env(safe-area-inset-top, 0px))
+      max(12px, env(safe-area-inset-right, 0px))
+      8px
+      max(12px, env(safe-area-inset-left, 0px));
+    font-size: 0.72rem;
+    line-height: 1.35;
+    flex-wrap: wrap;
+  }
 }
 
 .demo-banner a { color: var(--gold); }
@@ -1900,12 +1945,27 @@ a {
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   display: grid;
   place-items: center;
   padding: clamp(40px, 8vh, 72px) clamp(16px, 4vw, 32px);
   color: var(--lq-ink);
   background: #f3d6e4;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lq-root.is-won {
+  overflow-y: auto;
+  place-items: start center;
+  align-content: start;
+  padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+}
+
+.lq-root.is-won .lq-bg,
+.lq-root.is-won .lq-bg-veil,
+.lq-root.is-won .lq-petals {
+  position: fixed;
 }
 
 .lq-bg {
@@ -2431,6 +2491,25 @@ a {
 
 .gift-page:has(.lq-root) {
   background: transparent;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.gift-page:has(.lq-root) .gift-runtime {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gift-page:has(.lq-root) .lq-root {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
 }
 
 .gift-page:has(.lq-root) .demo-banner {
@@ -2450,8 +2529,15 @@ a {
     padding:
       max(20px, env(safe-area-inset-top, 0px))
       max(12px, env(safe-area-inset-right, 0px))
-      max(16px, env(safe-area-inset-bottom, 0px))
+      max(20px, env(safe-area-inset-bottom, 0px))
       max(12px, env(safe-area-inset-left, 0px));
+  }
+
+  .lq-hello,
+  .lq-hello-name {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    padding-inline: 4px;
   }
 
   .lq-stage {
@@ -2499,12 +2585,14 @@ a {
     max-width: none;
     padding: 15px 22px;
     font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+    min-height: 48px;
   }
 
   .lq-no:not(.is-fleeing) {
     width: 100%;
     max-width: none;
     min-width: 0;
+    min-height: 48px;
     padding: 13px 22px;
     justify-content: center;
   }
@@ -2587,7 +2675,10 @@ a {
   overflow-x: hidden;
   display: grid;
   place-items: center;
-  padding: clamp(56px, 10vh, 80px) clamp(14px, 4vw, 32px) clamp(28px, 5vh, 48px);
+  padding:
+    clamp(56px, 10vh, 80px)
+    clamp(14px, 4vw, 32px)
+    clamp(28px, 5vh, 48px);
   color: var(--ls-ink);
   background:
     radial-gradient(ellipse at 78% 8%, rgba(255, 190, 220, 0.65), transparent 46%),
@@ -4328,6 +4419,20 @@ a {
     height: min(260px, 78vw);
   }
   .ld-polaroids { gap: 12px; }
+  .ld-gift {
+    min-height: calc(100svh - 72px);
+    padding: 0 8px 20px;
+  }
+  .ld-gift.zoom { transform: scale(1.08); }
+  .ld-input {
+    font-size: 16px;
+    width: min(100%, 280px);
+  }
+  .ld-btn {
+    min-height: 48px;
+    width: min(100%, 320px);
+    justify-content: center;
+  }
 }
 
 @media (min-width: 901px) and (max-width: 1100px) {
@@ -4379,7 +4484,10 @@ a {
 }
 
 .ls-root.stage-gift {
-  padding: clamp(12px, 2vh, 24px) clamp(10px, 2.5vw, 20px) clamp(12px, 2vh, 24px);
+  padding:
+    max(12px, env(safe-area-inset-top, 0px))
+    clamp(10px, 2.5vw, 20px)
+    max(16px, env(safe-area-inset-bottom, 0px));
   place-items: stretch;
   align-content: stretch;
 }
@@ -5003,12 +5111,12 @@ a {
 
 @media (max-width: 480px) {
   .ml-pin {
-    width: 32px;
-    height: 38px;
+    width: 36px;
+    height: 44px;
     border-radius: 11px;
-    font-size: 0.95rem;
+    font-size: 16px;
   }
-  .ml-pins { gap: 4px; }
+  .ml-pins { gap: 6px; }
   .ml-dash { margin: 0; font-size: 0.85rem; }
   .ml-mobile-thumb { width: 56px; height: 56px; }
   .ml-footer span:nth-child(2) { display: none; }
@@ -5131,6 +5239,16 @@ a {
   padding: 28px 16px 20px;
   max-width: 560px;
   margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .mp-hero {
+    padding: 16px 14px 16px;
+  }
+
+  .gift-page:not(:has(.demo-banner)) .mp-hero {
+    padding-top: max(20px, env(safe-area-inset-top, 0px));
+  }
 }
 
 .mp-topbar {
@@ -5682,6 +5800,39 @@ a {
   .mp-polaroid { width: min(100%, 92vw); }
   .mp-prop-sign { display: none; }
   .mp-frame img { aspect-ratio: 1 / 1.05; max-height: 58vh; }
+}
+
+@media (max-width: 640px) {
+  .mp-stream {
+    width: min(100%, calc(100vw - 24px));
+    padding: 8px 0 56px;
+    gap: 36px;
+  }
+
+  .mp-spread {
+    overflow: hidden;
+    padding: 10px 2px 14px;
+  }
+
+  .mp-entry.side-left .mp-polaroid,
+  .mp-entry.side-right .mp-polaroid {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mp-torn-btn,
+  .mp-envelope {
+    width: 100%;
+  }
+
+  .mp-letter-paper {
+    padding: 22px 16px 24px;
+  }
+
+  .mp-closing {
+    padding-inline: 14px;
+    padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .gift-page:has(.mp-root) { background: #f4efe7; }

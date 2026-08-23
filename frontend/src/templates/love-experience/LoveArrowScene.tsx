@@ -31,14 +31,19 @@ const MIN_SPEED = 18
 const MAX_SPEED = 44
 const PREVIEW_MIN_DIST = 10
 
-function shotFromPull(nock: Point, pull: Point, allowWeak = false) {
+function maxPullDist(width = 0) {
+  if (width > 0) return Math.min(220, Math.max(108, width * 0.42))
+  return MAX_PULL_DIST
+}
+
+function shotFromPull(nock: Point, pull: Point, allowWeak = false, maxPull = MAX_PULL_DIST) {
   const dx = nock.x - pull.x
   const dy = nock.y - pull.y
   const dist = Math.hypot(dx, dy)
   if (dist < (allowWeak ? PREVIEW_MIN_DIST : MIN_PULL_DIST)) return null
 
   const effectiveDist = Math.max(dist, MIN_PULL_DIST)
-  const t = Math.min(1, (effectiveDist - MIN_PULL_DIST) / (MAX_PULL_DIST - MIN_PULL_DIST))
+  const t = Math.min(1, (effectiveDist - MIN_PULL_DIST) / (maxPull - MIN_PULL_DIST))
   const speed = MIN_SPEED + t * (MAX_SPEED - MIN_SPEED)
 
   return {
@@ -81,7 +86,7 @@ function buildTrajectory(nock: Point, pull: Point, bounds: { w: number; h: numbe
     return simulatePath(nock, MIN_SPEED, 0, bounds)
   }
 
-  const shot = shotFromPull(nock, pull, true)
+  const shot = shotFromPull(nock, pull, true, maxPullDist(bounds.w))
   if (!shot) {
     const ux = dx / dist
     const uy = dy / dist
@@ -97,16 +102,14 @@ type PullState = {
   pull: Point
 }
 
-const MAX_PULL_DIST_CLAMP = MAX_PULL_DIST
-
 /** Finger position sets aim direction; distance sets pull strength. */
-function aimPullFromFinger(top: Point, mid: Point, bot: Point, finger: Point): Point {
+function aimPullFromFinger(top: Point, mid: Point, bot: Point, finger: Point, maxPull = MAX_PULL_DIST): Point {
   const fx = finger.x - mid.x
   const fy = finger.y - mid.y
   const fingerDist = Math.hypot(fx, fy)
   const aimDist = fingerDist || 1
 
-  let pullDist = Math.min(MAX_PULL_DIST_CLAMP, Math.max(MIN_PULL_DIST, fingerDist * 0.78))
+  let pullDist = Math.min(maxPull, Math.max(MIN_PULL_DIST, fingerDist * 0.78))
   let x = mid.x - (fx / aimDist) * pullDist
   let y = mid.y - (fy / aimDist) * pullDist
 
@@ -120,10 +123,10 @@ function aimPullFromFinger(top: Point, mid: Point, bot: Point, finger: Point): P
   let dy = y - mid.y
   let dist = Math.hypot(dx, dy)
 
-  if (dist > MAX_PULL_DIST_CLAMP) {
-    x = mid.x + (dx / dist) * MAX_PULL_DIST_CLAMP
-    y = mid.y + (dy / dist) * MAX_PULL_DIST_CLAMP
-    dist = MAX_PULL_DIST_CLAMP
+  if (dist > maxPull) {
+    x = mid.x + (dx / dist) * maxPull
+    y = mid.y + (dy / dist) * maxPull
+    dist = maxPull
   }
 
   if (dist < MIN_PULL_DIST) {
@@ -250,15 +253,16 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
       const anchors = getBowAnchors()
       const p = pointerToArena(clientX, clientY)
       const prev = pullRef.current
+      const maxPull = maxPullDist(arenaRef.current?.clientWidth)
       if (anchors) {
         syncPull({
           ...anchors,
-          pull: aimPullFromFinger(anchors.top, anchors.mid, anchors.bot, p),
+          pull: aimPullFromFinger(anchors.top, anchors.mid, anchors.bot, p, maxPull),
         })
       } else if (prev) {
         syncPull({
           ...prev,
-          pull: aimPullFromFinger(prev.top, prev.mid, prev.bot, p),
+          pull: aimPullFromFinger(prev.top, prev.mid, prev.bot, p, maxPull),
         })
       }
     },
@@ -335,7 +339,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
         return
       }
 
-      const shot = shotFromPull(activePull.mid, activePull.pull)
+      const shot = shotFromPull(activePull.mid, activePull.pull, false, maxPullDist(arenaRef.current?.clientWidth))
       syncPull(null)
       if (!shot) return
 
@@ -391,7 +395,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
     setMissed(false)
     syncPull({
       ...anchors,
-      pull: aimPullFromFinger(anchors.top, anchors.mid, anchors.bot, p),
+      pull: aimPullFromFinger(anchors.top, anchors.mid, anchors.bot, p, maxPullDist(arena.clientWidth)),
     })
   }
 

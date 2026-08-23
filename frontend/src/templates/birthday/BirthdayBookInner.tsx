@@ -102,6 +102,7 @@ export function BirthdayBookInner({
   const spread = spreads[spreadIndex]
   const [flip, setFlip] = useState<FlipState | null>(null)
   const flipSheetRef = useRef<HTMLDivElement>(null)
+  const bookRef = useRef<HTMLDivElement>(null)
 
   const canPrev = spreadIndex > 0 && !flip
   const canNext = spreadIndex < total - 1 && !flip
@@ -143,6 +144,31 @@ export function BirthdayBookInner({
     }
   }, [flip, finishFlip])
 
+  useEffect(() => {
+    const el = bookRef.current
+    if (!el) return
+    let startX = 0
+    let startY = 0
+    const onStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+      startY = e.touches[0].clientY
+    }
+    const onEnd = (e: TouchEvent) => {
+      const touch = e.changedTouches[0]
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
+      if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.15) return
+      if (dx < 0) startFlip('next')
+      else startFlip('prev')
+    }
+    el.addEventListener('touchstart', onStart, { passive: true })
+    el.addEventListener('touchend', onEnd, { passive: true })
+    return () => {
+      el.removeEventListener('touchstart', onStart)
+      el.removeEventListener('touchend', onEnd)
+    }
+  }, [startFlip])
+
   if (!spread) return null
 
   const fromSpread = flip ? spreads[flip.from] : spread
@@ -152,7 +178,7 @@ export function BirthdayBookInner({
     <div className="bx-book-inner">
       <BookPinkBackdrop />
 
-      <div className="bx-notebook">
+      <div className="bx-notebook" ref={bookRef}>
         <div className="bx-notebook-edge bx-notebook-edge--back" aria-hidden />
         <div className="bx-notebook-body">
           <div className="bx-notebook-rings" aria-hidden>

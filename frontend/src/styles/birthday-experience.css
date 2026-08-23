@@ -7,6 +7,7 @@
   --bx-cream: #fff8f2;
   --bx-gold: #e8a84c;
   min-height: 100dvh;
+  min-height: 100svh;
   background:
     radial-gradient(ellipse 120% 80% at 50% -10%, rgba(255, 182, 212, 0.45), transparent 55%),
     linear-gradient(180deg, #fff5fb 0%, var(--bx-cream) 45%, #fdeef6 100%);
@@ -32,12 +33,17 @@
 
 .bx-scene {
   min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 72px 20px 32px;
+  padding: 24px 20px 32px;
   position: relative;
+}
+
+.gift-page:has(.demo-banner) .bx-scene:not(.bx-scene--dark) {
+  padding-top: 72px;
 }
 
 /* ── Dark scenes (intro + happy) ── */
@@ -364,8 +370,15 @@
 /* ── Photo book — cover page (design mockup) ── */
 .bx-scene--book {
   justify-content: flex-start;
-  padding: 56px 16px 32px;
+  padding:
+    max(16px, env(safe-area-inset-top, 0px))
+    16px
+    32px;
   min-height: 100dvh;
+}
+
+.gift-page:has(.demo-banner) .bx-scene--book {
+  padding-top: 64px;
 }
 
 .bx-scene--book-cover {
@@ -377,7 +390,11 @@
   background: linear-gradient(165deg, #ffe8f3 0%, #ffcce0 35%, #ffb8d4 70%, #ff9ec8 100%);
   overflow: hidden;
   justify-content: center;
-  padding: 48px 16px 28px;
+  padding: 24px 12px 20px;
+}
+
+.gift-page:has(.demo-banner) .bx-scene--book-open {
+  padding-top: 56px;
 }
 
 .bx-cover-page {
@@ -745,6 +762,7 @@
   position: relative;
   width: min(760px, 96vw);
   perspective: 2400px;
+  touch-action: pan-y;
 }
 
 .bx-notebook-body {
@@ -1284,35 +1302,96 @@
 }
 
 @media (max-width: 640px) {
+  .bx-count-num {
+    font-size: clamp(8.5rem, 52vw, 13rem);
+  }
+
+  .bx-happy-text {
+    padding: 0 10px;
+    max-width: 100%;
+  }
+
+  .bx-happy-word--happy {
+    font-size: clamp(2.2rem, 12vw, 3.6rem);
+  }
+
+  .bx-happy-word--birthday {
+    font-size: clamp(1.55rem, 8.2vw, 2.6rem);
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .bx-float-photo {
+    width: clamp(44px, 12vw, 68px);
+    border-radius: 10px;
+  }
+
+  .bx-cover-page {
+    width: min(100%, 400px);
+    gap: 12px;
+  }
+
+  .bx-cover-name {
+    font-size: clamp(1.7rem, 8.5vw, 2.5rem);
+  }
+
+  .bx-cover-card {
+    width: min(320px, 92vw);
+    padding: 22px 16px 18px;
+  }
+
+  .bx-cover-cta {
+    min-height: 48px;
+    width: min(100%, 280px);
+    justify-content: center;
+    padding: 14px 22px;
+  }
+
+  .bx-book-inner {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .bx-notebook {
+    width: 100%;
+  }
+
+  .bx-notebook-body {
+    padding: 8px 8px 10px;
+    border-radius: 12px;
+  }
+
+  .bx-notebook-edge {
+    display: none;
+  }
+
   .bx-notebook-spread,
   .bx-flip-stage {
-    --bx-page-h: min(76vh, 640px);
+    --bx-page-h: min(52svh, 400px);
     height: var(--bx-page-h);
     min-height: var(--bx-page-h);
   }
 
-  .bx-notebook-spread {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-
-  .bx-nb-page {
-    min-height: 100%;
+  .bx-notebook-spread,
+  .bx-flip-base {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
   }
 
   .bx-notebook-rings {
-    flex-direction: row;
-    width: 88%;
-    height: 24px;
-    top: auto;
-    bottom: -4px;
+    width: 22px;
+    height: 86%;
+    flex-direction: column;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    bottom: auto;
+    transform: translate(-50%, -50%);
   }
 
   .bx-notebook-ring {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border-width: 3px;
   }
 
@@ -1320,16 +1399,51 @@
     display: none;
   }
 
-  .bx-book-nav--pink {
-    gap: 10px;
+  .bx-nb-page {
+    padding: 10px 8px 12px;
+  }
+
+  .bx-nb-script {
+    font-size: clamp(1.05rem, 4.6vw, 1.45rem);
+  }
+
+  .bx-nb-body {
+    font-size: 0.72rem;
+    max-width: 18ch;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .bx-nb-polaroid {
+    width: min(100%, 160px);
+  }
+
+  .bx-nb-polaroid figcaption {
+    font-size: 0.62rem;
+  }
+
+  .bx-book-nav {
+    width: 100%;
+    gap: 8px;
+    flex-wrap: nowrap;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
   }
 
   .bx-book-nav-btn {
-    padding: 10px 14px;
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: 12px 10px;
     font-size: 0.82rem;
   }
+}
 
-  .bx-float-photo {
-    width: clamp(52px, 14vw, 80px);
+@media (max-width: 640px) and (max-height: 740px) {
+  .bx-notebook-spread,
+  .bx-flip-stage {
+    --bx-page-h: min(46svh, 320px);
+  }
+
+  .bx-cover-card {
+    padding: 16px 14px 14px;
   }
 }

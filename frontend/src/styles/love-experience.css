@@ -3,7 +3,9 @@
 #root:has(.lx-root) {
   overflow: hidden;
   min-height: 100dvh;
+  min-height: 100svh;
   height: 100dvh;
+  height: 100svh;
 }
 
 .gift-page:has(.lx-root),
@@ -1614,8 +1616,10 @@
   }
 
   .lx-env-seal {
-    width: min(30vw, 148px);
-    height: min(30vw, 148px);
+    width: min(36vw, 148px);
+    height: min(36vw, 148px);
+    min-width: 112px;
+    min-height: 112px;
   }
 
   .lx-letter-hint {
@@ -1626,9 +1630,9 @@
   }
 
   .lx-cupid {
-    left: 22%;
-    bottom: 5%;
-    width: min(86vw, 300px);
+    left: 16%;
+    bottom: 4%;
+    width: min(58vw, 220px);
   }
 
   .lx-cupid-hint {
@@ -1649,10 +1653,10 @@
   }
 
   .lx-tree {
-    right: 1%;
-    bottom: 3%;
-    width: min(54vw, 260px);
-    height: min(54vh, 360px);
+    right: 0;
+    bottom: 2%;
+    width: min(42vw, 180px);
+    height: min(48vh, 280px);
   }
 
   .lx-arrow-svg {
@@ -1797,12 +1801,12 @@
   }
 
   .lx-cupid {
-    width: min(90vw, 280px);
+    width: min(62vw, 210px);
   }
 
   .lx-tree {
-    width: min(58vw, 240px);
-    height: min(50vh, 320px);
+    width: min(44vw, 170px);
+    height: min(46vh, 250px);
   }
 }
 
