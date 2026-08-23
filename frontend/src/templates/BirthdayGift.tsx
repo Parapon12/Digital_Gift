@@ -1,285 +1,76 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { asset } from '../lib/asset'
+import { useCallback, useMemo, useState } from 'react'
 import type { BirthdayContent, Gift } from '../types'
+import { DEFAULT_BLESSINGS, DEFAULT_BOOK_CAPTIONS, DEFAULT_BOOK_LEFT_SUBTITLE, DEFAULT_BOOK_PHOTOS, DEFAULT_LEFT_BODIES, DEFAULT_PART1_PHOTOS } from './birthday/constants'
+import { BirthdayBookScene } from './birthday/BirthdayBookScene'
+import { BirthdayHappyScene } from './birthday/BirthdayHappyScene'
+import { BirthdayIntroScene } from './birthday/BirthdayIntroScene'
 
-type Panel = 'message' | 'memories' | 'game' | 'gift' | null
+type Scene = 'intro' | 'happy' | 'book'
 
-function ModalShell({
-  title,
-  onClose,
-  children,
-  wide,
-}: {
-  title: string
-  onClose: () => void
-  children: ReactNode
-  wide?: boolean
-}) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
-
-  return (
-    <div className="bd-modal-backdrop" onClick={onClose} role="presentation">
-      <div
-        className={`bd-modal ${wide ? 'is-wide' : ''}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button type="button" className="bd-modal-close" onClick={onClose} aria-label="ปิด">
-          ×
-        </button>
-        <h3 className="bd-modal-title">{title}</h3>
-        <div className="bd-modal-body">{children}</div>
-      </div>
-    </div>
-  )
-}
-
-function MemoryCarousel({ photos }: { photos: string[] }) {
-  const [index, setIndex] = useState(0)
-  const total = photos.length
-
-  useEffect(() => {
-    setIndex(0)
-  }, [photos])
-
-  if (!total) {
-    return <p className="bd-empty">ยังไม่มีรูปความทรงจำ</p>
-  }
-
-  const go = (dir: -1 | 1) => {
-    setIndex((i) => (i + dir + total) % total)
-  }
-
-  return (
-    <div className="bd-carousel">
-      <div className="bd-carousel-frame">
-        <img src={asset(photos[index])} alt="" />
-        <p className="bd-carousel-count">
-          {index + 1} / {total}
-        </p>
-      </div>
-      {total > 1 ? (
-        <div className="bd-carousel-nav">
-          <button type="button" onClick={() => go(-1)} aria-label="รูปก่อนหน้า">
-            ‹
-          </button>
-          <button type="button" onClick={() => go(1)} aria-label="รูปถัดไป">
-            ›
-          </button>
-        </div>
-      ) : null}
-    </div>
-  )
-}
-
-function BlowCandleGame({
-  title,
-  reward,
-}: {
-  title: string
-  reward: string
-}) {
-  const [blows, setBlows] = useState(0)
-  const done = blows >= 3
-
-  return (
-    <div className="bd-game">
-      <p className="bd-game-hint">{done ? 'ไฟดับแล้ว!' : `${title} — แตะเค้กให้ครบ 3 ครั้ง`}</p>
-      <button
-        type="button"
-        className={`bd-cake-btn ${done ? 'is-done' : ''}`}
-        onClick={() => !done && setBlows((n) => Math.min(3, n + 1))}
-        disabled={done}
-      >
-        <span className="bd-cake-emoji" aria-hidden>
-          {done ? '🎂✨' : '🕯️🎂'}
-        </span>
-        <span>{done ? 'เป่าสำเร็จ!' : `เป่าอีก ${3 - blows} ครั้ง`}</span>
-      </button>
-      {done ? <p className="bd-game-reward">{reward}</p> : null}
-    </div>
-  )
-}
-
-function GiftReveal({
-  title,
-  message,
-  imageUrl,
-}: {
-  title: string
-  message: string
-  imageUrl?: string
-}) {
-  const [opened, setOpened] = useState(false)
-
-  return (
-    <div className={`bd-gift-reveal ${opened ? 'is-open' : ''}`}>
-      {!opened ? (
-        <button type="button" className="bd-gift-box" onClick={() => setOpened(true)}>
-          <span aria-hidden>🎁</span>
-          <strong>แตะเพื่อเปิด{title}</strong>
-        </button>
-      ) : (
-        <>
-          {imageUrl ? <img className="bd-gift-photo" src={asset(imageUrl)} alt="" /> : null}
-          <p className="bd-gift-text">{message}</p>
-        </>
-      )}
-    </div>
-  )
+function normalizePhotos(raw: string[] | undefined, fallback: readonly string[]) {
+  const list = (raw || []).map((p) => p.trim()).filter(Boolean)
+  return list.length ? list : [...fallback]
 }
 
 export function BirthdayGift({ gift }: { gift: Gift }) {
   const content = (gift.content || {}) as BirthdayContent
-  const [panel, setPanel] = useState<Panel>(null)
+  const [scene, setScene] = useState<Scene>('intro')
 
-  const photos = useMemo(
-    () => (content.photos || []).map((p) => p.trim()).filter(Boolean),
-    [content.photos],
+  const floatPhotos = useMemo(
+    () => normalizePhotos(content.floatPhotos, DEFAULT_PART1_PHOTOS),
+    [content.floatPhotos],
   )
 
-  const headline = content.headline || 'สุขสันต์ วันเกิด'
-  const [line1, line2] = useMemo(() => {
-    const parts = headline.trim().split(/\s+/)
-    if (parts.length >= 2) return [parts[0], parts.slice(1).join(' ')]
-    return [headline, '']
-  }, [headline])
+  const bookPhotos = useMemo(
+    () => normalizePhotos(content.bookPhotos, DEFAULT_BOOK_PHOTOS),
+    [content.bookPhotos],
+  )
 
-  const heroImg = content.heroImageUrl || 'birthday/cake-hero.png'
-  const special =
-    content.specialMessage ||
-    content.message ||
-    'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ'
-  const thanks =
-    content.closingMessage || 'ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ'
+  const blessings = useMemo(
+    () => ({
+      spread1: content.blessingSpread1?.trim() || DEFAULT_BLESSINGS.spread1,
+      spread3: content.blessingSpread3?.trim() || DEFAULT_BLESSINGS.spread3,
+      spread5: content.blessingSpread5?.trim() || DEFAULT_BLESSINGS.spread5,
+    }),
+    [content.blessingSpread1, content.blessingSpread3, content.blessingSpread5],
+  )
 
-  const cards = [
-    {
-      id: 'message' as const,
-      icon: '💌',
-      title: 'ข้อความพิเศษ',
-      sub: 'ส่งข้อความจากใจถึงเธอ',
-    },
-    {
-      id: 'memories' as const,
-      icon: '🖼️',
-      title: 'ความทรงจำ',
-      sub: 'รวมภาพความประทับใจของเรา',
-    },
-    {
-      id: 'game' as const,
-      icon: '🍰',
-      title: 'เกมวันเกิด',
-      sub: 'เล่นเกมสนุก ๆ รับคะแนนพิเศษ',
-    },
-    {
-      id: 'gift' as const,
-      icon: '🎁',
-      title: 'ของขวัญให้เธอ',
-      sub: 'เปิดกล่องของขวัญสุดพิเศษ',
-    },
-  ]
+  const leftBodies = useMemo(
+    () => ({
+      spread1: content.bookLeftBody1?.trim() || DEFAULT_LEFT_BODIES.spread1,
+      spread3: content.bookLeftBody3?.trim() || DEFAULT_LEFT_BODIES.spread3,
+      spread5: content.bookLeftBody5?.trim() || DEFAULT_LEFT_BODIES.spread5,
+    }),
+    [content.bookLeftBody1, content.bookLeftBody3, content.bookLeftBody5],
+  )
+
+  const photoCaptions = useMemo(() => {
+    const raw = content.bookPhotoCaptions || []
+    return Array.from({ length: 10 }, (_, i) => raw[i]?.trim() || DEFAULT_BOOK_CAPTIONS[i] || '')
+  }, [content.bookPhotoCaptions])
+
+  const goHappy = useCallback(() => setScene('happy'), [])
+  const goBook = useCallback(() => setScene('book'), [])
 
   return (
-    <div className="bd-root">
-      <section className="bd-hero">
-        <div className="bd-hero-visual">
-          <img src={asset(heroImg)} alt="" />
-          <div className="bd-hero-wave" aria-hidden />
-        </div>
-        <div className="bd-hero-copy">
-          <p className="bd-kicker">BIRTHDAY</p>
-          <h1>
-            <span className="bd-h-a">{line1}</span>
-            {line2 ? <span className="bd-h-b">{line2}</span> : null}
-          </h1>
-          <p className="bd-to">{gift.recipient_name || 'เธอ'}</p>
-          <p className="bd-msg">
-            {content.message ||
-              'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ'}
-          </p>
-          <p className="bd-from">— {gift.sender_name || 'ฉัน'}</p>
-          <span className="bd-doodle bd-d1" aria-hidden>
-            ♡
-          </span>
-          <span className="bd-doodle bd-d2" aria-hidden>
-            ♡
-          </span>
-        </div>
-      </section>
-
-      <section className="bd-cards">
-        {cards.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            className="bd-card"
-            onClick={() => setPanel(c.id)}
-          >
-            <span className="bd-card-icon" aria-hidden>
-              {c.icon}
-            </span>
-            <span className="bd-card-text">
-              <strong>{c.title}</strong>
-              <small>{c.sub}</small>
-            </span>
-            <span className="bd-card-chev" aria-hidden>
-              ›
-            </span>
-          </button>
-        ))}
-      </section>
-
-      <footer className="bd-thanks">
-        <p>
-          <span aria-hidden>♡</span> {thanks} <span aria-hidden>♡</span>
-        </p>
-      </footer>
-
-      {panel === 'message' ? (
-        <ModalShell title="ข้อความพิเศษ" onClose={() => setPanel(null)}>
-          {special.split(/\n+/).map((p, i) => (
-            <p key={i} className="bd-special-line">
-              {p}
-            </p>
-          ))}
-        </ModalShell>
+    <div className="bx-root">
+      {scene === 'intro' ? (
+        <BirthdayIntroScene onComplete={goHappy} />
       ) : null}
-
-      {panel === 'memories' ? (
-        <ModalShell title="ความทรงจำ" onClose={() => setPanel(null)} wide>
-          <MemoryCarousel photos={photos} />
-        </ModalShell>
+      {scene === 'happy' ? (
+        <BirthdayHappyScene floatPhotos={floatPhotos} onComplete={goBook} />
       ) : null}
-
-      {panel === 'game' ? (
-        <ModalShell title="เกมวันเกิด" onClose={() => setPanel(null)}>
-          <BlowCandleGame
-            title={content.gameTitle || 'เป่าเทียนวันเกิด'}
-            reward={content.gameMessage || 'ขอให้ทุกคำอธิษฐานเป็นจริงนะ'}
-          />
-        </ModalShell>
-      ) : null}
-
-      {panel === 'gift' ? (
-        <ModalShell title={content.giftTitle || 'ของขวัญให้เธอ'} onClose={() => setPanel(null)}>
-          <GiftReveal
-            title={content.giftTitle || 'ของขวัญ'}
-            message={
-              content.giftMessage ||
-              'เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน'
-            }
-            imageUrl={content.giftImageUrl}
-          />
-        </ModalShell>
+      {scene === 'book' ? (
+        <BirthdayBookScene
+          bookPhotos={bookPhotos}
+          blessings={blessings}
+          leftBodies={leftBodies}
+          leftSubtitle={content.bookLeftSubtitle?.trim() || DEFAULT_BOOK_LEFT_SUBTITLE}
+          photoCaptions={photoCaptions}
+          recipientName={gift.recipient_name}
+          senderName={gift.sender_name}
+          coverMessage={content.coverMessage?.trim() || 'แค่เธอคนพิเศษของฉัน'}
+        />
       ) : null}
     </div>
   )

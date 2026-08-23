@@ -13,10 +13,13 @@ const (
 	TemplateLoveAdventure3D TemplateKey = "love_adventure_3d"
 	TemplateLoveStory       TemplateKey = "love_story"
 	TemplateLoveQuiz        TemplateKey = "love_quiz"
-	TemplateMemoryPage      TemplateKey = "memory_page"
-	TemplateBirthday        TemplateKey = "birthday"
-	TemplateGraduation      TemplateKey = "graduation"
-	TemplateProposal        TemplateKey = "proposal"
+	TemplateLoveLetter      TemplateKey = "love_letter"
+	TemplateLoveArrow       TemplateKey = "love_arrow"
+	TemplateMemoryStory     TemplateKey = "memory_story"
+	TemplateMemoryPage        TemplateKey = "memory_page"
+	TemplateBirthday          TemplateKey = "birthday"
+	TemplateCrocodileBlessing TemplateKey = "crocodile_blessing"
+	TemplateGraduation        TemplateKey = "graduation"
 )
 
 type TemplateInfo struct {
@@ -29,11 +32,14 @@ type TemplateInfo struct {
 }
 
 var Templates = []TemplateInfo{
-	{TemplateLoveAdventure3D, "3D Love Adventure", "ผจญภัยความรัก 3D", "เดินในฉาก 3D + ความทรงจำ + แมว + ข้อความ", "complete", "love-adventure"},
 	{TemplateLoveStory, "Love Story", "เรื่องราวความรัก", "กล่องของขวัญ · รหัส · นับวัน · ความทรงจำ · ซองลับ", "complete", "love-story"},
 	{TemplateLoveQuiz, "Love Quiz", "ควิซความรัก", "ปุ่มไม่วิ่งหนี · พลุ · แมวถือดอกไม้", "complete", "love-quiz"},
+	{TemplateLoveLetter, "Love Letter", "จดหมายรัก", "ซองจดหมาย · เปิดแล้วไปต่อ", "skeleton", "love-letter"},
+	{TemplateLoveArrow, "Cupid Arrow", "คupid ยิงลูกศร", "มินิเกมธนู · ใบไม้หัวใจ", "skeleton", "love-arrow"},
+	{TemplateMemoryStory, "Memory Story", "เรื่องราวความทรงจำ", "Timeline · Gallery · หัวใจคำว่ารัก", "skeleton", "memory-story"},
 	{TemplateMemoryPage, "Memory Page", "หน้ารำลึกความทรงจำ", "scrapbook เลื่อนลงดูรูป แคปชัน และโน้ตลับ", "complete", "memory-page"},
-	{TemplateProposal, "Proposal", "ขอแต่งงาน", "โครง 3D + ข้อความ", "skeleton", "proposal"},
+	{TemplateBirthday, "Birthday", "วันเกิด", "ฝนหัวใจ · Happy birthday · สมุดรูป 5 หน้า", "complete", "birthday"},
+	{TemplateCrocodileBlessing, "Tiger Blessing", "กราดพุงเสืออวยพร", "แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน", "complete", "crocodile-blessing"},
 }
 
 func ValidTemplateKey(key string) bool {
@@ -44,7 +50,8 @@ func ValidTemplateKey(key string) bool {
 	}
 	// Legacy — hidden from catalog but still render existing gifts
 	switch TemplateKey(key) {
-	case TemplateBirthday, TemplateGraduation:
+	case TemplateBirthday, TemplateGraduation, TemplateKey("proposal"),
+		TemplateLoveAdventure3D, TemplateLoveLetter, TemplateLoveArrow, TemplateMemoryStory:
 		return true
 	default:
 		return false

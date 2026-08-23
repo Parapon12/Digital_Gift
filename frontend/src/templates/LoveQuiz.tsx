@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { asset } from '../lib/asset'
 import type { Gift, LoveQuizContent } from '../types'
@@ -219,7 +219,17 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
   }, [catRun])
 
   return (
-    <div className={`lq-root ${won ? 'is-won' : ''}`} ref={stageRef}>
+    <div
+      className={`lq-root ${won ? 'is-won' : ''}`}
+      ref={stageRef}
+      style={
+        content.backgroundImageUrl
+          ? ({
+              ['--lq-meadow-img' as string]: `url("${asset(content.backgroundImageUrl)}")`,
+            } as CSSProperties)
+          : undefined
+      }
+    >
       <div className="lq-bg" aria-hidden />
       <div className="lq-bg-veil" aria-hidden />
       <div className="lq-petals" aria-hidden>
@@ -249,7 +259,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
 
       {catRun && (
         <div className="lq-cat-run" aria-hidden>
-          <img src={asset('love/mochi-cat.png')} alt="" />
+          <img src={asset(content.catRunImageUrl || 'love/mochi-cat.png')} alt="" />
           <span className="lq-cat-trail">♥</span>
           <span className="lq-cat-trail delay">✦</span>
         </div>
@@ -333,7 +343,7 @@ export function LoveQuiz({ gift }: { gift: Gift }) {
               </div>
             ))}
             <div className="lq-win-actions">
-              <button type="button" className="lq-continue" onClick={() => navigate(demoPath('love-letter'))}>
+              <button type="button" className="lq-continue" onClick={() => navigate(demoPath(content.nextSlug || 'love-letter'))}>
                 ต่อไป ❤️
               </button>
               <button

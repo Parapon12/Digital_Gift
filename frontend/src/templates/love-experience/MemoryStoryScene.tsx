@@ -66,20 +66,21 @@ export function MemoryStoryScene({ gift }: { gift: Gift }) {
   const memoryPhotos =
     content.memoryPhotos?.filter(Boolean) ??
     [
-      'love/memory-04-park.jpg',
-      'love/memory-05-cafe.jpg',
-      'love/memory-06-beach.jpg',
-      'love/memory-08-sunset.jpg',
+      'love/couple-demo.png',
+      'love/memory-10-home.jpg',
+      'love/memory-09-forest.jpg',
+      'love/memory-07-city.jpg',
     ]
 
   const galleryPhotos =
     content.galleryPhotos?.filter(Boolean) ??
     [
-      'love/memory-09-forest.jpg',
-      'love/memory-10-home.jpg',
-      'love/couple-demo.png',
-      'love/memory-07-city.jpg',
-      'love/quiz-meadow.png',
+      'love/memory-06-beach.jpg',
+      'love/memory-08-sunset.jpg',
+      'love/memory-05-cafe.jpg',
+      'love/adventure-scene-landscape.png',
+      'love/heart-tree.png',
+      'love/memory-04-park.jpg',
     ]
 
   const photoPairs = useMemo(() => chunkPairs(memoryPhotos), [memoryPhotos])

@@ -1,22 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api/client'
+import { homepageDemos, LOCAL_TEMPLATES } from '../data/demos'
 import { asset } from '../lib/asset'
+import { LINE_URL, SHOW_LINE } from '../lib/line'
 import type { TemplateInfo } from '../types'
 
 export function HomePage() {
   const [templates, setTemplates] = useState<TemplateInfo[]>([])
-  const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@giftlove')
 
   useEffect(() => {
-    api.getTemplates().then(setTemplates).catch(() => setTemplates([]))
-    api.getSite().then((s) => setLineUrl(s.line_url)).catch(() => {})
+    api.getTemplates().then(setTemplates).catch(() => setTemplates(LOCAL_TEMPLATES))
   }, [])
 
-  const { featured, occasions } = useMemo(() => ({
-    featured: templates.filter((t) => t.status === 'complete'),
-    occasions: templates.filter((t) => t.status === 'skeleton'),
-  }), [templates])
+  const demos = useMemo(() => homepageDemos(templates), [templates])
 
   return (
     <div className="c-home">
@@ -34,10 +31,12 @@ export function HomePage() {
             เว็บไซต์เฉพาะบุคคล ส่งผ่านลิงก์เดียว — เราสร้างให้ครบ คุณแค่เล่าเรื่อง
           </p>
           <div className="c-cta">
-            <a href={lineUrl} target="_blank" rel="noopener noreferrer" className="c-btn c-btn-primary">
-              สั่งทำผ่าน LINE
-            </a>
-            <a href="#demos" className="c-btn c-btn-ghost">ดูตัวอย่าง</a>
+            {SHOW_LINE ? (
+              <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="c-btn c-btn-primary">
+                สั่งทำผ่าน LINE
+              </a>
+            ) : null}
+            <a href="#demos" className={`c-btn ${SHOW_LINE ? 'c-btn-ghost' : 'c-btn-primary'}`}>ดูตัวอย่าง</a>
           </div>
         </div>
       </section>
@@ -50,29 +49,20 @@ export function HomePage() {
             <p>เปิดเล่นได้ทันที ของจริงเราใส่ชื่อ รูป และข้อความให้</p>
           </header>
 
-          <div className="c-grid">
-            {featured.map((t) => (
-              <Link key={t.key} to={`/demo/${t.demo_slug}`} className="c-card">
-                <span className="c-card-tag">ครบ</span>
+          <div className="c-grid c-grid--demos">
+            {demos.map((t) => (
+              <Link
+                key={t.key}
+                to={`/demo/${t.demo_slug}`}
+                className={`c-card${t.key === 'crocodile_blessing' ? ' c-card--gator' : ''}`}
+              >
+                <span className="c-card-tag">{t.key === 'crocodile_blessing' ? 'ใหม่' : 'ครบ'}</span>
                 <h3>{t.name_th}</h3>
                 <p>{t.description}</p>
                 <span className="c-card-link">เปิด demo →</span>
               </Link>
             ))}
           </div>
-
-          {occasions.length > 0 && (
-            <div className="c-occasions">
-              <p className="c-eyebrow">โอกาสพิเศษ</p>
-              <div className="c-pill-row">
-                {occasions.map((t) => (
-                  <Link key={t.key} to={`/demo/${t.demo_slug}`} className="c-pill">
-                    {t.name_th}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -87,8 +77,8 @@ export function HomePage() {
             <li>
               <span>1</span>
               <div>
-                <strong>คุยใน LINE</strong>
-                <p>บอกโอกาส ชื่อ ข้อความ และรูป</p>
+                <strong>{SHOW_LINE ? 'คุยใน LINE' : 'เลือกแบบ'}</strong>
+                <p>{SHOW_LINE ? 'บอกโอกาส ชื่อ ข้อความ และรูป' : 'เปิดตัวอย่างบนเว็บ เล่นได้ทันที'}</p>
               </div>
             </li>
             <li>
@@ -106,11 +96,13 @@ export function HomePage() {
               </div>
             </li>
           </ol>
-          <div className="c-how-cta">
-            <a href={lineUrl} target="_blank" rel="noopener noreferrer" className="c-btn c-btn-primary">
-              เริ่มคุยใน LINE
-            </a>
-          </div>
+          {SHOW_LINE ? (
+            <div className="c-how-cta">
+              <a href={LINE_URL} target="_blank" rel="noopener noreferrer" className="c-btn c-btn-primary">
+                เริ่มคุยใน LINE
+              </a>
+            </div>
+          ) : null}
         </div>
       </section>
     </div>

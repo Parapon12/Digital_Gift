@@ -1,4 +1,4 @@
-import type { Gift, TemplateKey } from '../types'
+import type { DemoContent, Gift, TemplateKey } from '../types'
 
 const TOKEN_KEY = 'giftlove_jwt'
 
@@ -59,6 +59,13 @@ export interface UpdateGiftBody {
   is_published?: boolean
 }
 
+export interface UpdateDemoBody {
+  title?: string
+  recipient_name?: string
+  sender_name?: string
+  content?: Record<string, unknown>
+}
+
 export const adminApi = {
   login: (email: string, password: string) =>
     fetch(`${API_BASE}/api/admin/login`, {
@@ -79,6 +86,14 @@ export const adminApi = {
     adminRequest<Gift>(`/api/admin/gifts/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
   deleteGift: (id: string) =>
     adminRequest<{ message: string }>(`/api/admin/gifts/${id}`, { method: 'DELETE' }),
+
+  listDemos: () => adminRequest<DemoContent[]>('/api/admin/demos'),
+  getDemo: (slug: string) => adminRequest<DemoContent>(`/api/admin/demos/${slug}`),
+  updateDemo: (slug: string, body: UpdateDemoBody) =>
+    adminRequest<DemoContent>(`/api/admin/demos/${slug}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    }),
 
   upload: async (file: File) => {
     const token = getAdminToken()

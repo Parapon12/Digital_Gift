@@ -52,6 +52,7 @@ export function AdminDashboardPage() {
           <p>สร้างเฉพาะลูกค้า · ลิงก์ไม่ซ้ำ · สแกน QR / คัดลอกลิงก์เปิดบนมือถือได้ (Wi‑Fi เดียวกัน)</p>
         </div>
         <div className="admin-header-actions">
+          <Link to="/admin/demos" className="btn-luxury">แก้ไขตัวอย่าง</Link>
           <Link to="/admin/gifts/new" className="btn-luxury btn-luxury-filled">สร้างของขวัญ</Link>
           <Link to="/" className="btn-luxury">หน้าเว็บ</Link>
           <button className="btn-luxury" onClick={() => { clearAdminToken(); navigate('/admin/login') }}>ออก</button>

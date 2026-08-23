@@ -42,6 +42,10 @@ func main() {
 
 	h := handlers.New(pool, cfg)
 
+	if err := h.SeedDemoContent(ctx); err != nil {
+		log.Printf("demo seed warning: %v", err)
+	}
+
 	if err := os.MkdirAll(cfg.UploadDir, 0o755); err != nil {
 		log.Fatalf("create upload dir failed: %v", err)
 	}
@@ -68,6 +72,9 @@ func main() {
 		ar.Put("/gifts/{id}", h.AdminUpdateGift)
 		ar.Delete("/gifts/{id}", h.AdminDeleteGift)
 		ar.Post("/upload", h.AdminUpload)
+		ar.Get("/demos", h.AdminListDemos)
+		ar.Get("/demos/{slug}", h.AdminGetDemo)
+		ar.Put("/demos/{slug}", h.AdminUpdateDemo)
 	})
 
 	srv := &http.Server{

@@ -25,7 +25,7 @@ func Load() Config {
 		AdminEmail:    getEnv("ADMIN_EMAIL", "admin@giftlove.studio"),
 		AdminPassword: getEnv("ADMIN_PASSWORD", "giftlove-admin"),
 		JWTSecret:     getEnv("JWT_SECRET", "giftlove-dev-jwt-secret-change-me"),
-		LINEURL:       getEnv("LINE_URL", "https://line.me/ti/p/@giftlove"),
+		LINEURL:       getEnv("LINE_URL", "https://lin.ee/uoPtq9r"),
 	}
 }
 

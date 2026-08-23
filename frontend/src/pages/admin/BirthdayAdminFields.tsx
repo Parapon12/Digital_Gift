@@ -1,4 +1,5 @@
 import { AdminMediaField } from '../../components/AdminMediaField'
+import { AdminSection } from '../../components/AdminSection'
 import type { BirthdayContent } from '../../types'
 
 export function BirthdayAdminFields({
@@ -9,127 +10,108 @@ export function BirthdayAdminFields({
   onChange: (next: BirthdayContent) => void
 }) {
   const set = (patch: Partial<BirthdayContent>) => onChange({ ...value, ...patch })
-  const photos = value.photos?.length ? value.photos : ['']
+
+  const floatPhotos = value.floatPhotos?.length === 12 ? value.floatPhotos : Array.from({ length: 12 }, (_, i) => value.floatPhotos?.[i] || '')
+  const bookPhotos = value.bookPhotos?.length === 10 ? value.bookPhotos : Array.from({ length: 10 }, (_, i) => value.bookPhotos?.[i] || '')
+  const captions = value.bookPhotoCaptions?.length === 10 ? value.bookPhotoCaptions : Array.from({ length: 10 }, (_, i) => value.bookPhotoCaptions?.[i] || '')
 
   return (
     <div className="mp-admin">
-      <p className="mp-admin-help">
-        หน้าวันเกิดมี 4 การ์ดที่กดแล้วเด้งขึ้น — กรอกข้อความและอัปโหลดรูปได้เลย
-      </p>
+      <AdminSection step={1} title="ฝนหัวใจ + นับถอยหลัง" scene="พื้นดำ · หัวใจชมพูตกเป็นสาย · ตัวเลข 3→2→1 ใหญ่มีแสง (ไม่มีข้อความ)">
+        {null}
+      </AdminSection>
 
-      <div className="form-group">
-        <label>หัวข้อ (เช่น สุขสันต์ วันเกิด)</label>
-        <input
-          value={value.headline || ''}
-          onChange={(e) => set({ headline: e.target.value })}
-          placeholder="สุขสันต์ วันเกิด"
-        />
-      </div>
-      <div className="form-group">
-        <label>ข้อความใต้ชื่อผู้รับ</label>
-        <textarea
-          rows={3}
-          value={value.message || ''}
-          onChange={(e) => set({ message: e.target.value })}
-        />
-      </div>
-      <div className="form-group">
-        <label>ข้อความแถบล่าง (ขอบคุณ)</label>
-        <input
-          value={value.closingMessage || ''}
-          onChange={(e) => set({ closingMessage: e.target.value })}
-        />
-      </div>
-
-      <AdminMediaField
-        label="รูปเค้ก / ฮีโร่ซ้าย"
-        value={value.heroImageUrl || ''}
-        onChange={(url) => set({ heroImageUrl: url })}
-      />
-
-      <h3 className="mp-admin-sub">1) ข้อความพิเศษ (ป๊อปอัป)</h3>
-      <div className="form-group">
-        <label>เนื้อหา</label>
-        <textarea
-          rows={5}
-          value={value.specialMessage || ''}
-          onChange={(e) => set({ specialMessage: e.target.value })}
-          placeholder="ข้อความยาว ๆ จากใจ"
-        />
-      </div>
-
-      <h3 className="mp-admin-sub">2) ความทรงจำ (เลื่อนซ้าย–ขวาได้)</h3>
-      {photos.map((url, i) => (
-        <div key={i} className="mp-admin-entry">
-          <div className="mp-admin-entry-head">
-            <strong>รูปที่ {i + 1}</strong>
-            {photos.length > 1 ? (
-              <button
-                type="button"
-                className="mp-linkish"
-                onClick={() => set({ photos: photos.filter((_, j) => j !== i) })}
-              >
-                ลบ
-              </button>
-            ) : null}
+      <AdminSection step={2} title="Happy birthday + รูปลอย" scene="โฟลเดอร์ birthday/part1 · 12 ช่องมุมบนซ้าย–ขวา">
+        {floatPhotos.map((url, i) => (
+          <div key={`float-${i}`} className="mp-admin-entry">
+            <strong>รูปลอยที่ {i + 1}</strong>
+            <AdminMediaField
+              label="รูป"
+              value={url}
+              onChange={(next) => {
+                const list = floatPhotos.map((p, j) => (j === i ? next : p))
+                set({ floatPhotos: list })
+              }}
+            />
           </div>
-          <AdminMediaField label="รูป" value={url} onChange={(next) => {
-            const list = photos.map((p, j) => (j === i ? next : p))
-            set({ photos: list })
-          }} />
-        </div>
-      ))}
-      {photos.length < 12 ? (
-        <button
-          type="button"
-          className="btn-luxury"
-          style={{ marginBottom: 16 }}
-          onClick={() => set({ photos: [...photos, ''] })}
-        >
-          + เพิ่มรูป
-        </button>
-      ) : null}
+        ))}
+      </AdminSection>
 
-      <h3 className="mp-admin-sub">3) เกมวันเกิด</h3>
-      <div className="grid-2">
+      <AdminSection step={3} title="ปกสมุด — ก่อนเปิดดูรูป" scene="Happy Birthday · ปุ่มเปิดดูสมุด · ชื่อใช้จากผู้รับ/ผู้ส่ง">
         <div className="form-group">
-          <label>ชื่อเกม</label>
+          <label>ข้อความบนปก (ใต้ Happy Birthday)</label>
           <input
-            value={value.gameTitle || ''}
-            onChange={(e) => set({ gameTitle: e.target.value })}
-            placeholder="เป่าเทียนวันเกิด"
+            value={value.coverMessage || ''}
+            onChange={(e) => set({ coverMessage: e.target.value })}
+            placeholder="แค่เธอคนพิเศษของฉัน"
+          />
+        </div>
+      </AdminSection>
+
+      <AdminSection step={4} title="สมุดรูป 5 หน้าคู่" scene="10 รูป · หน้า 1/3/5 ซ้ายเป็นข้อความ · หน้า 2/4 เป็นภาพทั้งคู่">
+        {bookPhotos.map((url, i) => (
+          <div key={`book-${i}`} className="mp-admin-entry">
+            <strong>
+              รูปสมุดที่ {i + 1} (หน้า {Math.floor(i / 2) + 1}
+              {i % 2 === 0 ? ' — ขวา/ซ้าย' : ' — ขวา'})
+            </strong>
+            <AdminMediaField
+              label="รูป"
+              value={url}
+              onChange={(next) => {
+                const list = bookPhotos.map((p, j) => (j === i ? next : p))
+                set({ bookPhotos: list })
+              }}
+            />
+            <div className="form-group">
+              <label>คำบรรยายใต้รูป (ถ้ามี)</label>
+              <input
+                value={captions[i] || ''}
+                onChange={(e) => {
+                  const list = captions.map((c, j) => (j === i ? e.target.value : c))
+                  set({ bookPhotoCaptions: list })
+                }}
+                placeholder="ขอให้สดใสเหมือนดอกไม้ช่อนี้นะ :)"
+              />
+            </div>
+          </div>
+        ))}
+      </AdminSection>
+
+      <AdminSection step={5} title="คำอวยพรบนสมุด" scene="หน้า 1 · 3 · 5 — ข้อความเหนือสมุด + ข้อความยาวหน้าซ้าย">
+        <div className="form-group">
+          <label>หัวข้อย่อยหน้าข้อความ (ใต้ Happy Birthday)</label>
+          <input
+            value={value.bookLeftSubtitle || ''}
+            onChange={(e) => set({ bookLeftSubtitle: e.target.value })}
+            placeholder="แด่เธอคนพิเศษของฉัน"
           />
         </div>
         <div className="form-group">
-          <label>รางวัลเมื่อชนะ</label>
-          <input
-            value={value.gameMessage || ''}
-            onChange={(e) => set({ gameMessage: e.target.value })}
-          />
+          <label>หน้า 1 — ข้อความเหนือสมุด</label>
+          <textarea rows={2} value={value.blessingSpread1 || ''} onChange={(e) => set({ blessingSpread1: e.target.value })} />
         </div>
-      </div>
-
-      <h3 className="mp-admin-sub">4) ของขวัญให้เธอ</h3>
-      <div className="form-group">
-        <label>หัวข้อของขวัญ</label>
-        <input
-          value={value.giftTitle || ''}
-          onChange={(e) => set({ giftTitle: e.target.value })}
-        />
-      </div>
-      <div className="form-group">
-        <label>ข้อความหลังเปิดกล่อง</label>
-        <textarea
-          rows={3}
-          value={value.giftMessage || ''}
-          onChange={(e) => set({ giftMessage: e.target.value })}
-        />
-      </div>
-      <AdminMediaField
-        label="รูปร่วมของขวัญ (ไม่บังคับ)"
-        value={value.giftImageUrl || ''}
-        onChange={(url) => set({ giftImageUrl: url })}
-      />
+        <div className="form-group">
+          <label>หน้า 1 — ข้อความยาวหน้าซ้าย</label>
+          <textarea rows={3} value={value.bookLeftBody1 || ''} onChange={(e) => set({ bookLeftBody1: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>หน้า 3 — ข้อความเหนือสมุด</label>
+          <textarea rows={2} value={value.blessingSpread3 || ''} onChange={(e) => set({ blessingSpread3: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>หน้า 3 — ข้อความยาวหน้าซ้าย</label>
+          <textarea rows={3} value={value.bookLeftBody3 || ''} onChange={(e) => set({ bookLeftBody3: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>หน้า 5 — ข้อความเหนือสมุด</label>
+          <textarea rows={2} value={value.blessingSpread5 || ''} onChange={(e) => set({ blessingSpread5: e.target.value })} />
+        </div>
+        <div className="form-group">
+          <label>หน้า 5 — ข้อความยาวหน้าซ้าย</label>
+          <textarea rows={3} value={value.bookLeftBody5 || ''} onChange={(e) => set({ bookLeftBody5: e.target.value })} />
+        </div>
+      </AdminSection>
     </div>
   )
 }

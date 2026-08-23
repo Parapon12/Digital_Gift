@@ -1,5 +1,6 @@
 import type { Gift, SiteConfig, TemplateInfo } from '../types'
-import { getLocalDemo, LOCAL_TEMPLATES, visibleTemplates } from '../data/demos'
+import { getLocalDemo, LOCAL_TEMPLATES, mergeTemplateCatalog } from '../data/demos'
+import { LINE_URL } from '../lib/line'
 
 const API_BASE = import.meta.env.VITE_API_URL || ''
 
@@ -21,30 +22,22 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   getSite: () =>
     request<SiteConfig>('/api/site').catch(() => ({
-      line_url: 'https://line.me/ti/p/@giftlove',
+      line_url: LINE_URL,
       frontend_url: window.location.origin,
     })),
 
   getTemplates: () =>
     request<TemplateInfo[]>('/api/templates')
-      .then(visibleTemplates)
+      .then(mergeTemplateCatalog)
       .catch(() => LOCAL_TEMPLATES),
 
   getGift: (publicId: string) => request<Gift>(`/api/gifts/${publicId}`),
 
   getDemo: async (slug: string) => {
+    if (slug === 'love-adventure') {
+      throw new Error('ไม่พบ demo')
+    }
     const local = getLocalDemo(slug)
-    // Prefer local demos so Pages/local text stays in sync without API lag.
-    if (
-      (slug === 'memory-page' ||
-        slug === 'love-quiz' ||
-        slug === 'love-letter' ||
-        slug === 'love-arrow' ||
-        slug === 'memory-story' ||
-        slug === 'love-story') &&
-      local
-    )
-      return local
     try {
       return await request<Gift>(`/api/demos/${slug}`)
     } catch {

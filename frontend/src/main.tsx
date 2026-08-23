@@ -5,6 +5,8 @@ import { asset } from './lib/asset'
 import './styles/theme.css'
 import './styles/love-experience.css'
 import './styles/cream-site.css'
+import './styles/birthday-experience.css'
+import './styles/crocodile-blessing.css'
 
 document.documentElement.style.setProperty(
   '--lq-meadow-img',

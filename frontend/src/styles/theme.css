@@ -49,21 +49,10 @@ body {
 
 /* Full-screen gift templates must fill viewport (flex min-height quirk)
    Memory Page + Love Story scroll with the document — keep them out of overflow:hidden. */
-#root:has(.adventure-root),
 #root:has(.lq-root) {
   min-height: 100dvh;
   height: 100dvh;
   overflow: hidden;
-}
-
-.gift-page:has(.adventure-root),
-.gift-page:has(.adventure-root) .gift-runtime {
-  min-height: 100dvh;
-  height: 100dvh;
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  flex: 1 1 auto;
 }
 
 .gift-runtime-adventure {
@@ -2578,522 +2567,6 @@ a {
   padding: 80px 20px;
   text-align: center;
   color: var(--text-muted);
-}
-
-/* ===== 3D Love Adventure — romantic glass UI ===== */
-.adventure-root {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  min-height: 100vh;
-  min-height: 100dvh;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-  touch-action: manipulation;
-  background: linear-gradient(180deg, #c084fc 0%, #fb7185 42%, #fdba74 72%, #86efac 100%);
-  color: #fff7ed;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.adventure-stage {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.adventure-canvas {
-  position: absolute !important;
-  inset: 0;
-  z-index: 1;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.adv-webgl-fallback {
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 8px;
-  text-align: center;
-  color: #fff7ed;
-}
-
-.adv-webgl-fallback p {
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.adv-webgl-fallback small {
-  opacity: 0.75;
-  font-size: 0.85rem;
-}
-
-.adv-topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: max(10px, env(safe-area-inset-top, 0px)) clamp(12px, 3vw, 22px) 12px;
-  background: rgba(18, 10, 28, 0.42);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.adv-mode {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: clamp(0.78rem, 2.2vw, 0.92rem);
-  font-weight: 500;
-  color: rgba(255, 240, 248, 0.92);
-}
-
-.adv-mode span {
-  color: #fb7185;
-  font-size: 1rem;
-}
-
-.adv-home {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(251, 191, 36, 0.55);
-  color: #fde68a;
-  text-decoration: none;
-  font-size: 0.82rem;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.04);
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.adv-home:hover {
-  background: rgba(251, 191, 36, 0.12);
-  border-color: #fbbf24;
-}
-
-.adventure-overlay {
-  position: absolute;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.adventure-overlay.intro,
-.adventure-overlay.ending-card,
-.adventure-overlay.story-card {
-  pointer-events: auto;
-  text-align: center;
-  padding: clamp(18px, 3vw, 26px) clamp(16px, 2.5vw, 22px);
-  color: #fff7ed;
-  animation: advCardIn 0.45s ease both;
-}
-
-@keyframes advCardIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.adv-glass {
-  background: rgba(22, 12, 32, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 18px 48px rgba(20, 8, 30, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-}
-
-.adventure-overlay.story-card {
-  left: auto;
-  right: clamp(14px, 3vw, 28px);
-  bottom: clamp(88px, 14vh, 120px);
-  transform: none;
-  width: min(340px, calc(100% - 28px));
-  box-sizing: border-box;
-}
-
-.adventure-overlay.ending-card {
-  top: 50%;
-  left: 50%;
-  bottom: auto;
-  transform: translate(-50%, -50%);
-  width: min(400px, calc(100% - 32px));
-}
-
-.adventure-overlay.hint {
-  top: 92px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 16px;
-  border-radius: 999px;
-  background: rgba(22, 12, 32, 0.5);
-  backdrop-filter: blur(10px);
-  color: #ffe4e6;
-  font-size: 0.82rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.adventure-overlay.hint p {
-  margin: 0;
-  color: #ffe4e6;
-}
-
-.adventure-progress {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 6;
-  display: flex;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.adventure-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.75);
-  transition: transform 0.3s, background 0.3s, border-color 0.3s;
-}
-
-.adventure-dot.done {
-  background: rgba(251, 113, 133, 0.55);
-  border-color: #fb7185;
-}
-
-.adventure-dot.current {
-  background: #fb7185;
-  border-color: #fb7185;
-  transform: scale(1.35);
-  box-shadow: 0 0 12px rgba(251, 113, 133, 0.7);
-}
-
-.adv-step {
-  margin: 0 0 8px !important;
-  font-size: 0.78rem !important;
-  letter-spacing: 0.06em;
-  color: rgba(255, 228, 230, 0.7) !important;
-}
-
-.adventure-overlay h1,
-.adventure-overlay h2 {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: clamp(1.15rem, 2.8vw, 1.4rem);
-  margin: 4px 0 12px;
-  color: #fff;
-  line-height: 1.35;
-}
-
-.adventure-overlay h2 span {
-  color: #fb7185;
-  font-weight: 500;
-}
-
-.adventure-overlay p {
-  color: rgba(255, 243, 232, 0.78);
-  line-height: 1.7;
-  margin-bottom: 12px;
-  font-size: 0.92rem;
-}
-
-.adv-reward {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 16px 0 8px;
-}
-
-.adv-reward-line {
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.adv-reward-heart {
-  color: #fb7185;
-  font-size: 0.85rem;
-}
-
-.adv-reward-label {
-  margin: 0 0 6px !important;
-  font-size: 0.78rem !important;
-  color: rgba(255, 228, 230, 0.65) !important;
-}
-
-.adv-reward-item {
-  display: inline-flex !important;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 18px !important;
-  color: #ffe4e6 !important;
-  font-weight: 500;
-  font-size: 0.88rem !important;
-}
-
-.adv-cta {
-  appearance: none;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 1rem;
-  color: #fff;
-  background: linear-gradient(135deg, #f472b6, #fb7185 55%, #e879a9);
-  padding: 14px 20px;
-  border-radius: 14px;
-  box-shadow: 0 12px 28px rgba(244, 114, 182, 0.45);
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.adv-cta:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-}
-
-.adv-cta span {
-  margin-left: 4px;
-  font-weight: 400;
-}
-
-.adv-music {
-  position: absolute;
-  left: clamp(12px, 3vw, 24px);
-  bottom: clamp(16px, 3vh, 28px);
-  z-index: 7;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px 10px 14px;
-  width: min(300px, calc(100% - 24px));
-  border-radius: 999px;
-  background: rgba(22, 12, 32, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px);
-  pointer-events: auto;
-}
-
-.adv-music-note {
-  color: #fb7185;
-  font-size: 1rem;
-}
-
-.adv-music p {
-  flex: 1;
-  margin: 0;
-  font-size: 0.78rem;
-  color: rgba(255, 240, 248, 0.85);
-  line-height: 1.3;
-}
-
-.adv-eq {
-  display: inline-flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 14px;
-  opacity: 0.35;
-}
-
-.adv-eq.on { opacity: 1; }
-.adv-eq i {
-  display: block;
-  width: 3px;
-  border-radius: 2px;
-  background: #fb7185;
-  height: 6px;
-}
-.adv-eq.on i:nth-child(1) { animation: advEq 0.7s ease-in-out infinite; }
-.adv-eq.on i:nth-child(2) { animation: advEq 0.7s ease-in-out 0.15s infinite; height: 12px; }
-.adv-eq.on i:nth-child(3) { animation: advEq 0.7s ease-in-out 0.3s infinite; height: 8px; }
-
-@keyframes advEq {
-  0%, 100% { transform: scaleY(0.45); }
-  50% { transform: scaleY(1); }
-}
-
-.adv-music-btn {
-  appearance: none;
-  border: none;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: #fb7185;
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.7rem;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  box-shadow: 0 6px 14px rgba(251, 113, 133, 0.4);
-}
-
-.adventure-place-hint {
-  font-size: 0.8rem !important;
-  color: rgba(251, 191, 36, 0.75) !important;
-  margin-bottom: 8px !important;
-}
-
-.adventure-overlay .btn-luxury {
-  pointer-events: auto;
-}
-
-.adventure-cat-note {
-  font-size: 0.85rem;
-  color: #f9a8d4 !important;
-}
-
-.adventure-overlay .tpl-from {
-  color: #fde68a !important;
-}
-
-.adventure-overlay .tpl-photo {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  max-height: 140px;
-  object-fit: cover;
-}
-
-@media (max-width: 768px) {
-  .adventure-overlay.story-card {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-width: none;
-    transform: none;
-    bottom: max(62px, calc(8px + env(safe-area-inset-bottom, 0px)));
-    max-height: min(36vh, 300px);
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 12px;
-    border-radius: 18px;
-    box-sizing: border-box;
-  }
-
-  .adventure-overlay.story-card h2 {
-    font-size: 1.05rem;
-    margin: 2px 0 8px;
-  }
-
-  .adventure-overlay.story-card > p {
-    font-size: 0.86rem;
-    margin-bottom: 8px;
-    line-height: 1.55;
-  }
-
-  /* Compact card: hide reward block so couple stays visible */
-  .adventure-overlay.story-card .adv-reward,
-  .adventure-overlay.story-card .adv-reward-label,
-  .adventure-overlay.story-card .adv-reward-item {
-    display: none;
-  }
-
-  .adventure-overlay.ending-card {
-    left: 16px;
-    right: 16px;
-    width: auto;
-    max-width: none;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
-    max-height: min(62vh, 480px);
-    overflow-y: auto;
-    box-sizing: border-box;
-  }
-
-  .adv-music {
-    left: 10px;
-    right: 10px;
-    width: auto;
-    bottom: max(8px, env(safe-area-inset-bottom, 0px));
-    padding: 7px 10px 7px 12px;
-    box-sizing: border-box;
-  }
-
-  .adv-music p {
-    font-size: 0.72rem;
-  }
-
-  .adv-mode {
-    font-size: 0.65rem;
-    max-width: 56vw;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .adv-home {
-    padding: 8px 10px;
-    font-size: 0.72rem;
-    min-height: 38px;
-  }
-
-  .adventure-progress {
-    top: calc(52px + env(safe-area-inset-top, 0px));
-  }
-
-  .adventure-overlay.hint {
-    top: calc(72px + env(safe-area-inset-top, 0px));
-    font-size: 0.75rem;
-    padding: 6px 12px;
-  }
-
-  .adv-cta {
-    min-height: 44px;
-    font-size: 0.92rem;
-    padding: 11px 14px;
-    margin-top: 4px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .adv-step {
-    font-size: 0.7rem !important;
-    margin-bottom: 4px !important;
-  }
-
-  .gift-page:has(.adventure-root) .demo-banner {
-    font-size: 0.72rem;
-    padding: 6px 10px;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1100px) {
-  .adventure-overlay.story-card {
-    width: min(300px, 36vw);
-    right: clamp(12px, 2vw, 20px);
-    bottom: clamp(88px, 12vh, 120px);
-  }
-
-  .adv-music {
-    width: min(280px, 42vw);
-  }
-}
-
-@media (max-width: 768px) and (orientation: landscape) {
-  .adventure-overlay.story-card {
-    left: auto;
-    right: 10px;
-    width: min(280px, 42vw);
-    max-height: calc(100dvh - 100px);
-    bottom: 12px;
-  }
-
-  .adv-music {
-    width: min(240px, 40vw);
-    right: auto;
-  }
 }
 
 /* ===== Love Story — cream + soft lilac ===== */
@@ -6260,6 +5733,137 @@ a {
   border-radius: 10px;
   margin-bottom: 10px;
   display: block;
+}
+
+/* ===== Admin section blocks (match page scenes) ===== */
+.admin-section {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  margin-bottom: 18px;
+  background: rgba(255,255,255,0.03);
+}
+.admin-section-head { margin-bottom: 14px; }
+.admin-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.admin-section-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.admin-section-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0;
+}
+.admin-section-scene {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: var(--gold);
+  opacity: 0.85;
+}
+.admin-section-help {
+  margin: 8px 0 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.admin-section-body { display: flex; flex-direction: column; gap: 2px; }
+.admin-pair-block {
+  border: 1px dashed rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: rgba(0,0,0,0.04);
+}
+.admin-pair-block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.admin-demo-intro {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.admin-demo-intro code {
+  font-size: 0.82rem;
+  background: rgba(0,0,0,0.06);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.admin-demo-section { margin-bottom: 28px; }
+.admin-demo-section-head { margin-bottom: 12px; }
+.admin-demo-section-head h2 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.admin-demo-section-head p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.admin-flow-block {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px 8px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.03);
+}
+.admin-flow-block-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.admin-flow-block-head h3 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  margin: 0 0 4px;
+  font-weight: 500;
+}
+.admin-flow-block-head p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.admin-flow-block-head > div { flex: 1; min-width: 140px; }
+
+.alert-success {
+  background: rgba(72, 160, 100, 0.12);
+  border: 1px solid rgba(72, 160, 100, 0.35);
+  color: #2d6a4f;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
 }
 
 .admin-media-row {

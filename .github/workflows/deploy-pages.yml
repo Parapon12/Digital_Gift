@@ -30,6 +30,7 @@ jobs:
         working-directory: frontend
         env:
           VITE_BASE: /Digital_Gift/
+          VITE_HIDE_LINE: 'true'
         run: |
           npm ci
           npm run build

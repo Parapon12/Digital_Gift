@@ -1,24 +1,101 @@
-import type { Gift, TemplateInfo, TemplateKey } from '../types'
+import type { DemoContent, Gift, TemplateInfo, TemplateKey } from '../types'
 import { defaultContent } from '../types'
+import { defaultCrocodileBlessingContent } from '../templates/crocodile/constants'
 import { buildMonthlyCapsules, DEMO_LOVE_MEMORIES } from '../utils/loveStoryCapsules'
 
 /** Hidden from homepage / admin picker — legacy gifts still render via direct link. */
-export const HIDDEN_TEMPLATE_KEYS = new Set<TemplateKey>(['birthday', 'graduation'])
+export const HIDDEN_TEMPLATE_KEYS = new Set<TemplateKey>(['graduation', 'love_adventure_3d'])
+
+/** ขั้นต่อใน Love Experience — เปิดจาก flow ไม่โชว์เป็น pill หน้าแรก */
+export const FLOW_TEMPLATE_KEYS = new Set<TemplateKey>(['love_letter', 'love_arrow', 'memory_story'])
 
 export function visibleTemplates(templates: TemplateInfo[]): TemplateInfo[] {
   return templates.filter((t) => !HIDDEN_TEMPLATE_KEYS.has(t.key))
 }
 
+export function homepageFeatured(templates: TemplateInfo[]) {
+  return templates.filter((t) => t.status === 'complete')
+}
+
+export function homepageOccasions(templates: TemplateInfo[]) {
+  return templates.filter((t) => t.status === 'skeleton' && !FLOW_TEMPLATE_KEYS.has(t.key))
+}
+
+/** ลำดับการ์ดบนหน้าแรก */
+export const HOMEPAGE_DEMO_ORDER: TemplateKey[] = [
+  'love_story',
+  'love_quiz',
+  'memory_page',
+  'birthday',
+  'crocodile_blessing',
+]
+
+/** ตัวอย่างทั้งหมดในระบบ (แก้ในแอดมินได้) */
+export const CATALOG_DEMO_SLUGS = [
+  'love-story',
+  'love-quiz',
+  'memory-page',
+  'birthday',
+  'crocodile-blessing',
+  'love-letter',
+  'love-arrow',
+  'memory-story',
+] as const
+
+export type CatalogDemoSlug = (typeof CATALOG_DEMO_SLUGS)[number]
+
+export interface DemoAdminGroup {
+  id: string
+  title: string
+  help: string
+  slugs: CatalogDemoSlug[]
+}
+
+export const DEMO_ADMIN_GROUPS: DemoAdminGroup[] = [
+  {
+    id: 'homepage',
+    title: 'หน้าแรก — การ์ดตัวอย่าง',
+    help: 'แต่ละการ์ดแก้ทีละช่วงตามหน้าจอ (รูป + ข้อความ) — Love Quiz รวม 4 หน้า flow',
+    slugs: ['love-story', 'love-quiz', 'memory-page', 'birthday', 'crocodile-blessing'],
+  },
+  {
+    id: 'flow',
+    title: 'Love Experience — ขั้นต่อหลัง Love Quiz',
+    help: 'Love Quiz → จดหมาย → ลูกศร → Memory Story (ไม่โชว์การ์ดหน้าแรก แต่แก้เนื้อหาได้)',
+    slugs: ['love-letter', 'love-arrow', 'memory-story'],
+  },
+]
+
+export function mergeTemplateCatalog(remote: TemplateInfo[]): TemplateInfo[] {
+  const byKey = new Map<TemplateKey, TemplateInfo>()
+  for (const t of LOCAL_TEMPLATES) byKey.set(t.key, t)
+  for (const t of remote) byKey.set(t.key, t)
+  return visibleTemplates([...byKey.values()])
+}
+
+export function homepageDemos(templates: TemplateInfo[]): TemplateInfo[] {
+  const catalog = templates.length ? mergeTemplateCatalog(templates) : LOCAL_TEMPLATES
+  const byKey = new Map(catalog.map((t) => [t.key, t]))
+  return HOMEPAGE_DEMO_ORDER.map((key) => byKey.get(key)).filter(Boolean) as TemplateInfo[]
+}
+
+export function catalogDemos(demos: DemoContent[]): DemoContent[] {
+  const order = new Map<string, number>(CATALOG_DEMO_SLUGS.map((slug, index) => [slug, index]))
+  return demos
+    .filter((d) => order.has(d.demo_slug))
+    .sort((a, b) => (order.get(a.demo_slug) ?? 0) - (order.get(b.demo_slug) ?? 0))
+}
+
+export function groupCatalogDemos(demos: DemoContent[]): { group: DemoAdminGroup; items: DemoContent[] }[] {
+  const bySlug = new Map(demos.map((d) => [d.demo_slug, d]))
+  return DEMO_ADMIN_GROUPS.map((group) => ({
+    group,
+    items: group.slugs.map((slug) => bySlug.get(slug)).filter(Boolean) as DemoContent[],
+  }))
+}
+
 /** Template catalog used when API is offline (e.g. GitHub Pages demos). */
 export const LOCAL_TEMPLATES: TemplateInfo[] = visibleTemplates([
-  {
-    key: 'love_adventure_3d',
-    name: '3D Love Adventure',
-    name_th: 'ผจญภัยความรัก 3D',
-    description: 'เดินในฉาก 3D + ความทรงจำ + แมว + ข้อความ',
-    status: 'complete',
-    demo_slug: 'love-adventure',
-  },
   {
     key: 'love_story',
     name: 'Love Story',
@@ -62,32 +139,30 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = visibleTemplates([
   {
     key: 'memory_page',
     name: 'Memory Page',
-    name_th: 'หน้าความทรงจำ',
+    name_th: 'หน้ารำลึกความทรงจำ',
     description: 'scrapbook เลื่อนลงดูรูป แคปชัน และโน้ตลับ',
     status: 'complete',
     demo_slug: 'memory-page',
   },
   {
-    key: 'proposal',
-    name: 'Proposal',
-    name_th: 'ขอแต่งงาน',
-    description: 'โครง 3D + ข้อความ',
-    status: 'skeleton',
-    demo_slug: 'proposal',
+    key: 'birthday',
+    name: 'Birthday',
+    name_th: 'วันเกิด',
+    description: 'ฝนหัวใจ · Happy birthday · สมุดรูป 5 หน้า',
+    status: 'complete',
+    demo_slug: 'birthday',
+  },
+  {
+    key: 'crocodile_blessing',
+    name: 'Tiger Blessing',
+    name_th: 'กราดพุงเสืออวยพร',
+    description: 'แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน',
+    status: 'complete',
+    demo_slug: 'crocodile-blessing',
   },
 ])
 
 const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
-  'love-adventure': {
-    message: 'ทุกก้าวที่เราเดินด้วยกันคือความทรงจำที่ฉันเก็บไว้ และอยากเก็บต่อไปอีกนานแสนนาน',
-    catName: 'Mochi',
-    memories: [
-      { title: 'วันแรกที่เจอ', text: 'ยิ้มของเธอทำให้โลกช้าลง ทุกอย่างดูสว่างขึ้นทันที', imageUrl: '' },
-      { title: 'ทริปทะเล', text: 'เสียงคลื่นกับเสียงหัวเราะของเรา ยังก้องอยู่ในใจ', imageUrl: '' },
-      { title: 'วันที่เหนื่อย', text: 'แค่ได้อยู่ข้างกัน ก็รู้สึกว่าโลกเบาลง', imageUrl: '' },
-      { title: 'วันนี้', text: 'ยังเลือกเธอเหมือนเดิม และอยากเดินต่อไปด้วยกัน', imageUrl: '' },
-    ],
-  },
   'love-story': {
     title: 'ความทรงจำของเรา',
     password: '16062025',
@@ -106,7 +181,10 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
     noLabel: 'ไม่',
     successTitle: 'น่ารัก',
     successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
+    backgroundImageUrl: 'love/quiz-bg.png',
+    catRunImageUrl: 'love/mochi-cat.png',
     photos: ['love/couple-demo.png'],
+    nextSlug: 'love-letter',
   },
   'love-letter': { nextSlug: 'love-arrow' },
   'love-arrow': {
@@ -115,17 +193,18 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
   },
   'memory-story': {
     memoryPhotos: [
-      'love/memory-04-park.jpg',
-      'love/memory-05-cafe.jpg',
-      'love/memory-06-beach.jpg',
-      'love/memory-08-sunset.jpg',
+      'love/couple-demo.png',
+      'love/memory-10-home.jpg',
+      'love/memory-09-forest.jpg',
+      'love/memory-07-city.jpg',
     ],
     galleryPhotos: [
-      'love/memory-09-forest.jpg',
-      'love/memory-10-home.jpg',
-      'love/couple-demo.png',
-      'love/memory-07-city.jpg',
-      'love/quiz-meadow.png',
+      'love/memory-06-beach.jpg',
+      'love/memory-08-sunset.jpg',
+      'love/memory-05-cafe.jpg',
+      'love/adventure-scene-landscape.png',
+      'love/heart-tree.png',
+      'love/memory-04-park.jpg',
     ],
     endingWord: 'I love you',
   },
@@ -223,7 +302,44 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
       },
     ],
   },
-  proposal: { headline: 'แต่งงานกับฉันนะ', message: 'อยากเดินไปด้วยกันตลอดชีวิต', photos: [] },
+  birthday: {
+    floatPhotos: [
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+      'birthday/part1/01.png',
+      'birthday/part1/02.png',
+    ],
+    bookPhotos: [
+      'birthday/book/01.jpg',
+      'birthday/book/02.jpg',
+      'birthday/book/03.jpg',
+      'birthday/book/04.png',
+      'birthday/book/05.png',
+      'birthday/book/06.png',
+      'birthday/book/07.png',
+      'birthday/book/08.png',
+      'birthday/book/09.png',
+      'birthday/book/10.png',
+    ],
+    blessingSpread1: 'สุขสันต์วันเกิดนะ — ขอให้วันนี้เต็มไปด้วยรอยยิ้มและความสุข',
+    blessingSpread3: 'ขอบคุณที่เข้ามาเป็นแสงสว่างในทุกวันที่ผ่านมา',
+    blessingSpread5: 'จากนี้ไป… ขอให้ทุกวันมีความหมายและอบอุ่นเหมือนเดิมเสมอ',
+    coverMessage: 'แค่เธอคนพิเศษของฉัน',
+    bookLeftSubtitle: 'แด่เธอคนพิเศษของฉัน',
+    bookLeftBody1: 'ขอให้วันนี้... และทุกๆ วัน เป็นวันที่ดีของเธอเสมอ มีความสุขมากๆ นะคนเก่งของฉัน',
+    bookLeftBody3: 'ขอบคุณที่อยู่เคียงข้างกันเสมอมา ขอให้ทุกวันของเธอเต็มไปด้วยรอยยิ้มและความอบอุ่น',
+    bookLeftBody5: 'จากนี้ไป… ไม่ว่าจะไปที่ไหน ขอให้มีความสุขและรู้ว่ามีคนที่รักเธอเสมอ',
+    bookPhotoCaptions: ['', 'ขอให้สดใสเหมือนดอกไม้ช่อนี้นะ :)', '', '', '', '', '', '', '', ''],
+  },
+  'crocodile-blessing': defaultCrocodileBlessingContent(),
 }
 
 export function getLocalDemo(slug: string): Gift | null {

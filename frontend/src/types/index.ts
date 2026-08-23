@@ -1,4 +1,5 @@
 import { buildMonthlyCapsules, DEMO_LOVE_MEMORIES } from '../utils/loveStoryCapsules'
+import { defaultCrocodileBlessingContent } from '../templates/crocodile/constants'
 
 export type TemplateKey =
   | 'love_adventure_3d'
@@ -9,8 +10,8 @@ export type TemplateKey =
   | 'memory_story'
   | 'memory_page'
   | 'birthday'
+  | 'crocodile_blessing'
   | 'graduation'
-  | 'proposal'
 
 export type MemoryTheme = 'couple' | 'friends' | 'family'
 
@@ -34,6 +35,19 @@ export interface MemoryPageContent {
   letterTitle?: string
   letterBody?: string
   entries?: MemoryPageEntry[]
+}
+
+export interface CrocodileBlessingContent {
+  eyebrow?: string
+  title?: string
+  subtitle?: string
+  intro?: string
+  hint?: string
+  photo1?: string
+  text1?: string
+  photo2?: string
+  photo3?: string
+  closing?: string
 }
 
 export type TemplateStatus = 'complete' | 'skeleton'
@@ -137,7 +151,14 @@ export interface LoveQuizContent {
   noLabel?: string
   successTitle?: string
   successMessage?: string
+  /** รูปพื้นหลังทุ่ง (meadow) */
+  backgroundImageUrl?: string
+  /** รูปแมววิ่งหลังตอบใช่ */
+  catRunImageUrl?: string
+  /** รูปในหน้าชนะ (แสดงทีละรูปเรียงลง) */
   photos?: string[]
+  /** หน้าถัดไปหลังกดต่อไป */
+  nextSlug?: string
 }
 
 export interface LoveLetterContent {
@@ -161,27 +182,26 @@ export interface OccasionContent {
   photos?: string[]
 }
 
-/** Birthday page — hero + 4 popup cards */
+/** Birthday — heart rain → Happy birthday → photo book */
 export interface BirthdayContent {
-  /** หัวข้อเช่น สุขสันต์วันเกิด */
-  headline?: string
-  /** ข้อความใต้ชื่อผู้รับ */
-  message?: string
-  /** แถบล่างขอบคุณ */
-  closingMessage?: string
-  /** รูปฮีโร่ซ้าย */
-  heroImageUrl?: string
-  /** การ์ด: ข้อความพิเศษ */
-  specialMessage?: string
-  /** การ์ด: ความทรงจำ (เลื่อนได้) */
-  photos?: string[]
-  /** การ์ด: เกมวันเกิด */
-  gameTitle?: string
-  gameMessage?: string
-  /** การ์ด: ของขวัญ */
-  giftTitle?: string
-  giftMessage?: string
-  giftImageUrl?: string
+  /** รูปลอยมุมบน (12 รูป) */
+  floatPhotos?: string[]
+  /** รูปในสมุด (10 รูป — 5 หน้าคู่) */
+  bookPhotos?: string[]
+  /** คำอวยพรหน้า 1, 3, 5 ของสมุด */
+  blessingSpread1?: string
+  blessingSpread3?: string
+  blessingSpread5?: string
+  /** ข้อความบนปกสมุด */
+  coverMessage?: string
+  /** หัวข้อย่อยหน้าข้อความซ้าย (Happy Birthday ใต้) */
+  bookLeftSubtitle?: string
+  /** ข้อความยาวหน้าซ้าย หน้า 1, 3, 5 */
+  bookLeftBody1?: string
+  bookLeftBody3?: string
+  bookLeftBody5?: string
+  /** คำบรรยายใต้รูป polaroid (10 รูป) */
+  bookPhotoCaptions?: string[]
 }
 
 export interface SiteConfig {
@@ -189,6 +209,17 @@ export interface SiteConfig {
   frontend_url: string
   /** LAN-reachable origin for phone QR / share (may differ from frontend_url in local dev) */
   share_url?: string
+}
+
+/** Persisted demo page editable from admin (maps to demo_content table). */
+export interface DemoContent {
+  demo_slug: string
+  template_key: TemplateKey
+  title: string
+  recipient_name: string
+  sender_name: string
+  content: Record<string, unknown>
+  updated_at: string
 }
 
 export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
@@ -204,26 +235,36 @@ export const TEMPLATE_FIELDS: Record<TemplateKey, string[]> = {
     'memories',
     'capsules',
   ],
-  love_quiz: ['question', 'yesLabel', 'noLabel', 'successTitle', 'successMessage', 'photos'],
+  love_quiz: [
+    'question',
+    'yesLabel',
+    'noLabel',
+    'successTitle',
+    'successMessage',
+    'backgroundImageUrl',
+    'catRunImageUrl',
+    'photos',
+    'nextSlug',
+  ],
   love_letter: ['nextSlug'],
   love_arrow: ['loveMessage', 'nextSlug'],
   memory_story: ['memoryPhotos', 'galleryPhotos', 'endingWord'],
   memory_page: ['theme', 'title', 'intro', 'musicUrl', 'closingTitle', 'closingMessage', 'entries'],
   birthday: [
-    'headline',
-    'message',
-    'closingMessage',
-    'heroImageUrl',
-    'specialMessage',
-    'photos',
-    'gameTitle',
-    'gameMessage',
-    'giftTitle',
-    'giftMessage',
-    'giftImageUrl',
+    'floatPhotos',
+    'bookPhotos',
+    'blessingSpread1',
+    'blessingSpread3',
+    'blessingSpread5',
+    'coverMessage',
+    'bookLeftSubtitle',
+    'bookLeftBody1',
+    'bookLeftBody3',
+    'bookLeftBody5',
+    'bookPhotoCaptions',
   ],
+  crocodile_blessing: ['eyebrow', 'title', 'subtitle', 'intro', 'hint', 'photo1', 'text1', 'photo2', 'photo3', 'closing'],
   graduation: ['headline', 'message', 'photos'],
-  proposal: ['headline', 'message', 'photos'],
 }
 
 export function defaultContent(key: TemplateKey): Record<string, unknown> {
@@ -233,10 +274,11 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
         message: '',
         catName: 'Mochi',
         memories: [
-          { title: 'วันแรกที่เจอ', text: '', imageUrl: '' },
-          { title: 'ทริปด้วยกัน', text: '', imageUrl: '' },
-          { title: 'วันที่เหนื่อย', text: '', imageUrl: '' },
-          { title: 'วันนี้', text: '', imageUrl: '' },
+          { title: 'จุดเริ่มต้น', text: '', imageUrl: '' },
+          { title: 'แรงบันดาลใจ', text: '', imageUrl: '' },
+          { title: 'มุมมองใหม่', text: '', imageUrl: '' },
+          { title: 'ประสบการณ์มีค่า', text: '', imageUrl: '' },
+          { title: 'ความทรงจำงดงาม', text: '', imageUrl: '' },
         ],
         musicUrl: '',
       }
@@ -260,7 +302,10 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
         noLabel: 'ไม่',
         successTitle: 'น่ารัก',
         successMessage: 'ได้ยินแล้วใจฟูเลย 😊',
+        backgroundImageUrl: 'love/quiz-bg.png',
+        catRunImageUrl: 'love/mochi-cat.png',
         photos: ['love/couple-demo.png'],
+        nextSlug: 'love-letter',
       }
     case 'love_letter':
       return { nextSlug: 'love-arrow' }
@@ -272,17 +317,18 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
     case 'memory_story':
       return {
         memoryPhotos: [
-          'love/memory-04-park.jpg',
-          'love/memory-05-cafe.jpg',
-          'love/memory-06-beach.jpg',
-          'love/memory-08-sunset.jpg',
+          'love/couple-demo.png',
+          'love/memory-10-home.jpg',
+          'love/memory-09-forest.jpg',
+          'love/memory-07-city.jpg',
         ],
         galleryPhotos: [
-          'love/memory-09-forest.jpg',
-          'love/memory-10-home.jpg',
-          'love/couple-demo.png',
-          'love/memory-07-city.jpg',
-          'love/quiz-meadow.png',
+          'love/memory-06-beach.jpg',
+          'love/memory-08-sunset.jpg',
+          'love/memory-05-cafe.jpg',
+          'love/adventure-scene-landscape.png',
+          'love/heart-tree.png',
+          'love/memory-04-park.jpg',
         ],
         endingWord: 'I love you',
       }
@@ -324,34 +370,48 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
       }
     case 'birthday':
       return {
-        headline: 'สุขสันต์ วันเกิด',
-        message: 'ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ',
-        closingMessage: 'ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ',
-        heroImageUrl: 'birthday/cake-hero.png',
-        specialMessage:
-          'สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข',
-        photos: [
-          'love/couple-demo.png',
-          'love/memory-05-cafe.jpg',
-          'love/memory-06-beach.jpg',
-          'love/memory-08-sunset.jpg',
+        floatPhotos: [
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
+          'birthday/part1/01.png',
+          'birthday/part1/02.png',
         ],
-        gameTitle: 'เป่าเทียนวันเกิด',
-        gameMessage: 'คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ',
-        giftTitle: 'ของขวัญให้เธอ',
-        giftMessage: 'เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน',
-        giftImageUrl: 'brand/gift-box-a.png',
+        bookPhotos: [
+          'birthday/book/01.jpg',
+          'birthday/book/02.jpg',
+          'birthday/book/03.jpg',
+          'birthday/book/04.png',
+          'birthday/book/05.png',
+          'birthday/book/06.png',
+          'birthday/book/07.png',
+          'birthday/book/08.png',
+          'birthday/book/09.png',
+          'birthday/book/10.png',
+        ],
+        blessingSpread1: 'สุขสันต์วันเกิดนะ — ขอให้วันนี้เต็มไปด้วยรอยยิ้มและความสุข',
+        blessingSpread3: 'ขอบคุณที่เข้ามาเป็นแสงสว่างในทุกวันที่ผ่านมา',
+        blessingSpread5: 'จากนี้ไป… ขอให้ทุกวันมีความหมายและอบอุ่นเหมือนเดิมเสมอ',
+        coverMessage: 'แค่เธอคนพิเศษของฉัน',
+        bookLeftSubtitle: 'แด่เธอคนพิเศษของฉัน',
+        bookLeftBody1: 'ขอให้วันนี้... และทุกๆ วัน เป็นวันที่ดีของเธอเสมอ มีความสุขมากๆ นะคนเก่งของฉัน',
+        bookLeftBody3: 'ขอบคุณที่อยู่เคียงข้างกันเสมอมา ขอให้ทุกวันของเธอเต็มไปด้วยรอยยิ้มและความอบอุ่น',
+        bookLeftBody5: 'จากนี้ไป… ไม่ว่าจะไปที่ไหน ขอให้มีความสุขและรู้ว่ามีคนที่รักเธอเสมอ',
+        bookPhotoCaptions: ['', 'ขอให้สดใสเหมือนดอกไม้ช่อนี้นะ :)', '', '', '', '', '', '', '', ''],
       }
+    case 'crocodile_blessing':
+      return defaultCrocodileBlessingContent()
     case 'graduation':
       return {
         headline: 'ยินดีด้วยนะบัณฑิต',
         message: 'ภูมิใจในความพยายามของเธอมาก',
-        photos: [],
-      }
-    case 'proposal':
-      return {
-        headline: 'แต่งงานกับฉันนะ',
-        message: 'อยากเดินไปด้วยกันตลอดชีวิต',
         photos: [],
       }
     default:

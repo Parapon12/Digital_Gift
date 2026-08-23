@@ -1,13 +1,6 @@
-import { useEffect, useState } from 'react'
-import { api } from '../api/client'
+import { LINE_URL, SHOW_LINE, homeHash } from '../lib/line'
 
 export function Footer() {
-  const [lineUrl, setLineUrl] = useState('https://line.me/ti/p/@giftlove')
-
-  useEffect(() => {
-    api.getSite().then((s) => setLineUrl(s.line_url)).catch(() => {})
-  }, [])
-
   return (
     <footer className="c-footer">
       <div className="c-footer-inner container">
@@ -16,9 +9,11 @@ export function Footer() {
           <p className="c-footer-desc">ของขวัญดิจิทัลเฉพาะบุคคล ส่งผ่านลิงก์เดียว</p>
         </div>
         <div className="c-footer-links">
-          <a href="/#demos">ตัวอย่าง</a>
-          <a href="/#how">ขั้นตอน</a>
-          <a href={lineUrl} target="_blank" rel="noopener noreferrer">LINE</a>
+          <a href={homeHash('demos')}>ตัวอย่าง</a>
+          <a href={homeHash('how')}>ขั้นตอน</a>
+          {SHOW_LINE ? (
+            <a href={LINE_URL} target="_blank" rel="noopener noreferrer">LINE</a>
+          ) : null}
         </div>
       </div>
       <p className="c-footer-copy">© 2026 GiftLove Studio</p>

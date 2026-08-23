@@ -76,17 +76,6 @@ func (h *Handler) GetGiftPublic(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, http.StatusOK, gift)
 }
 
-func (h *Handler) GetDemo(w http.ResponseWriter, r *http.Request) {
-	slug := chi.URLParam(r, "slug")
-	for _, t := range models.Templates {
-		if t.DemoSlug == slug {
-			jsonResponse(w, http.StatusOK, demoGift(t))
-			return
-		}
-	}
-	jsonError(w, http.StatusNotFound, "ไม่พบ demo")
-}
-
 func (h *Handler) AdminListGifts(w http.ResponseWriter, r *http.Request) {
 	rows, err := h.DB.Query(r.Context(), `
 		SELECT id, public_id, template_key, title, recipient_name, sender_name, content, is_published, created_at, updated_at
@@ -314,17 +303,6 @@ func demoGift(t models.TemplateInfo) models.Gift {
 
 func demoContent(key models.TemplateKey) json.RawMessage {
 	switch key {
-	case models.TemplateLoveAdventure3D:
-		return json.RawMessage(`{
-			"message":"ทุกก้าวที่เราเดินด้วยกันคือความทรงจำที่ฉันเก็บไว้ และอยากเก็บต่อไปอีกนานแสนนาน",
-			"catName":"Mochi",
-			"memories":[
-				{"title":"วันแรกที่เจอ","text":"ยิ้มของเธอทำให้โลกช้าลง ทุกอย่างดูสว่างขึ้นทันที","imageUrl":""},
-				{"title":"ทริปทะเล","text":"เสียงคลื่นกับเสียงหัวเราะของเรา ยังก้องอยู่ในใจ","imageUrl":""},
-				{"title":"วันที่เหนื่อย","text":"แค่ได้อยู่ข้างกัน ก็รู้สึกว่าโลกเบาลง","imageUrl":""},
-				{"title":"วันนี้","text":"ยังเลือกเธอเหมือนเดิม และอยากเดินต่อไปด้วยกัน","imageUrl":""}
-			]
-		}`)
 	case models.TemplateLoveStory:
 		return json.RawMessage(`{
 			"title":"ความทรงจำของเรา",
@@ -365,7 +343,10 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 			"noLabel":"ไม่",
 			"successTitle":"น่ารัก",
 			"successMessage":"ได้ยินแล้วใจฟูเลย 😊",
-			"photos":[]
+			"backgroundImageUrl":"love/quiz-bg.png",
+			"catRunImageUrl":"love/mochi-cat.png",
+			"photos":["love/couple-demo.png"],
+			"nextSlug":"love-letter"
 		}`)
 	case models.TemplateMemoryPage:
 		return json.RawMessage(`{
@@ -392,22 +373,52 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 		}`)
 	case models.TemplateBirthday:
 		return json.RawMessage(`{
-			"headline":"สุขสันต์ วันเกิด",
-			"message":"ขอให้เป็นวันที่เต็มไปด้วยรอยยิ้ม ความสุข และสิ่งดี ๆ ในทุก ๆ วันนะ",
-			"closingMessage":"ขอบคุณที่เข้ามาเป็นความสุขในชีวิตฉันนะ",
-			"heroImageUrl":"birthday/cake-hero.png",
-			"specialMessage":"สุขสันต์วันเกิดนะ\n\nขอบคุณที่เป็นแสงสว่างในทุกวันที่ผ่านมา ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม สุขภาพแข็งแรง และเรื่องดี ๆ ที่ทำให้หัวใจเต้นแรงอย่างมีความสุข",
-			"photos":["love/couple-demo.png","love/memory-05-cafe.jpg","love/memory-06-beach.jpg","love/memory-08-sunset.jpg"],
-			"gameTitle":"เป่าเทียนวันเกิด",
-			"gameMessage":"คำอวยพรพิเศษปลดล็อกแล้ว — ขอให้ทุกคำอธิษฐานเป็นจริงนะ",
-			"giftTitle":"ของขวัญให้เธอ",
-			"giftMessage":"เปิดกล่องนี้แล้ว… ของขวัญจริงคือเธอที่อยู่ในชีวิตฉันทุกวัน",
-			"giftImageUrl":"brand/gift-box-a.png"
+			"floatPhotos":[
+				"birthday/part1/01.png","birthday/part1/02.png","birthday/part1/01.png","birthday/part1/02.png",
+				"birthday/part1/01.png","birthday/part1/02.png","birthday/part1/01.png","birthday/part1/02.png",
+				"birthday/part1/01.png","birthday/part1/02.png","birthday/part1/01.png","birthday/part1/02.png"
+			],
+			"bookPhotos":[
+				"birthday/book/01.jpg","birthday/book/02.jpg","birthday/book/03.jpg",
+				"birthday/book/04.png","birthday/book/05.png","birthday/book/06.png",
+				"birthday/book/07.png","birthday/book/08.png","birthday/book/09.png",
+				"birthday/book/10.png"
+			],
+			"blessingSpread1":"สุขสันต์วันเกิดนะ — ขอให้วันนี้เต็มไปด้วยรอยยิ้มและความสุข",
+			"blessingSpread3":"ขอบคุณที่เข้ามาเป็นแสงสว่างในทุกวันที่ผ่านมา",
+			"blessingSpread5":"จากนี้ไป… ขอให้ทุกวันมีความหมายและอบอุ่นเหมือนเดิมเสมอ",
+			"coverMessage":"แค่เธอคนพิเศษของฉัน",
+			"bookLeftSubtitle":"แด่เธอคนพิเศษของฉัน",
+			"bookLeftBody1":"ขอให้วันนี้... และทุกๆ วัน เป็นวันที่ดีของเธอเสมอ มีความสุขมากๆ นะคนเก่งของฉัน",
+			"bookLeftBody3":"ขอบคุณที่อยู่เคียงข้างกันเสมอมา ขอให้ทุกวันของเธอเต็มไปด้วยรอยยิ้มและความอบอุ่น",
+			"bookLeftBody5":"จากนี้ไป… ไม่ว่าจะไปที่ไหน ขอให้มีความสุขและรู้ว่ามีคนที่รักเธอเสมอ",
+			"bookPhotoCaptions":["","ขอให้สดใสเหมือนดอกไม้ช่อนี้นะ :)","","","","","","","",""]
+		}`)
+	case models.TemplateCrocodileBlessing:
+		return json.RawMessage(`{
+			"eyebrow":"ของขวัญจากใจ",
+			"title":"กราดพุงเสืออวยพร",
+			"subtitle":"แด่เธอคนสำคัญในหัวใจ",
+			"intro":"แตะที่พุงเสือ เพื่อเปิดคำอวยพรถึงเธอ",
+			"hint":"👆 แตะพุงเสือเลย",
+			"photo1":"tiger/tiger.png",
+			"text1":"ถึงเธอคนสำคัญ ขอให้ทุกวันมีรอยยิ้ม สุขภาพแข็งแรง และมีเรื่องดี ๆ เข้ามาหาแบบไม่ทันตั้งตัว ขอให้เธอปลอดภัย ใจสบาย และรู้ไว้ว่ามีคนที่รัก ห่วง และอวยพรเธออยู่ตรงนี้เสมอนะ",
+			"photo2":"tiger/tiger.png",
+			"photo3":"tiger/tiger.png",
+			"closing":"รักเธอนะ คนสำคัญ ขอให้เราได้เป็นกำลังใจให้กันอีกนาน ๆ"
 		}`)
 	case models.TemplateGraduation:
 		return json.RawMessage(`{"headline":"ยินดีด้วยนะบัณฑิต","message":"ภูมิใจในความพยายามของเธอมาก","photos":[]}`)
-	case models.TemplateProposal:
-		return json.RawMessage(`{"headline":"แต่งงานกับฉันนะ","message":"อยากเดินไปด้วยกันตลอดชีวิต","photos":[]}`)
+	case models.TemplateLoveLetter:
+		return json.RawMessage(`{"nextSlug":"love-arrow"}`)
+	case models.TemplateLoveArrow:
+		return json.RawMessage(`{"loveMessage":"รักเธอมากที่สุดในโลก — ทุกวัน ทุกนาที ทุกลมหายใจ","nextSlug":"memory-story"}`)
+	case models.TemplateMemoryStory:
+		return json.RawMessage(`{
+			"memoryPhotos":["love/couple-demo.png","love/memory-10-home.jpg","love/memory-09-forest.jpg","love/memory-07-city.jpg"],
+			"galleryPhotos":["love/memory-06-beach.jpg","love/memory-08-sunset.jpg","love/memory-05-cafe.jpg","love/adventure-scene-landscape.png","love/heart-tree.png","love/memory-04-park.jpg"],
+			"endingWord":"I love you"
+		}`)
 	default:
 		return json.RawMessage(`{}`)
 	}

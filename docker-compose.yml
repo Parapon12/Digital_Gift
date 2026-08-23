@@ -20,7 +20,7 @@ services:
       ADMIN_EMAIL: admin@giftlove.studio
       ADMIN_PASSWORD: giftlove-admin
       JWT_SECRET: giftlove-dev-jwt-secret-change-me
-      LINE_URL: https://line.me/ti/p/@giftlove
+      LINE_URL: https://lin.ee/uoPtq9r
     depends_on:
       - db
 

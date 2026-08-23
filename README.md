@@ -23,13 +23,12 @@
 
 | Key | ชื่อ | สถานะ |
 |-----|------|--------|
-| `love_adventure_3d` | 3D Love Adventure | ครบ |
 | `love_story` | Love Story | ครบ |
 | `love_quiz` | Love Quiz | ครบ |
 | `memory_page` | Memory Page (scrapbook) | ครบ |
-| `birthday` | วันเกิด | โครง 3D |
+| `birthday` | วันเกิด | ครบ |
+| `crocodile_blessing` | ปากจระเข้แห่งคำอวยพร | ครบ |
 | `graduation` | รับปริญญา | โครง 3D |
-| `proposal` | ขอแต่งงาน | โครง 3D |
 
 ## Admin
 

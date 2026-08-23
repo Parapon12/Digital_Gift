@@ -7,25 +7,28 @@ import { giftShareUrl } from '../../lib/shareUrl'
 import {
   defaultContent,
   type BirthdayContent,
+  type CrocodileBlessingContent,
   type Gift,
-  type LoveAdventureContent,
+  type LoveArrowContent,
+  type LoveLetterContent,
   type LoveQuizContent,
   type LoveStoryContent,
   type MemoryPageContent,
+  type MemoryStoryContent,
   type OccasionContent,
   type TemplateInfo,
   type TemplateKey,
 } from '../../types'
 import { BirthdayAdminFields } from './BirthdayAdminFields'
-import { LoveAdventureAdminFields } from './LoveAdventureAdminFields'
+import { CrocodileBlessingAdminFields } from './CrocodileBlessingAdminFields'
+import { buildTemplateContent, isOccasionTemplate, templateUsesForm } from './buildTemplateContent'
+import { LoveArrowAdminFields } from './LoveArrowAdminFields'
+import { LoveLetterAdminFields } from './LoveLetterAdminFields'
 import { LoveQuizAdminFields } from './LoveQuizAdminFields'
 import { LoveStoryAdminFields } from './LoveStoryAdminFields'
 import { MemoryPageAdminFields } from './MemoryPageAdminFields'
+import { MemoryStoryAdminFields } from './MemoryStoryAdminFields'
 import { OccasionAdminFields } from './OccasionAdminFields'
-
-function isOccasion(key: TemplateKey) {
-  return key === 'graduation' || key === 'proposal'
-}
 
 export function AdminGiftEditorPage() {
   const { id } = useParams<{ id: string }>()
@@ -38,7 +41,7 @@ export function AdminGiftEditorPage() {
   const [recipient, setRecipient] = useState('')
   const [sender, setSender] = useState('')
   const [published, setPublished] = useState(true)
-  const [contentText, setContentText] = useState(JSON.stringify(defaultContent('love_adventure_3d'), null, 2))
+  const [contentText, setContentText] = useState(JSON.stringify(defaultContent('love_quiz'), null, 2))
   const [memoryContent, setMemoryContent] = useState<MemoryPageContent>(
     defaultContent('memory_page') as MemoryPageContent,
   )
@@ -54,8 +57,17 @@ export function AdminGiftEditorPage() {
   const [birthdayContent, setBirthdayContent] = useState<BirthdayContent>(
     defaultContent('birthday') as BirthdayContent,
   )
-  const [adventureContent, setAdventureContent] = useState<LoveAdventureContent>(
-    defaultContent('love_adventure_3d') as LoveAdventureContent,
+  const [crocodileBlessingContent, setCrocodileBlessingContent] = useState<CrocodileBlessingContent>(
+    defaultContent('crocodile_blessing') as CrocodileBlessingContent,
+  )
+  const [memoryStoryContent, setMemoryStoryContent] = useState<MemoryStoryContent>(
+    defaultContent('memory_story') as MemoryStoryContent,
+  )
+  const [letterContent, setLetterContent] = useState<LoveLetterContent>(
+    defaultContent('love_letter') as LoveLetterContent,
+  )
+  const [arrowContent, setArrowContent] = useState<LoveArrowContent>(
+    defaultContent('love_arrow') as LoveArrowContent,
   )
   const [gift, setGift] = useState<Gift | null>(null)
   const [error, setError] = useState('')
@@ -63,13 +75,7 @@ export function AdminGiftEditorPage() {
   const [copied, setCopied] = useState(false)
   const [giftUrl, setGiftUrl] = useState('')
 
-  const useForm =
-    templateKey === 'memory_page' ||
-    templateKey === 'love_quiz' ||
-    templateKey === 'love_story' ||
-    templateKey === 'love_adventure_3d' ||
-    templateKey === 'birthday' ||
-    isOccasion(templateKey)
+  const useForm = templateUsesForm(templateKey)
 
   useEffect(() => {
     api.getTemplates().then(setTemplates).catch(() => {})
@@ -107,15 +113,30 @@ export function AdminGiftEditorPage() {
             ...(defaultContent('birthday') as BirthdayContent),
             ...(raw as BirthdayContent),
           })
-        } else if (isOccasion(g.template_key)) {
+        } else if (g.template_key === 'crocodile_blessing') {
+          setCrocodileBlessingContent({
+            ...(defaultContent('crocodile_blessing') as CrocodileBlessingContent),
+            ...(raw as CrocodileBlessingContent),
+          })
+        } else if (isOccasionTemplate(g.template_key)) {
           setOccasionContent({
             ...(defaultContent(g.template_key) as OccasionContent),
             ...(raw as OccasionContent),
           })
-        } else if (g.template_key === 'love_adventure_3d') {
-          setAdventureContent({
-            ...(defaultContent('love_adventure_3d') as LoveAdventureContent),
-            ...(raw as LoveAdventureContent),
+        } else if (g.template_key === 'memory_story') {
+          setMemoryStoryContent({
+            ...(defaultContent('memory_story') as MemoryStoryContent),
+            ...(raw as MemoryStoryContent),
+          })
+        } else if (g.template_key === 'love_letter') {
+          setLetterContent({
+            ...(defaultContent('love_letter') as LoveLetterContent),
+            ...(raw as LoveLetterContent),
+          })
+        } else if (g.template_key === 'love_arrow') {
+          setArrowContent({
+            ...(defaultContent('love_arrow') as LoveArrowContent),
+            ...(raw as LoveArrowContent),
           })
         }
       })
@@ -152,92 +173,28 @@ export function AdminGiftEditorPage() {
     if (key === 'memory_page') setMemoryContent(base as MemoryPageContent)
     if (key === 'love_quiz') setQuizContent(base as LoveQuizContent)
     if (key === 'love_story') setStoryContent(base as LoveStoryContent)
-    if (isOccasion(key)) setOccasionContent(base as OccasionContent)
+    if (isOccasionTemplate(key)) setOccasionContent(base as OccasionContent)
     if (key === 'birthday') setBirthdayContent(base as BirthdayContent)
-    if (key === 'love_adventure_3d') setAdventureContent(base as LoveAdventureContent)
+    if (key === 'crocodile_blessing') setCrocodileBlessingContent(base as CrocodileBlessingContent)
+    if (key === 'memory_story') setMemoryStoryContent(base as MemoryStoryContent)
+    if (key === 'love_letter') setLetterContent(base as LoveLetterContent)
+    if (key === 'love_arrow') setArrowContent(base as LoveArrowContent)
   }
 
-  const buildContent = (): Record<string, unknown> => {
-    if (templateKey === 'memory_page') {
-      return {
-        ...memoryContent,
-        entries: (memoryContent.entries || [])
-          .filter((x) => x.imageUrl?.trim() && x.caption?.trim())
-          .map((x) => ({
-            id: x.id || crypto.randomUUID(),
-            date: x.date?.trim() || undefined,
-            caption: x.caption.trim(),
-            imageUrl: x.imageUrl.trim(),
-            secretNote: x.secretNote?.trim() || undefined,
-          })),
-      }
-    }
-    if (templateKey === 'love_quiz') {
-      return {
-        ...quizContent,
-        photos: (quizContent.photos || []).map((p) => p.trim()).filter(Boolean),
-      }
-    }
-    if (templateKey === 'love_story') {
-      return {
-        ...storyContent,
-        memories: (storyContent.memories || [])
-          .filter((m) => m.title.trim() || m.text.trim())
-          .map((m) => ({
-            ...m,
-            title: m.title.trim(),
-            text: m.text.trim(),
-            imageUrl: m.imageUrl?.trim() || undefined,
-          })),
-        capsules: (storyContent.capsules || [])
-          .filter((c) => c.title.trim() || (c.text || '').trim())
-          .map((c) => ({
-            ...c,
-            id: c.id || crypto.randomUUID(),
-            title: c.title.trim(),
-            text: c.text?.trim() || '',
-          })),
-      }
-    }
-    if (templateKey === 'love_adventure_3d') {
-      const memories = (adventureContent.memories || [])
-        .map((m) => ({
-          title: m.title.trim(),
-          text: m.text.trim(),
-          imageUrl: m.imageUrl?.trim() || undefined,
-        }))
-        .filter((m) => m.title && m.text)
-        .slice(0, 5)
-      if (memories.length < 3) {
-        throw new Error('ผจญภัย 3D ต้องมีความทรงจำอย่างน้อย 3 จุด (หัวข้อ + ข้อความ)')
-      }
-      return {
-        message: adventureContent.message?.trim() || '',
-        catName: adventureContent.catName?.trim() || 'Mochi',
-        musicUrl: adventureContent.musicUrl?.trim() || undefined,
-        memories,
-      }
-    }
-    if (templateKey === 'birthday') {
-      return {
-        ...birthdayContent,
-        photos: (birthdayContent.photos || []).map((p) => p.trim()).filter(Boolean),
-        headline: birthdayContent.headline?.trim() || '',
-        message: birthdayContent.message?.trim() || '',
-        closingMessage: birthdayContent.closingMessage?.trim() || '',
-        specialMessage: birthdayContent.specialMessage?.trim() || '',
-        heroImageUrl: birthdayContent.heroImageUrl?.trim() || undefined,
-        giftImageUrl: birthdayContent.giftImageUrl?.trim() || undefined,
-      }
-    }
-    if (isOccasion(templateKey)) {
-      return {
-        ...occasionContent,
-        photos: (occasionContent.photos || []).map((p) => p.trim()).filter(Boolean),
-      }
-    }
-    return JSON.parse(contentText) as Record<string, unknown>
-  }
+  const buildContent = (): Record<string, unknown> =>
+    buildTemplateContent({
+      templateKey,
+      contentText,
+      memoryContent,
+      quizContent,
+      storyContent,
+      occasionContent,
+      birthdayContent,
+      crocodileBlessingContent,
+      memoryStoryContent,
+      letterContent,
+      arrowContent,
+    })
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -349,20 +306,33 @@ export function AdminGiftEditorPage() {
         {templateKey === 'memory_page' ? (
           <MemoryPageAdminFields value={memoryContent} onChange={setMemoryContent} />
         ) : null}
+        {templateKey === 'memory_story' ? (
+          <MemoryStoryAdminFields value={memoryStoryContent} onChange={setMemoryStoryContent} />
+        ) : null}
         {templateKey === 'love_quiz' ? (
           <LoveQuizAdminFields value={quizContent} onChange={setQuizContent} />
         ) : null}
         {templateKey === 'love_story' ? (
           <LoveStoryAdminFields value={storyContent} onChange={setStoryContent} />
         ) : null}
-        {templateKey === 'love_adventure_3d' ? (
-          <LoveAdventureAdminFields value={adventureContent} onChange={setAdventureContent} />
-        ) : null}
         {templateKey === 'birthday' ? (
           <BirthdayAdminFields value={birthdayContent} onChange={setBirthdayContent} />
         ) : null}
-        {isOccasion(templateKey) ? (
-          <OccasionAdminFields value={occasionContent} onChange={setOccasionContent} />
+        {templateKey === 'crocodile_blessing' ? (
+          <CrocodileBlessingAdminFields value={crocodileBlessingContent} onChange={setCrocodileBlessingContent} />
+        ) : null}
+        {templateKey === 'love_letter' ? (
+          <LoveLetterAdminFields value={letterContent} onChange={setLetterContent} />
+        ) : null}
+        {templateKey === 'love_arrow' ? (
+          <LoveArrowAdminFields value={arrowContent} onChange={setArrowContent} />
+        ) : null}
+        {isOccasionTemplate(templateKey) ? (
+          <OccasionAdminFields
+            value={occasionContent}
+            onChange={setOccasionContent}
+            templateLabel="Graduation"
+          />
         ) : null}
         {!useForm ? (
           <div className="form-group">

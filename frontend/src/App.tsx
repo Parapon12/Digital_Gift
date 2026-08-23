@@ -2,6 +2,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AdminLayout } from './components/AdminLayout'
 import { Layout } from './components/Layout'
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage'
+import { AdminDemoEditorPage } from './pages/admin/AdminDemoEditorPage'
+import { AdminDemoListPage } from './pages/admin/AdminDemoListPage'
 import { AdminGiftEditorPage } from './pages/admin/AdminGiftEditorPage'
 import { AdminLoginPage } from './pages/admin/AdminLoginPage'
 import { DemoPage, GiftPage } from './pages/GiftPage'
@@ -16,6 +18,8 @@ export default function App() {
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboardPage />} />
+          <Route path="demos" element={<AdminDemoListPage />} />
+          <Route path="demos/:slug" element={<AdminDemoEditorPage />} />
           <Route path="gifts/new" element={<AdminGiftEditorPage />} />
           <Route path="gifts/:id" element={<AdminGiftEditorPage />} />
         </Route>
