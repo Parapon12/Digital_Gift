@@ -25,7 +25,7 @@ export function HomePage() {
         </div>
 
         <div className="c-hero-copy">
-          <p className="c-brand">GiftLove</p>
+          <p className="c-brand">Digital Gift</p>
           <h1>ของขวัญดิจิทัล<br />ที่รู้สึกพิเศษจริง ๆ</h1>
           <p className="c-lead">
             เว็บไซต์เฉพาะบุคคล ส่งผ่านลิงก์เดียว — เราสร้างให้ครบ คุณแค่เล่าเรื่อง

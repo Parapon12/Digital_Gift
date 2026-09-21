@@ -14,7 +14,7 @@ export function Navbar() {
 
   return (
     <nav className={`c-nav ${scrolled ? 'is-scrolled' : ''}`}>
-      <NavLink to="/" className="c-nav-logo">GiftLove</NavLink>
+      <NavLink to="/" className="c-nav-logo">Digital Gift</NavLink>
       <div className="c-nav-links">
         <a href={homeHash('demos')}>ตัวอย่าง</a>
         <a href={homeHash('how')}>ขั้นตอน</a>
