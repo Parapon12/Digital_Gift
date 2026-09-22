@@ -142,14 +142,14 @@ export function MemoryStoryAdminFields({
         step={3}
         title="หัวใจท้ายเรื่อง"
         scene="Heart animation + คำว่ารัก"
-        help="คำที่แสดงในหัวใจก่อนจบ — ว่างไว้จะใช้ I love you"
+        help="คำที่แสดงในหัวใจก่อนจบ — ว่างไว้จะใช้ love you"
       >
         <div className="form-group">
           <label>คำในหัวใจ</label>
           <input
             value={value.endingWord || ''}
             onChange={(e) => set({ endingWord: e.target.value })}
-            placeholder="I love you"
+            placeholder="love you"
           />
         </div>
       </AdminSection>

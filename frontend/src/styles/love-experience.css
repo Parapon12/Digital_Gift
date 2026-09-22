@@ -1442,7 +1442,7 @@
   flex-shrink: 0;
   --lx-heart-shift-x: 0px;
   --lx-heart-shift-y: 0px;
-  --lx-heart-scale: min(1, 86vw / 580, 64dvh / 580);
+  --lx-heart-scale: min(1, 82vw / 720, 60dvh / 720);
   transform: translate(var(--lx-heart-shift-x), var(--lx-heart-shift-y)) scale(var(--lx-heart-scale));
   transform-origin: center center;
 }
@@ -1462,23 +1462,29 @@
 }
 
 .lx-heart-anim-word {
-  color: #ea80b0;
+  color: #fff7fb;
   font-size: 1.35rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   white-space: nowrap;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 18px rgba(234, 128, 176, 0.7);
+  -webkit-text-stroke: 0.4px rgba(255, 255, 255, 0.35);
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 1),
+    0 0 6px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 214, 232, 0.95),
+    0 0 22px rgba(251, 113, 133, 0.75),
+    0 1px 2px rgba(90, 16, 48, 0.55);
   transform: translateY(-100%) rotate(-30deg);
 }
 
 .lx-heart-anim-h {
   animation: lxHeartAnimHorizontal 10s infinite alternate ease-in-out;
-  animation-delay: calc(var(--i) * -300ms);
+  animation-delay: calc(var(--i) * -500ms);
 }
 
 .lx-heart-anim-v {
   animation: lxHeartAnimVertical 20s infinite linear;
-  animation-delay: calc(var(--i) * -300ms);
+  animation-delay: calc(var(--i) * -500ms);
 }
 
 @keyframes lxHeartAnimHorizontal {
@@ -1788,14 +1794,14 @@
   }
 
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 92vw / 580, 68svh / 580);
+    --lx-heart-scale: min(1, 84vw / 720, 60svh / 720);
     --lx-heart-shift-x: 0px;
     --lx-heart-shift-y: 0px;
   }
 
   .lx-heart-anim-word {
-    font-size: clamp(0.58rem, 2.4vw, 0.92rem);
-    letter-spacing: 0.07em;
+    font-size: clamp(0.52rem, 2.05vw, 0.78rem);
+    letter-spacing: 0.06em;
   }
 
   .lx-heart-finale {
@@ -1838,14 +1844,14 @@
 
 @media (max-width: 380px) {
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 92vw / 580, 62svh / 580);
+    --lx-heart-scale: min(1, 84vw / 720, 56svh / 720);
     --lx-heart-shift-x: 0px;
     --lx-heart-shift-y: 0px;
   }
 
   .lx-heart-anim-word {
-    font-size: clamp(0.54rem, 2.2vw, 0.82rem);
-    letter-spacing: 0.06em;
+    font-size: clamp(0.5rem, 2vw, 0.72rem);
+    letter-spacing: 0.05em;
   }
 
   .lx-heart-stage {
@@ -1876,7 +1882,7 @@
   }
 
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 72dvh / 580, 72vw / 580);
+    --lx-heart-scale: min(1, 68dvh / 720, 68vw / 720);
     --lx-heart-shift-x: 0px;
     --lx-heart-shift-y: 0px;
   }

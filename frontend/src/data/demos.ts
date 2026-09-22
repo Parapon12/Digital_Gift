@@ -208,7 +208,7 @@ const DEMO_CONTENT: Record<string, Record<string, unknown>> = {
       'love/gallery-07-starry-couple.png',
       'love/gallery-08-beach-couple.png',
     ],
-    endingWord: 'I love you',
+    endingWord: 'love you',
   },
   'memory-page': {
     theme: 'couple',

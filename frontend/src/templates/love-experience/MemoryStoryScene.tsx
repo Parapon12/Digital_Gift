@@ -87,7 +87,7 @@ export function MemoryStoryScene({ gift }: { gift: Gift }) {
 
   const photoPairs = useMemo(() => chunkPairs(memoryPhotos), [memoryPhotos])
   const endingPhrase =
-    content.endingWord && content.endingWord !== 'รัก' ? content.endingWord : 'I love you'
+    content.endingWord && content.endingWord !== 'รัก' ? content.endingWord : 'love you'
 
   const gallerySection = 1
   const heartSection = 2

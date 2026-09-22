@@ -139,7 +139,7 @@ export function buildTemplateContent(state: TemplateContentState): Record<string
     return {
       memoryPhotos,
       galleryPhotos,
-      endingWord: state.memoryStoryContent.endingWord?.trim() || 'I love you',
+      endingWord: state.memoryStoryContent.endingWord?.trim() || 'love you',
     }
   }
   if (templateKey === 'love_letter') {

@@ -332,7 +332,7 @@ export function defaultContent(key: TemplateKey): Record<string, unknown> {
           'love/gallery-07-starry-couple.png',
           'love/gallery-08-beach-couple.png',
         ],
-        endingWord: 'I love you',
+        endingWord: 'love you',
       }
     case 'memory_page':
       return {

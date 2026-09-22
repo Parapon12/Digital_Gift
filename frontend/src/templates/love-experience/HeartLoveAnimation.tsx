@@ -1,21 +1,22 @@
 import { useLayoutEffect, useMemo, useRef, type CSSProperties } from 'react'
 
-const TOTAL_ITEMS = 100
+const TOTAL_ITEMS = 40
 /** Path canvas size used by the CSS keyframes. */
 const HEART_BOX = 450
-/** Extra room for rotated “I love you” text that paints outside the 450 box. */
-const HEART_BLEED = 130
+/** Rotated words paint well outside the 450 box — keep the whole heart on screen. */
+const HEART_BLEED = 230
+const SAFE_INSET = 22
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n))
 }
 
-/** 3D “I love you” heart — matches the reference script (100 layers + H/V motion). */
-export function HeartLoveAnimation({ phrase = 'I love you' }: { phrase?: string }) {
+/** Single outline of “love you” along the heart path. */
+export function HeartLoveAnimation({ phrase = 'love you' }: { phrase?: string }) {
   const stackRef = useRef<HTMLDivElement>(null)
   const items = useMemo(() => Array.from({ length: TOTAL_ITEMS }, (_, i) => i + 1), [])
-  const display =
-    !phrase || phrase.trim() === 'รัก' ? 'I love you' : phrase
+  const raw = phrase?.trim() || ''
+  const display = !raw || raw === 'รัก' || raw === 'I love you' ? 'love you' : raw
 
   useLayoutEffect(() => {
     const stack = stackRef.current
@@ -24,19 +25,22 @@ export function HeartLoveAnimation({ phrase = 'I love you' }: { phrase?: string 
     if (!stage) return
 
     const fit = () => {
-      const w = stage.clientWidth
-      const h = stage.clientHeight
+      const vv = window.visualViewport
+      const viewW = vv?.width ?? window.innerWidth
+      const viewH = vv?.height ?? window.innerHeight
+      const w = Math.min(stage.clientWidth, viewW) - SAFE_INSET * 2
+      const h = Math.min(stage.clientHeight, viewH) - SAFE_INSET * 2
       if (w < 16 || h < 16) return
 
-      const extra = clamp(36 + display.length * 7, 90, 170)
+      const extra = clamp(48 + display.length * 10, 120, 240)
       const visual = HEART_BOX + Math.max(HEART_BLEED, extra)
       const scale = Math.min(1, w / visual, h / visual)
       stack.style.setProperty('--lx-heart-scale', String(Number(scale.toFixed(4))))
 
       const leftoverX = Math.max(0, w - visual * scale)
       const leftoverY = Math.max(0, h - visual * scale)
-      const nudgeX = clamp(-0.055 * HEART_BOX * scale, -leftoverX / 2, leftoverX / 2)
-      const nudgeY = clamp(-0.02 * HEART_BOX * scale, -leftoverY / 2, leftoverY / 2)
+      const nudgeX = clamp(-0.03 * HEART_BOX * scale, -leftoverX / 2, leftoverX / 2)
+      const nudgeY = clamp(-0.015 * HEART_BOX * scale, -leftoverY / 2, leftoverY / 2)
       stack.style.setProperty('--lx-heart-shift-x', `${nudgeX.toFixed(1)}px`)
       stack.style.setProperty('--lx-heart-shift-y', `${nudgeY.toFixed(1)}px`)
     }
