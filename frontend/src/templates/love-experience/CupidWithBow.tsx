@@ -4,19 +4,30 @@ import { asset } from '../../lib/asset'
 
 type BowHandlers = {
   bowRef: RefObject<HTMLDivElement | null>
+  pulling?: boolean
   onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void
   onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => void
   onPointerUp: (e: React.PointerEvent<HTMLDivElement>) => void
 }
 
 /** Reference art + interactive bow hit zone overlaid on the bow limbs. */
-export function CupidWithBow({ bowRef, onPointerDown, onPointerMove, onPointerUp }: BowHandlers) {
+export function CupidWithBow({
+  bowRef,
+  pulling = false,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
+}: BowHandlers) {
   return (
     <motion.div
       className="lx-cupid-figure"
       aria-hidden
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+      animate={{ y: pulling ? 0 : [0, -5, 0] }}
+      transition={
+        pulling
+          ? { duration: 0.16, ease: 'easeOut' }
+          : { duration: 4.4, repeat: Infinity, ease: 'easeInOut' }
+      }
     >
       <img
         className="lx-cupid-figure-img"

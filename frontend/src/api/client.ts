@@ -38,11 +38,7 @@ export const api = {
       throw new Error('ไม่พบ demo')
     }
     const local = getLocalDemo(slug)
-    try {
-      return await request<Gift>(`/api/demos/${slug}`)
-    } catch {
-      if (local) return local
-      throw new Error('ไม่พบ demo')
-    }
+    if (local) return local
+    return request<Gift>(`/api/demos/${slug}`)
   },
 }

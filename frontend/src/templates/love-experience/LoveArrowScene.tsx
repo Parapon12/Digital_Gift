@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Gift, LoveArrowContent } from '../../types'
@@ -142,6 +141,23 @@ function aimPullFromFinger(top: Point, mid: Point, bot: Point, finger: Point, ma
   return { x, y }
 }
 
+function hitsTreeFoliage(arena: HTMLElement, a: Point) {
+  const treeEl = arena.querySelector('.lx-tree') as HTMLElement | null
+  if (!treeEl) {
+    const w = arena.clientWidth
+    const h = arena.clientHeight
+    return a.x > w * 0.48 && a.x < w * 0.88 && a.y > h * 0.04 && a.y < h * 0.68
+  }
+
+  const ar = arena.getBoundingClientRect()
+  const tr = treeEl.getBoundingClientRect()
+  const left = tr.left - ar.left + tr.width * 0.06
+  const right = tr.right - ar.left - tr.width * 0.06
+  const top = tr.top - ar.top
+  const bottom = tr.top - ar.top + tr.height * 0.74
+  return a.x >= left && a.x <= right && a.y >= top && a.y <= bottom
+}
+
 type Arrow = {
   x: number
   y: number
@@ -182,12 +198,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
   const [arrow, setArrow] = useState<Arrow | null>(null)
   const arrowRef = useRef<Arrow | null>(null)
   const [flying, setFlying] = useState(false)
-  const [shake, setShake] = useState(false)
-  const [fallen, setFallen] = useState(false)
-  const [heartOrigin, setHeartOrigin] = useState<Point | null>(null)
-  const [heartCentered, setHeartCentered] = useState(false)
   const [missed, setMissed] = useState(false)
-  const [popup, setPopup] = useState(false)
   const [trails, setTrails] = useState<{ id: number; x: number; y: number }[]>([])
   const trailId = useRef(0)
   const rafRef = useRef(0)
@@ -195,6 +206,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
   const pullRef = useRef<PullState | null>(null)
   const draggingRef = useRef(false)
   const activePointerId = useRef<number | null>(null)
+  const goingNext = useRef(false)
 
   const syncPull = useCallback((next: PullState | null) => {
     pullRef.current = next
@@ -304,18 +316,18 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
 
         const w = arena.clientWidth
         const h = arena.clientHeight
-        const treeHit = a.x > w * 0.48 && a.x < w * 0.88 && a.y > h * 0.04 && a.y < h * 0.68
+        const treeHit = hitsTreeFoliage(arena, a)
         const outOfBounds = a.x < -40 || a.x > w + 40 || a.y < -40 || a.y > h + 40
         const timedOut = frames > 360
 
         if (treeHit || outOfBounds || timedOut) {
-          if (treeHit) {
-            setShake(true)
-            setFallen(true)
-          } else {
+          stopFlight()
+          if (treeHit && !goingNext.current) {
+            goingNext.current = true
+            navigate(demoPath(content.nextSlug || 'memory-story'))
+          } else if (!treeHit) {
             setMissed(true)
           }
-          stopFlight()
           return
         }
 
@@ -324,7 +336,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
 
       rafRef.current = requestAnimationFrame(step)
     },
-    [stopFlight],
+    [content.nextSlug, navigate, stopFlight],
   )
 
   const releasePull = useCallback(
@@ -379,7 +391,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
   }, [releasePull, updatePullFromPointer])
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (flyingRef.current || flying || popup || draggingRef.current) return
+    if (flyingRef.current || flying || goingNext.current || draggingRef.current) return
     const arena = arenaRef.current
     if (!arena) return
     const anchors = getBowAnchors()
@@ -413,47 +425,6 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
 
   useEffect(() => () => stopFlight(), [stopFlight])
 
-  useEffect(() => {
-    if (!fallen) {
-      setHeartOrigin(null)
-      setHeartCentered(false)
-      return
-    }
-
-    const measure = () => {
-      const arena = arenaRef.current
-      if (!arena) return
-      const ar = arena.getBoundingClientRect()
-      const leafEl = arena.querySelector(
-        `.lx-leaf[data-leaf-id="${targetLeaf.id}"]`,
-      ) as HTMLElement | null
-
-      if (leafEl) {
-        const lr = leafEl.getBoundingClientRect()
-        setHeartOrigin({
-          x: lr.left + lr.width / 2 - ar.left,
-          y: lr.top + lr.height / 2 - ar.top,
-        })
-        return
-      }
-
-      const treeEl = arena.querySelector('.lx-tree') as HTMLElement | null
-      if (treeEl) {
-        const tr = treeEl.getBoundingClientRect()
-        setHeartOrigin({
-          x: tr.left + (tr.width * targetLeaf.left) / 100 - ar.left,
-          y: tr.top + (tr.height * targetLeaf.top) / 100 - ar.top,
-        })
-        return
-      }
-
-      setHeartOrigin({ x: ar.width * 0.72, y: ar.height * 0.34 })
-    }
-
-    const id = window.requestAnimationFrame(measure)
-    return () => window.cancelAnimationFrame(id)
-  }, [fallen, targetLeaf.id, targetLeaf.left, targetLeaf.top])
-
   return (
     <ExperienceShell className="lx-arrow">
       <MeadowRiverBackground />
@@ -462,20 +433,22 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
         <div className="lx-cupid">
           <CupidWithBow
             bowRef={bowRef}
+            pulling={!!pull || flying}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
           />
-          <p className="lx-cupid-hint">
-            {missed ? 'พลาดนิดหน่อย — ลองอีกครั้ง' : 'กดค้าง · ดึงขึ้นลง · ปล่อย'}
-          </p>
         </div>
+
+        <p className="lx-cupid-hint">
+          {missed ? 'พลาดนิดหน่อย — ลองอีกครั้ง' : 'กดค้าง · ดึงขึ้นลง · ปล่อย'}
+        </p>
 
         <HeartTargetTree
           leaves={LEAVES}
           targetLeafId={targetLeaf.id}
-          fallen={fallen}
-          shake={shake}
+          fallen={false}
+          shake={false}
         />
 
         {pull ? (
@@ -545,88 +518,7 @@ export function LoveArrowScene({ gift }: { gift: Gift }) {
           </div>
         ) : null}
 
-        {fallen && heartOrigin ? (
-          <motion.button
-            type="button"
-            className="lx-fallen-heart"
-            initial={{
-              left: heartOrigin.x,
-              top: heartOrigin.y,
-              x: '-50%',
-              y: '-50%',
-              scale: 0.55,
-              opacity: 0.75,
-            }}
-            animate={{
-              left: '50%',
-              top: '50%',
-              x: '-50%',
-              y: '-50%',
-              scale: heartCentered ? [1, 1.14, 1, 1.08, 1] : 1,
-              opacity: 1,
-            }}
-            transition={
-              heartCentered
-                ? {
-                    scale: {
-                      duration: 1.15,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      times: [0, 0.18, 0.36, 0.54, 1],
-                    },
-                    left: { duration: 0 },
-                    top: { duration: 0 },
-                    x: { duration: 0 },
-                    y: { duration: 0 },
-                    opacity: { duration: 0 },
-                  }
-                : { duration: 1.05, ease: [0.22, 1, 0.36, 1] }
-            }
-            onAnimationComplete={() => {
-              if (!heartCentered) setHeartCentered(true)
-            }}
-            whileHover={{ scale: heartCentered ? 1.06 : 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => setPopup(true)}
-          >
-            ♥
-          </motion.button>
-        ) : null}
       </div>
-
-      <AnimatePresence>
-        {popup ? (
-          <motion.div
-            className="lx-popup-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="lx-popup"
-              initial={{ opacity: 0, scale: 0.88, y: 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 12 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="lx-popup-heart" aria-hidden>
-                ❤️
-              </p>
-              <p className="lx-popup-msg">
-                {content.loveMessage ||
-                  `รัก ${gift.recipient_name || 'เธอ'} มากที่สุดในโลก — จาก ${gift.sender_name || 'ฉัน'}`}
-              </p>
-              <button
-                type="button"
-                className="lx-popup-cta"
-                onClick={() => navigate(demoPath(content.nextSlug || 'memory-story'))}
-              >
-                ต่อไป ❤️
-              </button>
-            </motion.div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </ExperienceShell>
   )
 }

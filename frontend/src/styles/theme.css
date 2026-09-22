@@ -1714,6 +1714,17 @@ a {
   max-width: 100%;
 }
 
+.gift-page:has(.gift-scene-swap) {
+  position: relative;
+  min-height: 100dvh;
+}
+
+.gift-scene-swap {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
 .gift-page button,
 .gift-page a,
 .gift-page [role='button'] {
@@ -2499,7 +2510,8 @@ a {
   overflow: hidden;
 }
 
-.gift-page:has(.lq-root) .gift-runtime {
+.gift-page:has(.lq-root) .gift-runtime,
+.gift-page:has(.lq-root) .gift-scene-swap {
   flex: 1 1 auto;
   min-height: 0;
   display: flex;

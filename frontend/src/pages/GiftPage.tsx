@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api } from '../api/client'
@@ -11,12 +12,21 @@ export function DemoPage() {
 
   useEffect(() => {
     if (!slug) return
+    let cancelled = false
+    setError('')
     api.getDemo(slug)
-      .then(setGift)
-      .catch((e) => setError(e instanceof Error ? e.message : 'โหลดไม่สำเร็จ'))
+      .then((next) => {
+        if (!cancelled) setGift(next)
+      })
+      .catch((e) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : 'โหลดไม่สำเร็จ')
+      })
+    return () => {
+      cancelled = true
+    }
   }, [slug])
 
-  if (error) {
+  if (error && !gift) {
     return (
       <section className="section container" style={{ textAlign: 'center' }}>
         <p>{error}</p>
@@ -35,7 +45,18 @@ export function DemoPage() {
         <span>โหมดตัวอย่าง · ไม่ใช่ของขวัญจริง</span>
         <Link to="/">กลับหน้าแรก</Link>
       </div>
-      <GiftRenderer gift={gift} />
+      <AnimatePresence mode="sync" initial={false}>
+        <motion.div
+          key={slug || gift.public_id}
+          className="gift-scene-swap"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <GiftRenderer gift={gift} />
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
