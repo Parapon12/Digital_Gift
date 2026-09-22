@@ -39,7 +39,7 @@ var Templates = []TemplateInfo{
 	{TemplateMemoryStory, "Memory Story", "เรื่องราวความทรงจำ", "Timeline · Gallery · หัวใจคำว่ารัก", "skeleton", "memory-story"},
 	{TemplateMemoryPage, "Memory Page", "หน้ารำลึกความทรงจำ", "scrapbook เลื่อนลงดูรูป แคปชัน และโน้ตลับ", "complete", "memory-page"},
 	{TemplateBirthday, "Birthday", "วันเกิด", "ฝนหัวใจ · Happy birthday · สมุดรูป 5 หน้า", "complete", "birthday"},
-	{TemplateCrocodileBlessing, "Tiger Blessing", "กราดพุงเสืออวยพร", "แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน", "complete", "crocodile-blessing"},
+	{TemplateCrocodileBlessing, "Tiger Blessing", "การ์ดพุงเสืออวยพร", "แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน", "complete", "crocodile-blessing"},
 }
 
 func ValidTemplateKey(key string) bool {

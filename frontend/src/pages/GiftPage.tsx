@@ -4,6 +4,20 @@ import { Link, useParams } from 'react-router-dom'
 import { api } from '../api/client'
 import { GiftRenderer } from '../templates/GiftRenderer'
 import type { Gift } from '../types'
+import '../styles/love-experience.css'
+import '../styles/birthday-experience.css'
+import '../styles/crocodile-blessing.css'
+
+const GIFT_FONTS =
+  'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400;700&family=Charm:wght@400;700&family=Great+Vibes&display=swap'
+
+if (typeof document !== 'undefined' && !document.querySelector('link[data-gift-fonts]')) {
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = GIFT_FONTS
+  link.setAttribute('data-gift-fonts', 'true')
+  document.head.appendChild(link)
+}
 
 export function DemoPage() {
   const { slug } = useParams<{ slug: string }>()

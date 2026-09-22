@@ -27,7 +27,7 @@ export function CrocodileBlessingAdminFields({
           <input
             value={value.title || ''}
             onChange={(e) => set({ title: e.target.value })}
-            placeholder="กราดพุงเสืออวยพร"
+            placeholder="การ์ดพุงเสืออวยพร"
           />
         </div>
         <div className="form-group">

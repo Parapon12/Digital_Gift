@@ -20,16 +20,25 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getSite: () =>
-    request<SiteConfig>('/api/site').catch(() => ({
+  getSite: () => {
+    if (!API_BASE) {
+      return Promise.resolve({
+        line_url: LINE_URL,
+        frontend_url: typeof window !== 'undefined' ? window.location.origin : '',
+      })
+    }
+    return request<SiteConfig>('/api/site').catch(() => ({
       line_url: LINE_URL,
       frontend_url: window.location.origin,
-    })),
+    }))
+  },
 
-  getTemplates: () =>
-    request<TemplateInfo[]>('/api/templates')
+  getTemplates: () => {
+    if (!API_BASE) return Promise.resolve(LOCAL_TEMPLATES)
+    return request<TemplateInfo[]>('/api/templates')
       .then(mergeTemplateCatalog)
-      .catch(() => LOCAL_TEMPLATES),
+      .catch(() => LOCAL_TEMPLATES)
+  },
 
   getGift: (publicId: string) => request<Gift>(`/api/gifts/${publicId}`),
 

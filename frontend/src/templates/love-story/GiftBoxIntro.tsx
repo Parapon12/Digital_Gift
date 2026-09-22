@@ -52,13 +52,13 @@ export function GiftBoxIntro({ onOpen }: { onOpen: () => void }) {
           <div className="ld-box-scene">
             <img
               className="ld-box-img ld-box-closed"
-              src={asset('brand/gift-box-a.png')}
+              src={asset('brand/gift-box-a.webp')}
               alt=""
               draggable={false}
             />
             <img
               className="ld-box-img ld-box-open"
-              src={asset('brand/gift-box-b.png')}
+              src={asset('brand/gift-box-b.webp')}
               alt=""
               draggable={false}
             />

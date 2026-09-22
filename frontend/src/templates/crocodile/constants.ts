@@ -22,7 +22,7 @@ export function blessingPhoto(value: string | undefined, fallback = TIGER_PHOTO)
 export function defaultCrocodileBlessingContent() {
   return {
     eyebrow: 'ของขวัญจากใจ',
-    title: 'กราดพุงเสืออวยพร',
+    title: 'การ์ดพุงเสืออวยพร',
     subtitle: BLESSING_SUBTITLE,
     intro: BLESSING_INTRO,
     hint: '👆 แตะพุงเสือเลย',
@@ -35,9 +35,10 @@ export function defaultCrocodileBlessingContent() {
 }
 
 const LEGACY_COPY: Record<string, string> = {
-  'ปากจระเข้แห่งคำอวยพร': 'กราดพุงเสืออวยพร',
-  'เสือแห่งคำอวยพร': 'กราดพุงเสืออวยพร',
-  'พุงเสือคำอวยพร': 'กราดพุงเสืออวยพร',
+  'ปากจระเข้แห่งคำอวยพร': 'การ์ดพุงเสืออวยพร',
+  'เสือแห่งคำอวยพร': 'การ์ดพุงเสืออวยพร',
+  'พุงเสือคำอวยพร': 'การ์ดพุงเสืออวยพร',
+  'กราดพุงเสืออวยพร': 'การ์ดพุงเสืออวยพร',
   'แตะที่จระเข้ เพื่อเปิดปากดูของขวัญข้างใน!': BLESSING_INTRO,
   'แตะที่เสือ เพื่อดูของขวัญบนพุงกลม ๆ!': BLESSING_INTRO,
   'แตะที่พุงเสือ เพื่อเปิดกรอบของขวัญ': BLESSING_INTRO,

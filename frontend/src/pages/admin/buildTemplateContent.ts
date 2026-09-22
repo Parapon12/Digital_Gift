@@ -106,10 +106,10 @@ export function buildTemplateContent(state: TemplateContentState): Record<string
     const text1 = state.crocodileBlessingContent?.text1?.trim() || ''
     const closing = state.crocodileBlessingContent?.closing?.trim() || ''
     if (!photo1 || !photo2 || !photo3) {
-      throw new Error('กราดพุงเสืออวยพรต้องมีรูปครบ 3 รูป')
+      throw new Error('การ์ดพุงเสืออวยพรต้องมีรูปครบ 3 รูป')
     }
     if (!text1 || !closing) {
-      throw new Error('กราดพุงเสืออวยพรต้องมีคำอวยพรและคำตบท้าย')
+      throw new Error('การ์ดพุงเสืออวยพรต้องมีคำอวยพรและคำตบท้าย')
     }
     return {
       eyebrow: state.crocodileBlessingContent?.eyebrow?.trim() || '',

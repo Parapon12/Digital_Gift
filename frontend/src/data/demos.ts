@@ -155,7 +155,7 @@ export const LOCAL_TEMPLATES: TemplateInfo[] = visibleTemplates([
   {
     key: 'crocodile_blessing',
     name: 'Tiger Blessing',
-    name_th: 'กราดพุงเสืออวยพร',
+    name_th: 'การ์ดพุงเสืออวยพร',
     description: 'แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน',
     status: 'complete',
     demo_slug: 'crocodile-blessing',

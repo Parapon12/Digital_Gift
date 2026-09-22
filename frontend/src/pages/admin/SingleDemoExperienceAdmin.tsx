@@ -57,7 +57,7 @@ const SLUG_META: Record<
   },
   'crocodile-blessing': {
     templateKey: 'crocodile_blessing',
-    title: 'กราดพุงเสืออวยพร',
+    title: 'การ์ดพุงเสืออวยพร',
     subtitle: 'แตะพุงเสือ → คำอวยพรถึงคนสำคัญ → รูปซ้ายขวา → รูปกลาง → คำตบท้าย',
   },
 }

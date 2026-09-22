@@ -7,9 +7,10 @@ import { LINE_URL, SHOW_LINE } from '../lib/line'
 import type { TemplateInfo } from '../types'
 
 export function HomePage() {
-  const [templates, setTemplates] = useState<TemplateInfo[]>([])
+  const [templates, setTemplates] = useState<TemplateInfo[]>(LOCAL_TEMPLATES)
 
   useEffect(() => {
+    if (!import.meta.env.VITE_API_URL) return
     api.getTemplates().then(setTemplates).catch(() => setTemplates(LOCAL_TEMPLATES))
   }, [])
 
@@ -19,9 +20,27 @@ export function HomePage() {
     <div className="c-home">
       <section className="c-hero">
         <div className="c-hero-stage" aria-hidden>
-          <img className="c-hero-banner" src={asset('brand/gift-hero-banner.png')} alt="" />
-          <img className="c-float c-float-a" src={asset('brand/gift-box-a.png')} alt="" />
-          <img className="c-float c-float-b" src={asset('brand/gift-box-b.png')} alt="" />
+          <img
+            className="c-hero-banner"
+            src={asset('brand/gift-hero-banner.jpg')}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+          />
+          <img
+            className="c-float c-float-a"
+            src={asset('brand/gift-box-a.webp')}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            className="c-float c-float-b"
+            src={asset('brand/gift-box-b.webp')}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
         </div>
 
         <div className="c-hero-copy">

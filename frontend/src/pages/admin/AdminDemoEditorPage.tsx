@@ -49,7 +49,7 @@ export function AdminDemoEditorPage() {
         p: 'ฝนหัวใจ · Happy birthday · สมุดรูป 5 หน้า',
       },
       'crocodile-blessing': {
-        h1: 'กราดพุงเสืออวยพร',
+        h1: 'การ์ดพุงเสืออวยพร',
         p: 'แตะพุงเสือ · คำอวยพรถึงคนสำคัญหรือแฟน',
       },
     }

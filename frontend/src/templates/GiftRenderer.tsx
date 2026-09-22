@@ -1,14 +1,17 @@
-import type { ReactElement } from 'react'
+import { lazy, Suspense, type ReactElement } from 'react'
 import type { Gift, TemplateKey } from '../types'
 import { BirthdayGift } from './BirthdayGift'
 import { CrocodileBlessing } from './CrocodileBlessing'
-import { GraduationGift } from './GraduationGift'
 import { LoveArrow } from './LoveArrow'
 import { LoveLetter } from './LoveLetter'
 import { LoveQuiz } from './LoveQuiz'
 import { LoveStory } from './LoveStory'
 import { MemoryPage } from './MemoryPage'
 import { MemoryStory } from './MemoryStory'
+
+const GraduationGift = lazy(() =>
+  import('./GraduationGift').then((m) => ({ default: m.GraduationGift })),
+)
 
 const MAP: Record<TemplateKey, (gift: Gift) => ReactElement> = {
   love_adventure_3d: () => (
@@ -22,7 +25,11 @@ const MAP: Record<TemplateKey, (gift: Gift) => ReactElement> = {
   memory_page: (g) => <MemoryPage gift={g} />,
   birthday: (g) => <BirthdayGift gift={g} />,
   crocodile_blessing: (g) => <CrocodileBlessing gift={g} />,
-  graduation: (g) => <GraduationGift gift={g} />,
+  graduation: (g) => (
+    <Suspense fallback={null}>
+      <GraduationGift gift={g} />
+    </Suspense>
+  ),
 }
 
 export function GiftRenderer({ gift }: { gift: Gift }) {

@@ -397,7 +397,7 @@ func demoContent(key models.TemplateKey) json.RawMessage {
 	case models.TemplateCrocodileBlessing:
 		return json.RawMessage(`{
 			"eyebrow":"ของขวัญจากใจ",
-			"title":"กราดพุงเสืออวยพร",
+			"title":"การ์ดพุงเสืออวยพร",
 			"subtitle":"แด่เธอคนสำคัญในหัวใจ",
 			"intro":"แตะที่พุงเสือ เพื่อเปิดคำอวยพรถึงเธอ",
 			"hint":"👆 แตะพุงเสือเลย",
