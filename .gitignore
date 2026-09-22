@@ -17,6 +17,8 @@ frontend/dist/
 uploads/
 
 # Logs & caches
+__pycache__/
+*.pyc
 *.log
 .DS_Store
 Thumbs.db

@@ -4,7 +4,7 @@ import { adminApi, setAdminToken } from '../../api/admin'
 
 export function AdminLoginPage() {
   const [email, setEmail] = useState('admin@giftlove.studio')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('giftlove-admin')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
