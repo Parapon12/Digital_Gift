@@ -1353,11 +1353,15 @@
 .lx-memory-section-heart {
   position: relative;
   min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: clamp(56px, 10dvh, 88px) 12px 36px;
+  padding:
+    max(56px, env(safe-area-inset-top, 0px))
+    12px
+    max(36px, env(safe-area-inset-bottom, 0px));
   gap: 12px;
   overflow: visible;
 }
@@ -1389,9 +1393,12 @@
 
 .lx-heart-stage {
   position: relative;
-  width: min(94vw, 94dvh);
-  height: min(82dvh, 82vw);
-  max-height: 88dvh;
+  container-type: size;
+  flex: 1 1 auto;
+  width: min(100%, 94dvh);
+  min-height: min(240px, 48dvh);
+  max-height: min(82dvh, 94vw);
+  height: min(82dvh, 94vw);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1433,11 +1440,10 @@
   width: 450px;
   height: 450px;
   flex-shrink: 0;
-  /* Optical center — animation mass sits right of the 450px box anchor */
-  --lx-heart-shift-x: calc(-8% - 54px);
-  --lx-heart-shift-y: -12px;
-  --lx-heart-scale: min(1, 92vw / 450, 70dvh / 450);
-  transform: scale(var(--lx-heart-scale)) translate(var(--lx-heart-shift-x), var(--lx-heart-shift-y));
+  --lx-heart-shift-x: 0px;
+  --lx-heart-shift-y: 0px;
+  --lx-heart-scale: min(1, 86vw / 580, 64dvh / 580);
+  transform: translate(var(--lx-heart-shift-x), var(--lx-heart-shift-y)) scale(var(--lx-heart-scale));
   transform-origin: center center;
 }
 
@@ -1766,28 +1772,30 @@
     min-height: 100dvh;
     min-height: 100svh;
     padding:
-      max(44px, env(safe-area-inset-top, 0px))
-      10px
-      max(16px, env(safe-area-inset-bottom, 0px));
-    gap: 6px;
+      max(48px, calc(env(safe-area-inset-top, 0px) + 36px))
+      8px
+      max(52px, calc(env(safe-area-inset-bottom, 0px) + 36px));
+    gap: 8px;
     justify-content: center;
   }
 
   .lx-heart-stage {
-    width: min(96vw, 96dvh);
-    height: min(58dvh, 96vw);
-    max-height: 62dvh;
+    width: min(100%, calc(100svh - 148px));
+    height: auto;
+    aspect-ratio: 1;
+    max-height: calc(100svh - 148px);
+    min-height: min(220px, 42svh);
   }
 
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 96vw / 450, 58dvh / 450);
-    --lx-heart-shift-x: calc(-7% - 38px);
-    --lx-heart-shift-y: -8px;
+    --lx-heart-scale: min(1, 92vw / 580, 68svh / 580);
+    --lx-heart-shift-x: 0px;
+    --lx-heart-shift-y: 0px;
   }
 
   .lx-heart-anim-word {
-    font-size: clamp(0.68rem, 2.55vw, 1.05rem);
-    letter-spacing: 0.08em;
+    font-size: clamp(0.58rem, 2.4vw, 0.92rem);
+    letter-spacing: 0.07em;
   }
 
   .lx-heart-finale {
@@ -1830,19 +1838,19 @@
 
 @media (max-width: 380px) {
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 94vw / 450, 54dvh / 450);
-    --lx-heart-shift-x: calc(-5% - 28px);
-    --lx-heart-shift-y: -6px;
+    --lx-heart-scale: min(1, 92vw / 580, 62svh / 580);
+    --lx-heart-shift-x: 0px;
+    --lx-heart-shift-y: 0px;
   }
 
   .lx-heart-anim-word {
-    font-size: clamp(0.62rem, 2.35vw, 0.9rem);
+    font-size: clamp(0.54rem, 2.2vw, 0.82rem);
     letter-spacing: 0.06em;
   }
 
   .lx-heart-stage {
-    height: min(54dvh, 94vw);
-    max-height: 58dvh;
+    height: min(64svh, calc(100vw - 8px));
+    max-height: calc(100svh - 140px);
   }
 
   .lx-cupid {
@@ -1864,13 +1872,13 @@
   .lx-heart-stage {
     width: min(72dvh, 72vw);
     height: min(72dvh, 72vw);
-    max-height: none;
+    max-height: calc(100svh - 88px);
   }
 
   .lx-heart-words-stack {
-    --lx-heart-scale: min(1, 72dvh / 450, 72vw / 450);
-    --lx-heart-shift-x: calc(-6% - 32px);
-    --lx-heart-shift-y: -6px;
+    --lx-heart-scale: min(1, 72dvh / 580, 72vw / 580);
+    --lx-heart-shift-x: 0px;
+    --lx-heart-shift-y: 0px;
   }
 
   .lx-heart-finale {
